@@ -1,44 +1,49 @@
-Début du tour du chasseur :
+Début du tour du Hunter :
 
-La vue du hunter s'affiche -> showView()
+La vue du Hunter s'affiche -> showView()
 
-Hunter joue (Tir) -> Icoordinate coord
-    coord -> Coordonnée de la case
+Hunter joue, renvoie coord -> play()
+    coord : Coordonnée de la case sur laquel il tire
 
-Maze reçoit les coordonnée, met à jour la variable hunter avec les nouvelle coordonée
-Le Maze vérifie si le monstre est déjà passé dessus
+Maze reçoit les coordonnée, met à jour la variable hunter avec les nouvelle coordonée -> update(new CellEvent(coord, turn, cellinfo))
+    coord : Coordonée de la case
+    turn : 0 (default)
+    cellinfo : Cellinfo.HUNTER (Car c'est le hunter qui joue)
+
+Le Maze vérifie si le Monster est déjà passé sur la case -> monsterWasHere(coord)
 Si true :
-    Le Maze vérifie si le monstre est actuellement sur cette case 
+    Le Maze vérifie si le Monster est actuellement sur cette case -> monsterIsHere(coord)
     Si true : 
-        Le chasseur a gagné
+        Le Hunter a gagné -> end(cellinfo)
+            cellinfo : Cellinfo.HUNTER car c'est le Hunter qui gagne
     Sinon :
-        Le Maze notifie la vue du chasseur en lui envoyant un new CellEvent(coord, turn, cellinfo)
+        Le Maze notifie la vue du Hunter en lui envoyant un new CellEvent(coord, turn, cellinfo)
             coord : Coordonnée de la case
-            turn : Tour durant lequel le monstre est passé sur la case
-            cellinfo : Cellinfo.MONSTER
+            turn : Tour durant lequel le Monster est passé sur la case
+            cellinfo : Cellinfo.MONSTER car la case a été traversé par le Monster
 Sinon : 
-    Le Maze vérifie si la case est un mur
+    Le Maze vérifie si la case est un mur -> isWall(coord)
     Si true :
-        Le Maze notifie la vue du chasseur en lui envoyant un new CellEvent(coord, turn, cellinfo)
+        Le Maze notifie la vue du Hunter en lui envoyant un new CellEvent(coord, turn, cellinfo)
             coord : Coordonnée de la case
-            turn -> 0
-            cellinfo -> Cellinfo.WALL
+            turn : 0 (default)
+            cellinfo : Cellinfo.WALL car la case est un mur
     Sinon : 
-        Le Maze notifie la vue du chasseur en lui envoyant un new CellEvent(coord, turn, cellinfo)
-            coord -> Coordonnée de la case
-            turn -> 0
-            cellinfo -> Cellinfo.EMPTY
+        Le Maze notifie la vue du Hunter en lui envoyant un new CellEvent(coord, turn, cellinfo)
+            coord : Coordonnée de la case
+            turn : 0 (default)
+            cellinfo : Cellinfo.EMPTY car la case est vide
 
-La vue du chasseur contient une variable hunter de type Hunter qui représente ses donnée
-La vue du chasseur les mets quand elle reçoit la notification CellEvent(coord, turn, cellinfo) du Maze
+La vue du Hunter contient une variable hunter de type Hunter qui représente ses données
+La vue du Hunter les mets à jour quand elle reçoit la notification CellEvent(coord, turn, cellinfo) (variable selon la case, comme expliqué plus haut) du Maze
 Si cellinfo == MONSTER : 
-    la variable hunter ajoute dans la map knowCoord les coordonée du monstre et le tour put(coord, turn)
+    la variable hunter ajoute dans la map knowCoord les coordonée du Monster et le tour -> knowCoord.put(coord, turn)
 Sinon si cellinfo == WALL :
-    la variable hunter met à jour son tableau de boolean avec true à l'endroit qui correspond au coord
+    la variable hunter met à jour son tableau de boolean avec true à l'endroit qui correspond au coord -> wall[coord.getRow()][coord.getCol()] = true
 Sinon :
-    la variable hunter met à jour son tableau de boolean avec false à l'endroit qui correspond au coord
+    la variable hunter met à jour son tableau de boolean avec false à l'endroit qui correspond au coord -> wall[coord.getRow()][coord.getCol()] = false
     
-Le maze incrémente les tours
+Le maze incrémente les tours -> incrementTurn()
 
 
 
