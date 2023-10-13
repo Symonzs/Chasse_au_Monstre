@@ -4,13 +4,13 @@ Groupe J1 | Charles Coudé | Simon Hayart | Raphaël Kiecken | Hugo Vallée
 ## Diagrame : 
 
 ### Diagrame de Cas d'utilisation : 
-![DiagrameDeCasD'utilisation](./Digramme_de_cas_d'utilisation.png)
-*Si l'image ne s'affiche pas correctement cliqué [ici](./Digramme_de_cas_d'utilisation.png)*
+![DiagrameDeCasD'utilisation](./Digramme_de_cas_d_utilisation.png)
+*Si l'image ne s'affiche pas correctement cliquez [ici](./Digramme_de_cas_d'utilisation.png)*
 
 
 ### Diagrame de Classe : 
 ![DiagrameDeClasse](Diagramme_de_classe.png)
-*Si l'image ne s'affiche pas correctement cliqué [ici](./Diagramme_de_classe.png)*
+*Si l'image ne s'affiche pas correctement cliquez [ici](./Diagramme_de_classe.png)*
 
 ## Description des méthodes Principal.
 
@@ -80,12 +80,13 @@ Groupe J1 | Charles Coudé | Simon Hayart | Raphaël Kiecken | Hugo Vallée
 - Le maze incrémente les tours -> incrementTurn()
 
 
-## Example de cas d'Utilisation : 
+### Example de cas d'Utilisation : 
 
 
-coord = 5,3
+initialisation des coordonées :
+- coord = 5,3
 
-### Début du tour du Monster :
+#### Début du tour du Monster :
 
 - La vue du Monster s'affiche -> showView()
 
