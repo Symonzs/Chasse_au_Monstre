@@ -53,3 +53,26 @@ Le maze incrémente les tours -> incrementTurn()
 
 coord -> 5,3
 
+Début du tour du Monster :
+
+La vue du Monster s'affiche -> showView()
+
+Monster joue, renvoie coord -> play()
+    coord : Coordonnée de la case sur laquel il souhaite ce deplacer
+
+Maze reçoit les coordonnée, s'assure de la véracité des coordonnées -> IsMoveAllowed(coord)
+Si true:
+    ajoute les coordonnées du monster a la variable avec les nouvelle coordonée -> update(new CellEvent(coord, turn, cellinfo))
+        coord : Coordonée de la case
+        turn : 5 (tour correspondant au tour du deplacement du monstre)
+        cellinfo : Cellinfo.MONSTER (Car c'est le monstre qui joue)
+Sinon:
+    Demande de nouveau les coordonnees -> play()
+
+Le Maze vérifie si le Monster est sur la case de fin -> isMonsterAtTheEnd(coord)
+Si true :
+    Le Monstre a gagné -> end(cellinfo)
+            cellinfo : Cellinfo.MONSTER car c'est le Monster qui gagne
+
+La vue du Monster contient une variable monster de type Monster qui représente ses données
+La vue du Monster les mets à jour quand elle reçoit la notification CellEvent(coord, turn, cellinfo) (variable selon la case, comme expliqué plus haut) du Maze
