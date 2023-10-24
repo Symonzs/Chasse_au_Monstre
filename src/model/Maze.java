@@ -113,4 +113,8 @@ public class Maze {
         Maze maze = new Maze(11, 11);
     }
 
+    public boolean[][] getWall() {
+        return wall;
+    }
+
 }

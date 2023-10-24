@@ -1,0 +1,104 @@
+package test.model;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+
+import model.Coordinate;
+import model.Maze;
+
+public class TestMaze {
+
+    protected Maze maze;
+
+    @BeforeEach
+    public void setup() {
+        maze = new Maze(null);
+        // to do faire une simulation de partie sur une grille 3x3
+        /*
+         * le monstre commence en 0,0 le chasseur tire jsp ou
+         * la sortie est en 2,2
+         * le monstre se deplace en 1,0 au premier tour le chasseur tire jsp ou
+         * le monstre de deplace en 1,1 au deuxieme tour le chasseur tire jsp ou
+         * le monstre se deplace en 1,2 au troisieme tour le chasseur ne tire pas !!
+         */
+
+    }
+
+    @Test
+    public void test_creation_maze() {
+        assertEquals(maze.getWall().length, maze.getWall()[0].length);// test si la longueur est égale a la hauteur du
+                                                                      // maze
+    }
+
+    @Test
+    public void test_monster_was_here() {
+        // valide
+        assertTrue(maze.monsterWasHere(new Coordinate(0, 0)));// test si le monstre est passé par la position de départ
+        assertTrue(maze.monsterWasHere(new Coordinate(1, 0)));// test si le monstre est passé par 1,0
+        // valide
+
+        // pas valide car case actuelle du monstre
+        assertTrue(maze.monsterWasHere(new Coordinate(1, 2)));// test si le monstre est passé par 1,2
+        // pas valide car case actuelle du monstre
+
+        // pas valide le monstre n'est pas passer la
+        assertFalse(maze.monsterWasHere(new Coordinate(2, 1)));// test si le monstre est passé par 2,1
+        assertFalse(maze.monsterWasHere(new Coordinate(2, 2)));// test si le monstre est passé par 2,2
+        // pas valide le monstre n'est pas passer la
+
+        // pas valide coordonnées en dehors du tableaux
+        assertFalse(maze.monsterWasHere(new Coordinate(5, 7)));// test si le monstre est passé par 5,7
+        assertFalse(maze.monsterWasHere(new Coordinate(3, 3)));// test si le monstre est passé par 3,3
+        // pas valide coordonnées en dehors du tableaux
+    }
+
+    @Test
+    public void test_monster_is_here() {
+        // valide
+        assertTrue(maze.monsterIsHere(new Coordinate(1, 2)));// test si le monstre est en 1,2
+        // valide
+
+        // pas valide car le monstre n'est pas la ACTUELLEMENT
+        assertFalse(maze.monsterIsHere(new Coordinate(0, 0)));
+        assertFalse(maze.monsterIsHere(new Coordinate(1, 1)));
+        assertFalse(maze.monsterIsHere(new Coordinate(2, 1)));
+        // pas valide car le monstre n'est pas la ACTUELLEMENT
+
+        // pas valide car en dehors du tableau
+        assertFalse(maze.monsterIsHere(new Coordinate(5, 3)));
+        assertFalse(maze.monsterIsHere(new Coordinate(2, 9)));
+        // pas valide car en dehors du tableau
+
+    }
+
+    @Test
+    public void test_end() {
+        // pas fait jsais pas comment le tester
+
+        // valide le chasseur tire sur la pose du monstre
+
+        // valide le chasseur tire sur la pose du monstre
+
+        // valide le monstre arrive a la fin du maze
+
+        // valide le monstre arrive a la fin du maze
+
+        // pas valide le chasseur n'a pas tiré sur le monstre et le monstre n'est pas a
+        // la sortie
+
+        // pas valide le chasseur n'a pas tiré sur le monstre et le monstre n'est pas a
+        // la sortie
+    }
+
+    @Test
+    public void test_increment_turn() {
+        // valide le numéro de tour la ou c'est arréter notre scénario de base
+        assertEquals();
+        // valide le numéro de tour la ou c'est arréter notre scénario de base
+    }
+
+}
