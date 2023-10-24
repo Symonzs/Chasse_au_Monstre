@@ -50,3 +50,6 @@ replay_pid*
 doc
 
 # End of https://www.toptal.com/developers/gitignore/api/java,visualstudiocode
+.vscode/settings.json
+.gitignore
+.vscode/launch.json
