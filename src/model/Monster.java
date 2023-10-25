@@ -1,16 +1,90 @@
 package model;
 
+import java.util.Map;
+
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
+import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
+import r304.main.java.utils.Observer;
+import r304.main.java.utils.Subject;
 
-public class Monster {
-    
-    private boolean[][] wall;
-    private ICoordinate exit;
-    private ICoordinate coord;
-    private ICoordinate shot;
+public class Monster implements Observer {
 
-    public void setShot(ICoordinate coord){
-        this.shot =coord;
+    private final boolean[][] WALL;
+    private Map<ICoordinate, Integer> monsterCoords;
+    private ICoordinate hunterCoord;
+    private final ICoordinate EXIT;
+
+    public Monster(Maze maze) {
+        this.WALL = maze.getWall();
+        this.monsterCoords = maze.getMonster();
+        this.hunterCoord = maze.getHunter();
+        this.EXIT = maze.getExit();
+    }
+
+    public void setHunterCoord(ICoordinate hunterCoord) {
+        this.hunterCoord = hunterCoord;
+    }
+
+    public void addMonsterCoords(ICoordinate monster) {
+        this.monsterCoords.put(monster, Maze.turn);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("Monster (");
+        sb.append(Maze.turn + ") :\n");
+        for (int i = 0; i < this.WALL.length; i++) {
+            for (int j = 0; j < this.WALL[0].length; j++) {
+                ICoordinate coord = new Coordinate(i, j);
+                if (this.monsterCoords.containsKey(coord)) {
+                    Integer monsterTurn = this.monsterCoords.get(coord);
+                    if (Maze.turn.equals(monsterTurn)) {
+                        sb.append("M ");
+                    } else {
+                        sb.append(monsterTurn + " ");
+                    }
+
+                } else if (coord.equals(this.hunterCoord)) {
+                    sb.append("H ");
+                } else if (this.EXIT.equals(coord)) {
+                    sb.append("X ");
+                } else if (this.WALL[i][j]) {
+                    sb.append("W ");
+                } else {
+                    sb.append("E ");
+                }
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
+    @Override
+    public void update(Subject arg0) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'update'");
+    }
+
+    @Override
+    public void update(Subject arg0, Object arg1) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'update'");
+    }
+
+    public void update(Subject arg0, Object arg1, Object arg2) {
+        System.out.println("Update Monster - Comes from : " + arg0.getClass().getSimpleName());
+        if (arg1 instanceof CellEvent) {
+            CellEvent eventHunter = (CellEvent) arg1;
+            if (eventHunter.getState() == CellInfo.HUNTER) {
+                this.setHunterCoord(eventHunter.getCoord());
+            }
+        }
+        if (arg2 instanceof CellEvent) {
+            CellEvent eventMonster = (CellEvent) arg2;
+            if (eventMonster.getState() == CellInfo.MONSTER) {
+                this.addMonsterCoords(eventMonster.getCoord());
+            }
+        }
     }
 
 }
