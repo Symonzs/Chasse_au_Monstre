@@ -191,4 +191,6 @@ public class Maze extends Subject {
         return find(MonsterHunter.PATH, fileName);
     }
 
+    
+
 }

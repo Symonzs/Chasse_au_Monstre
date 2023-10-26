@@ -1,8 +1,10 @@
 package test.model;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +25,7 @@ public class TestMaze {
     @BeforeEach
     public void setup() {
 
-        maze = new Maze(11, 11);
+        maze = new Maze(4, 4);
         System.out.println("le maze : " + maze);
         System.out.println("les wall : " + maze.getWall());
         Monster monster = new Monster(maze);
@@ -37,11 +39,6 @@ public class TestMaze {
         Maze.incrementTurn();
         maze.cellUpdate(new CellEvent(new Coordinate(2, 0), Maze.turn, CellInfo.MONSTER));
         maze.cellUpdate(new CellEvent(new Coordinate(0, 1), CellInfo.HUNTER));
-        Maze.incrementTurn();
-        maze.cellUpdate(new CellEvent(new Coordinate(3, 0), Maze.turn, CellInfo.MONSTER));
-        maze.cellUpdate(new CellEvent(new Coordinate(0, 1), CellInfo.HUNTER));
-        Maze.incrementTurn();
-        maze.cellUpdate(new CellEvent(new Coordinate(4, 0), Maze.turn, CellInfo.MONSTER));
 
         // to do faire une simulation de partie sur une grille 3x3
 
@@ -63,7 +60,37 @@ public class TestMaze {
 
     @Test
     public void test_creation_maze_mur() {
-        assertEquals(null, 0, 0, 0);
+        assertEquals(2, count_wall(maze));
+        assertNotEquals(3, count_wall(maze));
+    }
+
+    private static int count_wall(Maze maze) {
+        int nb = 0;
+        for (boolean[] bs : maze.getWall()) {
+            for (boolean b : bs) {
+                if (b) {
+                    nb++;
+                }
+            }
+        }
+        return nb;
+    }
+
+    @Test
+
+    public void is_this_cell_a_wall() {
+        assertTrue(this.maze.getWall()[1][2]);
+        assertTrue(this.maze.getWall()[2][1]);
+        assertFalse(this.maze.getWall()[0][0]);
+        assertFalse(this.maze.getWall()[3][0]);
+    }
+
+    @Test
+    public void is_this_cell_the_exit() {
+        assertEquals(this.maze.getExit(), new Coordinate(3, 0));
+        assertNotEquals(this.maze.getExit(), new Coordinate(0, 0));
+        assertEquals(this.maze.getExit(), new Coordinate(3, 0));
+        assertNotEquals(this.maze.getExit(), new Coordinate(1, 2));
     }
 
     @Test
@@ -74,8 +101,8 @@ public class TestMaze {
         // valide
 
         // pas valide car case actuelle du monstre
-        assertTrue(maze.monsterWasHere(new Coordinate(1, 2)));// test si le monstre est passé par 1,2
-        // pas valide car case actuelle du monstre
+        assertTrue(maze.monsterWasHere(new Coordinate(2, 0)));// test si le monstre est passé par 2,0
+        // valide car case actuelle du monstre
 
         // pas valide le monstre n'est pas passer la
         assertFalse(maze.monsterWasHere(new Coordinate(2, 1)));// test si le monstre est passé par 2,1
@@ -91,7 +118,7 @@ public class TestMaze {
     @Test
     public void test_monster_is_here() {
         // valide
-        assertTrue(maze.monsterIsHere(new Coordinate(1, 2)));// test si le monstre est en 1,2
+        assertTrue(maze.monsterIsHere(new Coordinate(2, 0)));// test si le monstre est en 2,0
         // valide
 
         // pas valide car le monstre n'est pas la ACTUELLEMENT
@@ -128,9 +155,8 @@ public class TestMaze {
 
     @Test
     public void test_increment_turn() {
-        // valide le numéro de tour la ou c'est arréter notre scénario de base
-        assertEquals();
-        // valide le numéro de tour la ou c'est arréter notre scénario de base
+        assertEquals(3, Maze.turn);
+        assertNotEquals(1, Maze.turn);
     }
 
 }
