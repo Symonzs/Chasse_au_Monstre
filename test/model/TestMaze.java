@@ -4,20 +4,47 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
+import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
+import model.CellEvent;
 import model.Coordinate;
 import model.Maze;
+import model.Hunter;
+import model.Monster;
 
 public class TestMaze {
 
     protected Maze maze;
+    protected Monster monster;
+    protected Hunter hunter;
 
     @BeforeEach
     public void setup() {
-        maze = new Maze(null);
+
+        maze = new Maze(11, 11);
+        System.out.println("le maze : " + maze);
+        System.out.println("les wall : " + maze.getWall());
+        Monster monster = new Monster(maze);
+        Hunter hunter = new Hunter(maze.getWall().length, maze.getWall()[0].length);
+        maze.attach(monster);
+        maze.attach(hunter);
+        maze.cellUpdate(new CellEvent(new Coordinate(0, 3), CellInfo.HUNTER));
+        Maze.incrementTurn();
+        maze.cellUpdate(new CellEvent(new Coordinate(1, 0), Maze.turn, CellInfo.MONSTER));
+        maze.cellUpdate(new CellEvent(new Coordinate(0, 0), CellInfo.HUNTER));
+        Maze.incrementTurn();
+        maze.cellUpdate(new CellEvent(new Coordinate(2, 0), Maze.turn, CellInfo.MONSTER));
+        maze.cellUpdate(new CellEvent(new Coordinate(0, 1), CellInfo.HUNTER));
+        Maze.incrementTurn();
+        maze.cellUpdate(new CellEvent(new Coordinate(3, 0), Maze.turn, CellInfo.MONSTER));
+        maze.cellUpdate(new CellEvent(new Coordinate(0, 1), CellInfo.HUNTER));
+        Maze.incrementTurn();
+        maze.cellUpdate(new CellEvent(new Coordinate(4, 0), Maze.turn, CellInfo.MONSTER));
+
         // to do faire une simulation de partie sur une grille 3x3
+
         /*
          * le monstre commence en 0,0 le chasseur tire jsp ou
          * la sortie est en 2,2
@@ -29,9 +56,14 @@ public class TestMaze {
     }
 
     @Test
-    public void test_creation_maze() {
+    public void test_creation_maze_taille() {
         assertEquals(maze.getWall().length, maze.getWall()[0].length);// test si la longueur est égale a la hauteur du
                                                                       // maze
+    }
+
+    @Test
+    public void test_creation_maze_mur() {
+        assertEquals(null, 0, 0, 0);
     }
 
     @Test
