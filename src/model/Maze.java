@@ -12,9 +12,9 @@ import java.util.logging.Logger;
 
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
+import fr.univlille.iutinfo.r304.utils.Observer;
+import fr.univlille.iutinfo.r304.utils.Subject;
 import main.MonsterHunter;
-import r304.main.java.utils.Observer;
-import r304.main.java.utils.Subject;
 
 public class Maze extends Subject {
 
@@ -35,7 +35,7 @@ public class Maze extends Subject {
     }
 
     public void importMaze(String fileName) {
-        File csv = new File(MonsterHunter.RESOURCES_PATH, fileName);
+        File csv = Maze.find(fileName);
         try {
             List<String> lines = Files.readAllLines(csv.toPath(), StandardCharsets.UTF_8);
             Integer nbRows = lines.size();
@@ -164,6 +164,31 @@ public class Maze extends Subject {
                 monsterTemp.update(this, monsterData);
             }
         }
+    }
+
+    public static File find(String path, String fileName) {
+        path += File.separator;
+        File folder = new File(path);
+        File file = null;
+
+        if (!folder.exists())
+            return null;
+        if (folder.isDirectory()) {
+            for (File f : folder.listFiles()) {
+                if (f.isFile() && f.getName().equals(fileName))
+                    file = f;
+                if (f.isDirectory())
+                    file = find(path + f.getName(), fileName);
+                if (file != null)
+                    return file;
+            }
+        }
+
+        return file;
+    }
+
+    public static File find(String fileName) {
+        return find(MonsterHunter.PATH, fileName);
     }
 
 }

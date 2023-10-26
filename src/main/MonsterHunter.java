@@ -1,6 +1,7 @@
 package main;
 
 import java.io.File;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
@@ -29,18 +30,52 @@ public class MonsterHunter {
                 while (coord == null) {
                     System.out.print("\nOù voulez-vous tirer (ligne,colone) : ");
                     String[] response = scan.next().split(",");
-                    coord = new Coordinate(Integer.parseInt(response[0]), Integer.parseInt(response[1]));
+                    try {
+                        coord = new Coordinate(Integer.parseInt(response[0]), Integer.parseInt(response[1]));
+                    } catch (NumberFormatException e) {
+                        System.err.println(e.getMessage());
+                    }
                 }
                 maze.cellUpdate(new CellEvent(coord, CellInfo.HUNTER));
                 System.out.println("\033[H\033[2J");
                 System.out.println(hunter);
-                Thread.sleep(1000);
+                Thread.sleep(4000);
                 System.out.println("\033[H\033[2J");
                 System.out.println(monster);
                 Maze.incrementTurn();
+                coord = null;
+                while (coord == null) {
+                    System.out.print("\nOù voulez-vous vous déplacer (ligne,colone) : ");
+                    String[] response = scan.next().split(",");
+                    try {
+                        coord = new Coordinate(Integer.parseInt(response[0]), Integer.parseInt(response[1]));
+                        ICoordinate lastCoordinate = monster.getLastCoordinate();
+                        if (!cellIsNeighbor(coord, lastCoordinate)) {
+                            throw new InputMismatchException("La case n'est pas atteignable par le monstre");
+                        }
+                    } catch (NumberFormatException | InputMismatchException e) {
+                        coord = null;
+                        System.err.println(e.getMessage());
+                    }
+                }
+                maze.cellUpdate(new CellEvent(coord, Maze.turn, CellInfo.MONSTER));
+                System.out.println("\033[H\033[2J");
+                System.out.println(monster);
+                Thread.sleep(4000);
             }
         } catch (Exception e) {
             System.err.println(e.getMessage());
         }
+    }
+
+    public static boolean cellIsNeighbor(ICoordinate coordinate1, ICoordinate coordinate2) {
+        Integer col1 = coordinate1.getCol();
+        Integer row1 = coordinate1.getRow();
+
+        Integer col2 = coordinate2.getCol();
+        Integer row2 = coordinate2.getRow();
+
+        return (col1.equals(col2 - 1) || col1.equals(col2 + 1)) && (row1.equals(row2 - 1) || row1.equals(row2 + 1));
+
     }
 }
