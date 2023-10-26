@@ -47,6 +47,10 @@ public class Hunter implements Observer {
         return sb.toString();
     }
 
+    public void addKnowMonsterCoords(ICoordinate monster) {
+        this.knowMonsterCoords.put(monster, Maze.turn);
+    }
+
     @Override
     public void update(Subject arg0) {
         // TODO Auto-generated method stub
@@ -55,12 +59,6 @@ public class Hunter implements Observer {
 
     @Override
     public void update(Subject arg0, Object arg1) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
-    }
-
-    public void update(Subject arg0, Object arg1, Object arg2) {
-        System.out.println("Update Hunter - Comes from : " + arg0.getClass().getSimpleName());
         if (arg1 instanceof CellEvent) {
             CellEvent eventHunter = (CellEvent) arg1;
             if (eventHunter.getState() == CellInfo.MONSTER) {
@@ -69,12 +67,6 @@ public class Hunter implements Observer {
                 this.knowWall[eventHunter.getCoord().getRow()][eventHunter.getCoord().getCol()] = true;
             } else {
                 this.knowWall[eventHunter.getCoord().getRow()][eventHunter.getCoord().getCol()] = false;
-            }
-        }
-        if (arg2 instanceof CellEvent) {
-            CellEvent eventMonster = (CellEvent) arg2;
-            if (eventMonster.getState() == CellInfo.MONSTER) {
-                // this.addMonsterCoords(eventMonster.getCoord());
             }
         }
     }

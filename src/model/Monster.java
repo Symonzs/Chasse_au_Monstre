@@ -67,24 +67,22 @@ public class Monster implements Observer {
 
     @Override
     public void update(Subject arg0, Object arg1) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+        if (arg1 instanceof CellEvent) {
+            CellEvent eventMonster = (CellEvent) arg1;
+            if (eventMonster.getState() == CellInfo.MONSTER) {
+                this.addMonsterCoords(eventMonster.getCoord());
+            }
+        }
     }
 
     public void update(Subject arg0, Object arg1, Object arg2) {
-        System.out.println("Update Monster - Comes from : " + arg0.getClass().getSimpleName());
         if (arg1 instanceof CellEvent) {
             CellEvent eventHunter = (CellEvent) arg1;
             if (eventHunter.getState() == CellInfo.HUNTER) {
                 this.setHunterCoord(eventHunter.getCoord());
             }
         }
-        if (arg2 instanceof CellEvent) {
-            CellEvent eventMonster = (CellEvent) arg2;
-            if (eventMonster.getState() == CellInfo.MONSTER) {
-                this.addMonsterCoords(eventMonster.getCoord());
-            }
-        }
+        update(arg0, arg2);
     }
 
 }

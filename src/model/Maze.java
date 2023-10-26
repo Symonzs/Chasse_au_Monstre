@@ -36,18 +36,14 @@ public class Maze extends Subject {
 
     public void importMaze(String fileName) {
         File csv = new File(MonsterHunter.RESOURCES_PATH, fileName);
-        List<String> lines;
-        Integer nbRows;
-        Integer nbCols;
-        String[] cols;
         try {
-            lines = Files.readAllLines(csv.toPath(), StandardCharsets.UTF_8);
-            nbRows = lines.size();
-            nbCols = lines.get(0).split(",").length;
+            List<String> lines = Files.readAllLines(csv.toPath(), StandardCharsets.UTF_8);
+            Integer nbRows = lines.size();
+            Integer nbCols = lines.get(0).split(",").length;
             this.wall = new boolean[nbRows][nbCols];
             for (int i = 0; i < lines.size(); i++) {
                 String line = lines.get(i);
-                cols = line.split(",");
+                String[] cols = line.split(",");
                 for (int j = 0; j < cols.length; j++) {
                     switch (cols[j]) {
                         case "E" -> this.wall[i][j] = false;
@@ -83,7 +79,7 @@ public class Maze extends Subject {
 
     private void cellUpdateMonster(ICoordinate eventCoord, Integer eventTurn) {
         this.monster.put(eventCoord, eventTurn);
-        if (this.isMonsterAtTheEnd(eventCoord)) {
+        if (this.monsterAtTheEnd(eventCoord)) {
             this.end(CellInfo.MONSTER);
         } else {
             this.notifyObserver(null, new CellEvent(eventCoord, eventTurn, CellInfo.MONSTER));
@@ -129,7 +125,7 @@ public class Maze extends Subject {
         return this.wall[i][j];
     }
 
-    public boolean isMonsterAtTheEnd(ICoordinate eventCoord) {
+    public boolean monsterAtTheEnd(ICoordinate eventCoord) {
         return this.exit.equals(eventCoord);
     }
 
@@ -139,19 +135,6 @@ public class Maze extends Subject {
 
     public static void incrementTurn() {
         Maze.turn++;
-    }
-
-    public void notifyObserver(Object hunterData, Object monsterData) {
-        for (Observer observer : this.attached) {
-            if (observer instanceof Monster) {
-                Monster monsterTemp = (Monster) observer;
-                monsterTemp.update(this, hunterData, monsterData);
-            }
-            if (observer instanceof Hunter) {
-                Hunter hunterTemp = (Hunter) observer;
-                hunterTemp.update(this, hunterData, monsterData);
-            }
-        }
     }
 
     public boolean[][] getWall() {
@@ -168,6 +151,19 @@ public class Maze extends Subject {
 
     public ICoordinate getHunter() {
         return this.hunter;
+    }
+
+    public void notifyObserver(Object hunterData, Object monsterData) {
+        for (Observer observer : this.attached) {
+            if (observer instanceof Hunter) {
+                Hunter hunterTemp = (Hunter) observer;
+                hunterTemp.update(this, hunterData);
+            }
+            if (observer instanceof Monster) {
+                Monster monsterTemp = (Monster) observer;
+                monsterTemp.update(this, monsterData);
+            }
+        }
     }
 
 }

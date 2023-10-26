@@ -31,14 +31,14 @@ Groupe J1 | Charles Coudé | Simon Hayart | Raphaël Kiecken | Hugo Vallée
 - Le Maze vérifie si le Monster est déjà passé sur la case -> monsterWasHere(coord)
     - Si true :
         - Le Maze vérifie si le Monster est actuellement sur cette case -> monsterIsHere(coord)
-    - Si true : 
-        - Le Hunter a gagné -> end(cellinfo)
-            cellinfo : Cellinfo.HUNTER car c'est le Hunter qui gagne
-    - Sinon :
-        - Le Maze créer et stock un new CellEvent(coord, turn, cellinfo) déstiné au Hunter
-            - coord : Coordonnée de la case
-            - turn : Tour durant lequel le Monster est passé sur la - case
-            - cellinfo : Cellinfo.MONSTER car la case a été traversé par le Monster
+        - Si true : 
+            - Le Hunter a gagné -> end(cellinfo)
+                - cellinfo : Cellinfo.HUNTER car c'est le Hunter qui gagne
+        - Sinon :
+            - Le Maze créer et stock un new CellEvent(coord, turn, cellinfo) déstiné au Hunter
+                - coord : Coordonnée de la case
+                - turn : Tour durant lequel le Monster est passé sur la - case
+                - cellinfo : Cellinfo.MONSTER car la case a été traversé par le Monster
     - Sinon : 
         - Le Maze vérifie si la case est un mur -> isWall(coord)
             - Si true :
@@ -51,9 +51,6 @@ Groupe J1 | Charles Coudé | Simon Hayart | Raphaël Kiecken | Hugo Vallée
                     - coord : Coordonnée de la case
                     - turn : 0 (default)
                     - cellinfo : Cellinfo.EMPTY car la case est vide
-
-
-
 
 - Le Maze créer et stock un new CellEvent(coord, turn, cellinfo) déstiné au Monster
     - coord : Coordonée de la case
