@@ -3,9 +3,10 @@ package model;
 import java.util.Map;
 
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
+import fr.univlille.iutinfo.r304.utils.ConnectableProperty;
+import fr.univlille.iutinfo.r304.utils.Observer;
+import fr.univlille.iutinfo.r304.utils.Subject;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
-import r304.main.java.utils.Observer;
-import r304.main.java.utils.Subject;
 
 public class Monster implements Observer {
 
@@ -27,6 +28,15 @@ public class Monster implements Observer {
 
     public void addMonsterCoords(ICoordinate monster) {
         this.monsterCoords.put(monster, Maze.turn);
+    }
+
+    public ICoordinate getLastCoordinate() {
+        for (Map.Entry<ICoordinate, Integer> entry : this.monsterCoords.entrySet()) {
+            if (entry.getValue().equals(Maze.turn - 1)) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 
     @Override
