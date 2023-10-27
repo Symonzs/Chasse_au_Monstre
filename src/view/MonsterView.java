@@ -17,6 +17,12 @@ import model.Maze;
 public class MonsterView extends Application {
     private Coordinate exit;
     private Coordinate monster;
+    private Maze maze;
+
+    public MonsterView(Maze m) {
+        maze = m;
+        showView();
+    }
 
     public static void main(String[] args) {
         launch();
@@ -85,13 +91,11 @@ public class MonsterView extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        Maze maze = new Maze(11, 11);
-        MonsterView mv = new MonsterView();
-        mv.setExit((Coordinate) maze.getExit());
-        mv.setMonster(
+        setExit((Coordinate) maze.getExit());
+        setMonster(
                 (Coordinate) maze.getMonster().keySet().toArray()[maze.getMonster().keySet().toArray().length - 1]);
 
-        GridPane gameBoard = mv.makeGameBoard(maze.getWall());
+        GridPane gameBoard = makeGameBoard(maze.getWall());
 
         Scene scene = new Scene(gameBoard);
         primaryStage.setScene(scene);
