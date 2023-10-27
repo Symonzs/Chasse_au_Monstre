@@ -15,8 +15,6 @@ import model.Coordinate;
 import model.Maze;
 
 public class MonsterView extends Application {
-    private Coordinate exit;
-    private Coordinate monster;
     private Maze maze;
 
     public MonsterView(Maze m) {
@@ -58,9 +56,11 @@ public class MonsterView extends Application {
                 if (board[i][j]) {
                     cell.setFill(javafx.scene.paint.Color.BLACK);
                 } else {
-                    if (i == this.exit.getRow() && j == this.exit.getCol()) {
+                    Coordinate monster = (Coordinate) maze.getMonster().keySet()
+                            .toArray()[maze.getMonster().keySet().toArray().length - 1];
+                    if (i == maze.getExit().getRow() && j == maze.getExit().getCol()) {
                         text = new Text("Exit");
-                    } else if (i == this.monster.getRow() && j == this.monster.getCol()) {
+                    } else if (i == monster.getRow() && j == monster.getCol()) {
                         text = new Text("Monster");
                     }
                     cell.setFill(javafx.scene.paint.Color.WHITE);
@@ -79,22 +79,8 @@ public class MonsterView extends Application {
         return gameBoard;
     }
 
-    // TODO Touver une soluce pour recup la sortie
-    public void setExit(Coordinate c) {
-        exit = c;
-    }
-
-    // TODO Touver une soluce pour recup la position du monstre
-    public void setMonster(Coordinate c) {
-        monster = c;
-    }
-
     @Override
     public void start(Stage primaryStage) {
-        setExit((Coordinate) maze.getExit());
-        setMonster(
-                (Coordinate) maze.getMonster().keySet().toArray()[maze.getMonster().keySet().toArray().length - 1]);
-
         GridPane gameBoard = makeGameBoard(maze.getWall());
 
         Scene scene = new Scene(gameBoard);
