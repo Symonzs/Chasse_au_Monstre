@@ -1,10 +1,11 @@
 package model;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
@@ -14,30 +15,28 @@ import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
 import fr.univlille.iutinfo.r304.utils.Observer;
 import fr.univlille.iutinfo.r304.utils.Subject;
-import main.MonsterHunter;
 
 public class Maze extends Subject {
 
     private boolean[][] wall;
-    private Map<ICoordinate, Integer> monster;
+    private Map<Integer, ICoordinate> monster;
     private ICoordinate hunter;
     private ICoordinate exit;
     public static Integer turn = 1;
 
     Logger log = Logger.getLogger(getClass().getName());
 
-    public Maze(Integer nbRows, Integer nbCols) {
-        importMaze(String.format("%dx%d.csv", nbRows, nbCols));
-    }
-
     public Maze(String fileName) {
-        importMaze(fileName);
+        loadMaze(fileName);
     }
 
-    public void importMaze(String fileName) {
-        File csv = Maze.find(fileName);
+    public Maze(Integer nbRows, Integer nbCols) {
+        loadMaze(String.format("%dx%d.csv", nbRows, nbCols));
+    }
+
+    public void loadMaze(String fileName) {
         try {
-            List<String> lines = Files.readAllLines(csv.toPath(), StandardCharsets.UTF_8);
+            List<String> lines = Files.readAllLines(importFile(fileName).toPath(), StandardCharsets.UTF_8);
             Integer nbRows = lines.size();
             Integer nbCols = lines.get(0).split(",").length;
             this.wall = new boolean[nbRows][nbCols];
@@ -53,8 +52,8 @@ public class Maze extends Subject {
                             this.wall[i][j] = false;
                         }
                         case "M" -> {
-                            this.monster = new HashMap<>();
-                            this.monster.put(new Coordinate(i, j), turn);
+                            this.monster = new TreeMap<>();
+                            this.monster.put(turn, new Coordinate(i, j));
                             this.wall[i][j] = false;
                         }
                         default -> throw new InputMismatchException("Caractère non reconnu");
@@ -66,20 +65,25 @@ public class Maze extends Subject {
         }
     }
 
+    public File importFile(String fileName) throws FileNotFoundException {
+        File csv = FileFinder.find(fileName);
+        if (csv == null) {
+            throw new FileNotFoundException(String.format("Le fichier '%s' n'a pas été trouvé", fileName));
+        }
+        return csv;
+    }
+
     public void cellUpdate(CellEvent eventRequest) {
-        ICoordinate eventCoord = eventRequest.getCoord();
-        CellInfo eventInfo = eventRequest.getState();
-        Integer eventTurn = eventRequest.getTurn();
-        if (CellInfo.HUNTER.equals(eventInfo)) {
-            cellUpdateHunter(eventCoord, eventTurn);
-        } else if (CellInfo.MONSTER.equals(eventInfo)) {
-            cellUpdateMonster(eventCoord, eventTurn);
+        if (CellInfo.HUNTER.equals(eventRequest.getState())) {
+            cellUpdateHunter(eventRequest.getCoord(), eventRequest.getTurn());
+        } else if (CellInfo.MONSTER.equals(eventRequest.getState())) {
+            cellUpdateMonster(eventRequest.getCoord(), eventRequest.getTurn());
         }
     }
 
     private void cellUpdateMonster(ICoordinate eventCoord, Integer eventTurn) {
-        this.monster.put(eventCoord, eventTurn);
-        if (this.monsterAtTheEnd(eventCoord)) {
+        this.monster.put(eventTurn, eventCoord);
+        if (this.monsterAtExit()) {
             this.end(CellInfo.MONSTER);
         } else {
             this.notifyObserver(null, new CellEvent(eventCoord, eventTurn, CellInfo.MONSTER));
@@ -97,7 +101,7 @@ public class Maze extends Subject {
                 eventHunter = new CellEvent(eventCoord, eventTurn, CellInfo.MONSTER);
             }
         } else {
-            if (this.isWall(eventCoord)) {
+            if (this.cellIsWall(eventCoord)) {
                 eventHunter = new CellEvent(eventCoord, CellInfo.WALL);
             } else {
                 eventHunter = new CellEvent(eventCoord, CellInfo.EMPTY);
@@ -107,26 +111,20 @@ public class Maze extends Subject {
         this.notifyObserver(eventHunter, eventMonster);
     }
 
-    public boolean monsterWasHere(ICoordinate coord) {
-        return this.monster.containsKey(coord);
+    public boolean monsterWasHere(ICoordinate eventCoord) {
+        return this.monster.containsValue(eventCoord);
     }
 
     public boolean monsterIsHere(ICoordinate eventCoord) {
-        if (this.monsterWasHere(eventCoord)) {
-            Integer eventTurn = this.monster.get(eventCoord);
-            return eventTurn.equals(Maze.turn);
-        }
-        return false;
+        return this.monster.get(Maze.turn).equals(eventCoord);
     }
 
-    public boolean isWall(ICoordinate eventCoord) {
-        Integer i = eventCoord.getRow();
-        Integer j = eventCoord.getCol();
-        return this.wall[i][j];
+    public boolean cellIsWall(ICoordinate eventCoord) {
+        return this.wall[eventCoord.getRow()][eventCoord.getCol()];
     }
 
-    public boolean monsterAtTheEnd(ICoordinate eventCoord) {
-        return this.exit.equals(eventCoord);
+    public boolean monsterAtExit() {
+        return exit.equals(this.monster.get(Maze.turn));
     }
 
     public void end(CellInfo victoryInfo) {
@@ -137,6 +135,10 @@ public class Maze extends Subject {
         Maze.turn++;
     }
 
+    public static void resetTurn() {
+        Maze.turn = 1;
+    }
+
     public boolean[][] getWall() {
         return this.wall;
     }
@@ -145,7 +147,7 @@ public class Maze extends Subject {
         return this.exit;
     }
 
-    public Map<ICoordinate, Integer> getMonster() {
+    public Map<Integer, ICoordinate> getMonster() {
         return this.monster;
     }
 
@@ -155,42 +157,17 @@ public class Maze extends Subject {
 
     public void notifyObserver(Object hunterData, Object monsterData) {
         for (Observer observer : this.attached) {
-            if (observer instanceof Hunter) {
+            if (Hunter.class == observer.getClass()) {
                 Hunter hunterTemp = (Hunter) observer;
-                hunterTemp.update(this, hunterData);
+                if (hunterData != null) {
+                    hunterTemp.update(this, hunterData);
+                }
             }
-            if (observer instanceof Monster) {
+            if (Monster.class == observer.getClass()) {
                 Monster monsterTemp = (Monster) observer;
                 monsterTemp.update(this, monsterData);
             }
         }
     }
-
-    public static File find(String path, String fileName) {
-        path += File.separator;
-        File folder = new File(path);
-        File file = null;
-
-        if (!folder.exists())
-            return null;
-        if (folder.isDirectory()) {
-            for (File f : folder.listFiles()) {
-                if (f.isFile() && f.getName().equals(fileName))
-                    file = f;
-                if (f.isDirectory())
-                    file = find(path + f.getName(), fileName);
-                if (file != null)
-                    return file;
-            }
-        }
-
-        return file;
-    }
-
-    public static File find(String fileName) {
-        return find(MonsterHunter.PATH, fileName);
-    }
-
-    
 
 }

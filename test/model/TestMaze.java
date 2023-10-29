@@ -1,4 +1,4 @@
-package test.model;
+package model;
 
 import static org.junit.Assert.assertFalse;
 
@@ -10,11 +10,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
-import model.CellEvent;
-import model.Coordinate;
-import model.Maze;
-import model.Hunter;
-import model.Monster;
 
 public class TestMaze {
 
@@ -25,11 +20,10 @@ public class TestMaze {
     @BeforeEach
     public void setup() {
 
+        Maze.resetTurn();
         maze = new Maze(4, 4);
-        System.out.println("le maze : " + maze);
-        System.out.println("les wall : " + maze.getWall());
-        Monster monster = new Monster(maze);
-        Hunter hunter = new Hunter(maze.getWall().length, maze.getWall()[0].length);
+        monster = new Monster(maze);
+        hunter = new Hunter(maze.getWall().length, maze.getWall()[0].length);
         maze.attach(monster);
         maze.attach(hunter);
         maze.cellUpdate(new CellEvent(new Coordinate(0, 3), CellInfo.HUNTER));

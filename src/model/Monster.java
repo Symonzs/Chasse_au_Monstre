@@ -3,7 +3,6 @@ package model;
 import java.util.Map;
 
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
-import fr.univlille.iutinfo.r304.utils.ConnectableProperty;
 import fr.univlille.iutinfo.r304.utils.Observer;
 import fr.univlille.iutinfo.r304.utils.Subject;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
@@ -11,7 +10,7 @@ import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
 public class Monster implements Observer {
 
     private final boolean[][] WALL;
-    private Map<ICoordinate, Integer> monsterCoords;
+    private Map<Integer, ICoordinate> monsterCoords;
     private ICoordinate hunterCoord;
     private final ICoordinate EXIT;
 
@@ -26,17 +25,22 @@ public class Monster implements Observer {
         this.hunterCoord = hunterCoord;
     }
 
-    public void addMonsterCoords(ICoordinate monster) {
-        this.monsterCoords.put(monster, Maze.turn);
+    public void addMonsterCoords(Integer turn, ICoordinate monster) {
+        this.monsterCoords.put(turn, monster);
     }
 
-    public ICoordinate getLastCoordinate() {
-        for (Map.Entry<ICoordinate, Integer> entry : this.monsterCoords.entrySet()) {
-            if (entry.getValue().equals(Maze.turn - 1)) {
-                return entry.getKey();
+    public Integer getMonsterTurn(ICoordinate coord) {
+        Integer turn = 0;
+        for (Map.Entry<Integer, ICoordinate> entry : monsterCoords.entrySet()) {
+            if (entry.getValue().equals(coord)) {
+                turn = entry.getKey();
             }
         }
-        return null;
+        return turn;
+    }
+
+    public ICoordinate getCoordinate(Integer turn) {
+        return this.monsterCoords.get(turn);
     }
 
     @Override
@@ -46,14 +50,13 @@ public class Monster implements Observer {
         for (int i = 0; i < this.WALL.length; i++) {
             for (int j = 0; j < this.WALL[0].length; j++) {
                 ICoordinate coord = new Coordinate(i, j);
-                if (this.monsterCoords.containsKey(coord)) {
-                    Integer monsterTurn = this.monsterCoords.get(coord);
+                if (this.monsterCoords.containsValue(coord)) {
+                    Integer monsterTurn = this.getMonsterTurn(coord);
                     if (Maze.turn.equals(monsterTurn)) {
                         sb.append("M ");
                     } else {
                         sb.append(monsterTurn + " ");
                     }
-
                 } else if (coord.equals(this.hunterCoord)) {
                     sb.append("H ");
                 } else if (this.EXIT.equals(coord)) {
@@ -71,8 +74,7 @@ public class Monster implements Observer {
 
     @Override
     public void update(Subject arg0) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+        // never used
     }
 
     @Override
@@ -80,13 +82,13 @@ public class Monster implements Observer {
         if (arg1 instanceof CellEvent) {
             CellEvent eventMonster = (CellEvent) arg1;
             if (eventMonster.getState() == CellInfo.MONSTER) {
-                this.addMonsterCoords(eventMonster.getCoord());
+                this.addMonsterCoords(eventMonster.getTurn(), eventMonster.getCoord());
             }
         }
     }
 
     public void update(Subject arg0, Object arg1, Object arg2) {
-        if (arg1 instanceof CellEvent) {
+        if (CellEvent.class == arg1.getClass()) {
             CellEvent eventHunter = (CellEvent) arg1;
             if (eventHunter.getState() == CellInfo.HUNTER) {
                 this.setHunterCoord(eventHunter.getCoord());
