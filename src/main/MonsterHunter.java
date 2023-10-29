@@ -25,6 +25,7 @@ public class MonsterHunter {
         maze.attach(hunter);
         try (Scanner scan = new Scanner(System.in)) {
             while (Maze.turn < 5) {
+                System.out.println("\033[H\033[2J");
                 System.out.println(hunter);
                 ICoordinate coord = null;
                 while (coord == null) {
@@ -49,10 +50,8 @@ public class MonsterHunter {
                     String[] response = scan.next().split(",");
                     try {
                         coord = new Coordinate(Integer.parseInt(response[0]), Integer.parseInt(response[1]));
-                        ICoordinate lastCoordinate = monster.getLastCoordinate();
-                        if (!cellIsNeighbor(coord, lastCoordinate)) {
-                            throw new InputMismatchException("La case n'est pas atteignable par le monstre");
-                        }
+                        ICoordinate lastCoordinate = monster.getCoordinate(Maze.turn - 1);
+                        monsterCanMove(maze.getWall(), coord, lastCoordinate);
                     } catch (NumberFormatException | InputMismatchException e) {
                         coord = null;
                         System.err.println(e.getMessage());
@@ -68,14 +67,40 @@ public class MonsterHunter {
         }
     }
 
-    public static boolean cellIsNeighbor(ICoordinate coordinate1, ICoordinate coordinate2) {
-        Integer col1 = coordinate1.getCol();
+    public static boolean coordIsNeighbor(ICoordinate coordinate1, ICoordinate coordinate2) {
         Integer row1 = coordinate1.getRow();
+        Integer col1 = coordinate1.getCol();
 
-        Integer col2 = coordinate2.getCol();
         Integer row2 = coordinate2.getRow();
+        Integer col2 = coordinate2.getCol();
 
-        return (col1.equals(col2 - 1) || col1.equals(col2 + 1)) && (row1.equals(row2 - 1) || row1.equals(row2 + 1));
+        if (row1.equals(row2)) {
+            return col1.equals(col2 + 1) ^ col1.equals(col2 - 1);
+        }
+        if (col1.equals(col2)) {
+            return row1.equals(row2 + 1) ^ row1.equals(row2 - 1);
+        }
+        return false;
+    }
 
+    public static boolean coordIsDifferent(ICoordinate coordinate1, ICoordinate coordinate2) {
+        return !coordinate1.equals(coordinate2);
+    }
+
+    public static boolean cellIsWall(boolean[][] wall, ICoordinate coordinate) {
+        return wall[coordinate.getRow()][coordinate.getCol()];
+    }
+
+    public static boolean monsterCanMove(boolean[][] wall, ICoordinate coordinate1, ICoordinate coordinate2) {
+        if (!coordIsDifferent(coordinate1, coordinate2)) {
+            throw new InputMismatchException("Le monstre ne peut pas rester sur place");
+        }
+        if (!coordIsNeighbor(coordinate1, coordinate2)) {
+            throw new InputMismatchException("La case n'est pas atteignable par le monstre");
+        }
+        if (cellIsWall(wall, coordinate1)) {
+            throw new InputMismatchException("La case contient un mur");
+        }
+        return true;
     }
 }
