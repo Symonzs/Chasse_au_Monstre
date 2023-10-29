@@ -165,7 +165,7 @@ public class Maze extends Subject {
             }
             if (Monster.class == observer.getClass()) {
                 Monster monsterTemp = (Monster) observer;
-                monsterTemp.update(this, monsterData);
+                monsterTemp.update(this, hunterData, monsterData);
             }
         }
     }
