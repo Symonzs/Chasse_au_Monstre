@@ -88,11 +88,9 @@ public class Monster implements Observer {
     }
 
     public void update(Subject arg0, Object arg1, Object arg2) {
-        if (CellEvent.class == arg1.getClass()) {
+        if (arg1 != null && CellEvent.class == arg1.getClass()) {
             CellEvent eventHunter = (CellEvent) arg1;
-            if (eventHunter.getState() == CellInfo.HUNTER) {
-                this.setHunterCoord(eventHunter.getCoord());
-            }
+            this.setHunterCoord(eventHunter.getCoord());
         }
         update(arg0, arg2);
     }
