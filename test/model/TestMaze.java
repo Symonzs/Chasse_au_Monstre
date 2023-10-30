@@ -10,11 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
-import model.CellEvent;
-import model.Coordinate;
-import model.Maze;
-import model.Hunter;
-import model.Monster;
+
 
 public class TestMaze {
 
@@ -26,7 +22,7 @@ public class TestMaze {
     public void setup() {
 
         Maze.resetTurn();
-        maze = new Maze(4, 4);
+        maze = new Maze(11, 11);
         monster = new Monster(maze);
         hunter = new Hunter(maze.getWall().length, maze.getWall()[0].length);
         maze.attach(monster);
@@ -50,7 +46,7 @@ public class TestMaze {
          */
 
     }
-
+    
     @Test
     public void test_creation_maze_taille() {
         assertEquals(maze.getWall().length, maze.getWall()[0].length);// test si la longueur est égale a la hauteur du                                                                      // maze
