@@ -21,7 +21,7 @@ public class TestMaze {
     public void setup() {
 
         Maze.resetTurn();
-        maze = new Maze(4, 4);
+        maze = new Maze("D:\\Document\\IUT\\J1_SAE3A\\resources\\4x4.csv");
         monster = new Monster(maze);
         hunter = new Hunter(maze.getWall().length, maze.getWall()[0].length);
         maze.attach(monster);

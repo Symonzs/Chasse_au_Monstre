@@ -36,7 +36,7 @@ public class Maze extends Subject {
 
     public void loadMaze(String fileName) {
         try {
-            List<String> lines = Files.readAllLines(importFile(fileName).toPath(), StandardCharsets.UTF_8);
+            List<String> lines = Files.readAllLines(importFileWithPath(fileName).toPath(), StandardCharsets.UTF_8);
             Integer nbRows = lines.size();
             Integer nbCols = lines.get(0).split(",").length;
             this.wall = new boolean[nbRows][nbCols];
@@ -60,7 +60,7 @@ public class Maze extends Subject {
                     }
                 }
             }
-        } catch (IOException | InputMismatchException e) {
+        } catch (IOException | InputMismatchException | NullPointerException e) {
             log.warning(e.getMessage());
         }
     }
@@ -71,6 +71,10 @@ public class Maze extends Subject {
             throw new FileNotFoundException(String.format("Le fichier '%s' n'a pas été trouvé", fileName));
         }
         return csv;
+    }
+
+    public File importFileWithPath(String pathName) throws NullPointerException {
+        return new File(pathName);
     }
 
     public void cellUpdate(CellEvent eventRequest) {
