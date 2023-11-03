@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import fr.univlille.iutinfo.cam.player.perception.ICellEvent;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
 
 
@@ -22,7 +23,7 @@ public class TestMaze {
     public void setup() {
 
         Maze.resetTurn();
-        maze = new Maze(11, 11);
+        maze = new Maze("C:\\Users\\simon\\OneDrive\\Desktop\\J1_SAE3A\\J1_SAE3A\\resources\\4x4.csv");
         monster = new Monster(maze);
         hunter = new Hunter(maze.getWall().length, maze.getWall()[0].length);
         maze.attach(monster);
@@ -152,5 +153,21 @@ public class TestMaze {
         assertEquals(3, Maze.turn);
         assertNotEquals(1, Maze.turn);
     }
+
+    @Test
+    public void test_update_monster(){
+        this.maze.cellUpdateMonster(new Coordinate(1, 0), 4);
+        assertTrue(maze.monsterIsHere(new Coordinate(1, 0)));
+        assertFalse(maze.monsterIsHere(new Coordinate(2, 0)));
+    }
+
+
+    @Test
+    public void test_cell_update_hunter(){
+        this.maze.cellUpdateHunter(new Coordinate(1, 3), 4);
+        assertEquals();
+    }
+
+    
 
 }

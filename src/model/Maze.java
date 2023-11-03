@@ -23,7 +23,7 @@ public class Maze extends Subject {
     private ICoordinate hunter;
     private ICoordinate exit;
     public static Integer turn = 1;
-
+    
     Logger log = Logger.getLogger(getClass().getName());
 
     public Maze(String fileName) {
@@ -36,7 +36,7 @@ public class Maze extends Subject {
 
     public void loadMaze(String fileName) {
         try {
-            List<String> lines = Files.readAllLines(importFile(fileName).toPath(), StandardCharsets.UTF_8);
+            List<String> lines = Files.readAllLines(importFileWithPath(fileName).toPath(), StandardCharsets.UTF_8);
             Integer nbRows = lines.size();
             Integer nbCols = lines.get(0).split(",").length;
             this.wall = new boolean[nbRows][nbCols];
@@ -60,7 +60,7 @@ public class Maze extends Subject {
                     }
                 }
             }
-        } catch (IOException | InputMismatchException e) {
+        } catch (IOException | InputMismatchException | NullPointerException e) {
             log.warning(e.getMessage());
         }
     }
@@ -73,6 +73,10 @@ public class Maze extends Subject {
         return csv;
     }
 
+    public File importFileWithPath(String pathName) throws NullPointerException {
+        return new File(pathName);
+    }
+
     public void cellUpdate(CellEvent eventRequest) {
         if (CellInfo.HUNTER.equals(eventRequest.getState())) {
             cellUpdateHunter(eventRequest.getCoord(), eventRequest.getTurn());
@@ -81,7 +85,7 @@ public class Maze extends Subject {
         }
     }
 
-    private void cellUpdateMonster(ICoordinate eventCoord, Integer eventTurn) {
+    public void cellUpdateMonster(ICoordinate eventCoord, Integer eventTurn) {
         this.monster.put(eventTurn, eventCoord);
         if (this.monsterAtExit()) {
             this.end(CellInfo.MONSTER);
@@ -90,7 +94,7 @@ public class Maze extends Subject {
         }
     }
 
-    private void cellUpdateHunter(ICoordinate eventCoord, Integer eventTurn) {
+    public void cellUpdateHunter(ICoordinate eventCoord, Integer eventTurn) {
         CellEvent eventHunter = null;
         CellEvent eventMonster = null;
         this.hunter = eventCoord;
