@@ -27,10 +27,10 @@ public class TestMaze {
         maze.attach(monster);
         maze.attach(hunter);
         maze.cellUpdate(new CellEvent(new Coordinate(0, 3), CellInfo.HUNTER));
-        Maze.incrementTurn();
+
         maze.cellUpdate(new CellEvent(new Coordinate(1, 0), Maze.turn, CellInfo.MONSTER));
         maze.cellUpdate(new CellEvent(new Coordinate(0, 0), CellInfo.HUNTER));
-        Maze.incrementTurn();
+
         maze.cellUpdate(new CellEvent(new Coordinate(2, 0), Maze.turn, CellInfo.MONSTER));
         maze.cellUpdate(new CellEvent(new Coordinate(0, 1), CellInfo.HUNTER));
 
@@ -149,7 +149,7 @@ public class TestMaze {
 
     @Test
     public void test_increment_turn() {
-        assertEquals(3, Maze.turn);
+        assertEquals(4, Maze.turn);
         assertNotEquals(1, Maze.turn);
     }
 

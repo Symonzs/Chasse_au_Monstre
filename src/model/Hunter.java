@@ -20,6 +20,8 @@ public class Hunter implements Observer {
     private boolean[][] knowWall;
     // Coordonnées des monstres connus par le chasseur
     private Map<Integer, ICoordinate> knowMonsterCoords;
+    // Coordonnées du chasseur
+    private ICoordinate hunterCoord;
 
     /**
      * Constructeur de la classe Hunter
@@ -33,6 +35,7 @@ public class Hunter implements Observer {
     public Hunter(Integer rows, Integer cols) {
         this.knowWall = new boolean[rows][cols];
         this.knowMonsterCoords = new TreeMap<>();
+        this.hunterCoord = null;
     }
 
     /**
@@ -41,8 +44,8 @@ public class Hunter implements Observer {
      * 
      * @param monster Les coordonnées du monstre
      */
-    public void addKnowMonsterCoords(ICoordinate monster) {
-        this.knowMonsterCoords.put(Maze.turn, monster);
+    public void addKnowMonsterCoords(Integer turn, ICoordinate monster) {
+        this.knowMonsterCoords.put(turn, monster);
     }
 
     /**
@@ -70,38 +73,14 @@ public class Hunter implements Observer {
      * 
      * @param coord Les coordonnées de la case
      */
-    public Integer getMonsterTurnFromCoordinate(ICoordinate coord) {
+    public Integer getLastTurnFromCoordinate(ICoordinate coord) {
+        Integer lastTurn = null;
         for (Map.Entry<Integer, ICoordinate> entry : this.knowMonsterCoords.entrySet()) {
             if (entry.getValue().equals(coord)) {
-                return entry.getKey();
+                lastTurn = entry.getKey();
             }
         }
-        return null;
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder("Hunter (");
-        sb.append(Maze.turn + ") :\n");
-        for (int i = 0; i < this.knowWall.length; i++) {
-            for (int j = 0; j < this.knowWall[0].length; j++) {
-                ICoordinate coord = new Coordinate(i, j);
-                if (this.knowMonsterCoords.containsValue(coord)) {
-                    Integer monsterTurn = this.getMonsterTurnFromCoordinate(coord);
-                    if (Maze.turn.equals(monsterTurn)) {
-                        sb.append("M ");
-                    } else if (monsterTurn != null) {
-                        sb.append(monsterTurn + " ");
-                    }
-                } else if (this.knowWall[i][j]) {
-                    sb.append("W ");
-                } else {
-                    sb.append("E ");
-                }
-            }
-            sb.append("\n");
-        }
-        return sb.toString();
+        return lastTurn;
     }
 
     @Override
@@ -128,14 +107,19 @@ public class Hunter implements Observer {
     public void update(Subject arg0, Object arg1) {
         if (CellEvent.class == arg1.getClass()) {
             CellEvent event = (CellEvent) arg1;
+            this.hunterCoord = event.getCoord();
             if (event.getState() == CellInfo.MONSTER) {
-                this.addKnowMonsterCoords(event.getCoord());
+                this.addKnowMonsterCoords(event.getTurn(), event.getCoord());
             } else if (event.getState() == CellInfo.WALL) {
                 this.knowWall[event.getCoord().getRow()][event.getCoord().getCol()] = true;
             } else {
                 this.knowWall[event.getCoord().getRow()][event.getCoord().getCol()] = false;
             }
         }
+    }
+
+    public ICoordinate getHunterCoord() {
+        return this.hunterCoord;
     }
 
 }

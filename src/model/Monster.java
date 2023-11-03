@@ -146,9 +146,7 @@ public class Monster implements Observer {
     public void update(Subject arg0, Object arg1, Object arg2) {
         if (arg1 != null && CellEvent.class == arg1.getClass()) {
             CellEvent eventHunter = (CellEvent) arg1;
-            if (eventHunter.getState() == CellInfo.HUNTER) {
-                this.setHunterCoord(eventHunter.getCoord());
-            }
+            this.setHunterCoord(eventHunter.getCoord());
         }
         if (arg2 != null && CellEvent.class == arg2.getClass()) {
             CellEvent eventMonster = (CellEvent) arg2;

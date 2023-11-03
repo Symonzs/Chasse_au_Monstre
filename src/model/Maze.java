@@ -34,6 +34,8 @@ public class Maze extends Subject {
     private ICoordinate exit;
     // Tour actuel
     public static Integer turn = 1;
+    // Vainqueur
+    private CellInfo winner;
 
     /**
      * Constructeur de la classe Maze
@@ -78,6 +80,7 @@ public class Maze extends Subject {
             this.wall = new boolean[nbRows][nbCols];
             this.monster = new TreeMap<>();
             this.hunter = new TreeMap<>();
+            this.winner = null;
             for (int i = 0; i < lines.size(); i++) {
                 String line = lines.get(i);
                 String[] cols = line.split(",");
@@ -124,8 +127,8 @@ public class Maze extends Subject {
      * @return Fichier importé
      * @throws NullPointerException Si le chemin est null
      */
-    public File importFileWithPath(String pathName) throws NullPointerException {
-        return new File(pathName);
+    public File importFileWithPath(String fileName) throws NullPointerException {
+        return new File(fileName);
     }
 
     /**
@@ -195,7 +198,8 @@ public class Maze extends Subject {
             if (this.monsterIsHere(eventCoord)) {
                 this.end(CellInfo.HUNTER);
             } else {
-                eventHunter = new CellEvent(eventCoord, eventTurn, CellInfo.MONSTER);
+                eventHunter = new CellEvent(eventCoord, this.getLastTurnFromCoordinate(eventCoord),
+                        CellInfo.MONSTER);
             }
         } else {
             if (this.cellIsWall(eventCoord)) {
@@ -205,6 +209,7 @@ public class Maze extends Subject {
             }
         }
         eventMonster = new CellEvent(eventCoord, CellInfo.HUNTER);
+        Maze.incrementTurn();
         this.notifyObserver(eventHunter, eventMonster);
     }
 
@@ -225,7 +230,7 @@ public class Maze extends Subject {
      * @return true si le monstre est sur la case, false sinon
      */
     public boolean monsterIsHere(ICoordinate eventCoord) {
-        return this.monster.get(Maze.turn).equals(eventCoord);
+        return this.getLastMonsterCoordinate().equals(eventCoord);
     }
 
     /**
@@ -254,7 +259,7 @@ public class Maze extends Subject {
      * @param victoryInfo Qui du monstre ou du chasseur a gagné
      */
     public void end(CellInfo victoryInfo) {
-        throw new UnsupportedOperationException();
+        this.winner = victoryInfo;
     }
 
     /**
@@ -335,6 +340,16 @@ public class Maze extends Subject {
         return lastHunterCoord;
     }
 
+    public Integer getLastTurnFromCoordinate(ICoordinate coord) {
+        Integer lastTurn = null;
+        for (Map.Entry<Integer, ICoordinate> entry : this.monster.entrySet()) {
+            if (entry.getValue().equals(coord)) {
+                lastTurn = entry.getKey();
+            }
+        }
+        return lastTurn;
+    }
+
     /**
      * Notifie les observateurs de la classe
      * Si l'observateur est un chasseur et que ses données ne sont pas null,
@@ -354,6 +369,10 @@ public class Maze extends Subject {
                 monsterTemp.update(this, hunterData, monsterData);
             }
         }
+    }
+
+    public CellInfo getWinner() {
+        return this.winner;
     }
 
 }
