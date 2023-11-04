@@ -97,30 +97,6 @@ public class Monster implements Observer {
     }
 
     @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder("Monster (");
-        sb.append(Maze.turn + ") :\n");
-        for (int i = 0; i < this.WALL.length; i++) {
-            for (int j = 0; j < this.WALL[0].length; j++) {
-                ICoordinate coord = new Coordinate(i, j);
-                if (coord.equals(monsterCoord)) {
-                    sb.append("M ");
-                } else if (coord.equals(this.hunterCoord)) {
-                    sb.append("H ");
-                } else if (this.EXIT.equals(coord)) {
-                    sb.append("X ");
-                } else if (this.WALL[i][j]) {
-                    sb.append("W ");
-                } else {
-                    sb.append("E ");
-                }
-            }
-            sb.append("\n");
-        }
-        return sb.toString();
-    }
-
-    @Override
     public void update(Subject arg0) {
         // Methode non utilisée
     }

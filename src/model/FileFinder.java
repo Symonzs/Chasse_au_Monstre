@@ -13,7 +13,6 @@ public class FileFinder {
     public static File find(String path, String fileName) {
         path += File.separator;
         File folder = new File(path);
-        System.out.println(folder.getAbsolutePath());
         File file = null;
 
         if (!folder.exists())

@@ -58,6 +58,15 @@ public class Hunter implements Observer {
     }
 
     /**
+     * Méthode permettant de récupérer les coordonnées du chasseur
+     * 
+     * @return Les coordonnées du chasseur
+     */
+    public ICoordinate getHunterCoord() {
+        return this.hunterCoord;
+    }
+
+    /**
      * Méthode permettant de récupérer les coordonnées des monstres connus par le
      * chasseur
      * 
@@ -68,7 +77,8 @@ public class Hunter implements Observer {
     }
 
     /**
-     * Méthode permettant de récupérer le tour durant lequel le monstre est passé
+     * Méthode permettant de récupérer le dernier tour durant lequel le monstre est
+     * passé
      * sur la case donnée en paramètre
      * 
      * @param coord Les coordonnées de la case
@@ -116,10 +126,6 @@ public class Hunter implements Observer {
                 this.knowWall[event.getCoord().getRow()][event.getCoord().getCol()] = false;
             }
         }
-    }
-
-    public ICoordinate getHunterCoord() {
-        return this.hunterCoord;
     }
 
 }

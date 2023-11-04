@@ -9,9 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import fr.univlille.iutinfo.cam.player.perception.ICellEvent;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
-
 
 public class TestMaze {
 
@@ -23,7 +21,9 @@ public class TestMaze {
     public void setup() {
 
         Maze.resetTurn();
-        maze = new Maze("C:\\Users\\simon\\OneDrive\\Desktop\\J1_SAE3A\\J1_SAE3A\\resources\\4x4.csv");
+        // Pensé a changer le chemin du fichier csv (Pour le moment il est en absolu
+        // dans les tests)
+        maze = new Maze("D:\\Document\\IUT\\J1_SAE3A\\resources\\4x4.csv");
         monster = new Monster(maze);
         hunter = new Hunter(maze.getWall().length, maze.getWall()[0].length);
         maze.attach(monster);
@@ -36,8 +36,6 @@ public class TestMaze {
         maze.cellUpdate(new CellEvent(new Coordinate(2, 0), Maze.turn, CellInfo.MONSTER));
         maze.cellUpdate(new CellEvent(new Coordinate(0, 1), CellInfo.HUNTER));
 
-        
-
         // to do faire une simulation de partie sur une grille 3x3
 
         /*
@@ -49,10 +47,11 @@ public class TestMaze {
          */
 
     }
-    
+
     @Test
     public void test_creation_maze_taille() {
-        assertEquals(maze.getWall().length, maze.getWall()[0].length);// test si la longueur est égale a la hauteur du                                                                      // maze
+        assertEquals(maze.getWall().length, maze.getWall()[0].length);// test si la longueur est égale a la hauteur du
+                                                                      // // maze
     }
 
     @Test
@@ -157,18 +156,16 @@ public class TestMaze {
     }
 
     @Test
-    public void test_monster_is_at_exit(){
+    public void test_monster_is_at_exit() {
         assertFalse(maze.monsterAtExit());
         maze.cellUpdate(new CellEvent(new Coordinate(3, 0), Maze.turn, CellInfo.MONSTER));
         assertTrue(maze.monsterAtExit());
     }
 
     @Test
-    public void test_get_last_monster_coordinate(){
+    public void test_get_last_monster_coordinate() {
         assertEquals(new Coordinate(2, 0), this.maze.getLastMonsterCoordinate());
         assertNotEquals(new Coordinate(1, 0), this.maze.getLastMonsterCoordinate());
     }
-
-
 
 }

@@ -313,6 +313,15 @@ public class Maze extends Subject {
     }
 
     /**
+     * Retourne le vainqueur
+     * 
+     * @return Vainqueur
+     */
+    public CellInfo getWinner() {
+        return this.winner;
+    }
+
+    /**
      * Retourne les coordonnées du monstre au tour actuel si elles existent, sinon
      * retourne les coordonnées du monstre au tour précédent
      * 
@@ -369,10 +378,6 @@ public class Maze extends Subject {
                 monsterTemp.update(this, hunterData, monsterData);
             }
         }
-    }
-
-    public CellInfo getWinner() {
-        return this.winner;
     }
 
 }
