@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes and Interfaces","u":"allclasses-index.html"},{"p":"model","l":"CellEvent"},{"p":"model","l":"Coordinate"},{"p":"model","l":"FileFinder"},{"p":"model","l":"Hunter"},{"p":"model","l":"Maze"},{"p":"model","l":"Monster"},{"p":"model","l":"Observer"},{"p":"model","l":"Subject"}];updateSearchResults();
