@@ -29,12 +29,14 @@ public class TestMaze {
         maze.attach(monster);
         maze.attach(hunter);
         maze.cellUpdate(new CellEvent(new Coordinate(0, 3), CellInfo.HUNTER));
-        Maze.incrementTurn();
+
         maze.cellUpdate(new CellEvent(new Coordinate(1, 0), Maze.turn, CellInfo.MONSTER));
         maze.cellUpdate(new CellEvent(new Coordinate(0, 0), CellInfo.HUNTER));
-        Maze.incrementTurn();
+
         maze.cellUpdate(new CellEvent(new Coordinate(2, 0), Maze.turn, CellInfo.MONSTER));
         maze.cellUpdate(new CellEvent(new Coordinate(0, 1), CellInfo.HUNTER));
+
+        
 
         // to do faire une simulation de partie sur une grille 3x3
 
@@ -150,24 +152,23 @@ public class TestMaze {
 
     @Test
     public void test_increment_turn() {
-        assertEquals(3, Maze.turn);
+        assertEquals(4, Maze.turn);
         assertNotEquals(1, Maze.turn);
     }
 
     @Test
-    public void test_update_monster(){
-        this.maze.cellUpdateMonster(new Coordinate(1, 0), 4);
-        assertTrue(maze.monsterIsHere(new Coordinate(1, 0)));
-        assertFalse(maze.monsterIsHere(new Coordinate(2, 0)));
+    public void test_monster_is_at_exit(){
+        assertFalse(maze.monsterAtExit());
+        maze.cellUpdate(new CellEvent(new Coordinate(3, 0), Maze.turn, CellInfo.MONSTER));
+        assertTrue(maze.monsterAtExit());
     }
-
 
     @Test
-    public void test_cell_update_hunter(){
-        this.maze.cellUpdateHunter(new Coordinate(1, 3), 4);
-        assertEquals();
+    public void test_get_last_monster_coordinate(){
+        assertEquals(new Coordinate(2, 0), this.maze.getLastMonsterCoordinate());
+        assertNotEquals(new Coordinate(1, 0), this.maze.getLastMonsterCoordinate());
     }
 
-    
+
 
 }
