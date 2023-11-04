@@ -4,30 +4,26 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
-import fr.univlille.iutinfo.r304.utils.Observer;
-import fr.univlille.iutinfo.r304.utils.Subject;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 
 /**
- * Classe représentant le chasseur et les informations qu'il possède
+ * Classe representant le chasseur et les informations qu'il possede
  * 
  * @see CellEvent
  * @see Coordinate
  */
 public class Hunter implements Observer {
 
-    // Tableau de booléens représentant les murs du labyrinte connus par le chasseur
+    // Tableau de booleens representant les murs connus par le chasseur
     private boolean[][] knowWall;
-    // Coordonnées des monstres connus par le chasseur
+    // Coordonnees des monstres connus par le chasseur
     private Map<Integer, ICoordinate> knowMonsterCoords;
-    // Coordonnées du chasseur
+    // Coordonnees du chasseur
     private ICoordinate hunterCoord;
 
     /**
-     * Constructeur de la classe Hunter
-     * Instancie les différents attributs de la classe
-     * - knowWall -> En créant un tableau de booléens de la taille du labyrinthe
-     * - knowMonsterCoords -> En créant une nouvelle TreeMap
+     * Constructeur de la classe Hunter<br>
+     * Instancie les differents attributs de la classe<br>
      * 
      * @param rows Le nombre de lignes du labyrinthe
      * @param cols Le nombre de colonnes du labyrinthe
@@ -39,17 +35,17 @@ public class Hunter implements Observer {
     }
 
     /**
-     * Méthode permettant d'ajouter les coordonnées d'un monstre dans la liste des
-     * coordonées connus par le chasseur
+     * Methode permettant d'ajouter les coordonnees d'un monstre dans la liste des
+     * coordonees connus par le chasseur
      * 
-     * @param monster Les coordonnées du monstre
+     * @param monster Les coordonnees du monstre
      */
     public void addKnowMonsterCoords(Integer turn, ICoordinate monster) {
         this.knowMonsterCoords.put(turn, monster);
     }
 
     /**
-     * Méthode permettant de récupérer les murs connus par le chasseur
+     * Methode permettant de recuperer les murs connus par le chasseur
      * 
      * @return Les murs connus par le chasseur
      */
@@ -58,30 +54,29 @@ public class Hunter implements Observer {
     }
 
     /**
-     * Méthode permettant de récupérer les coordonnées du chasseur
+     * Methode permettant de recuperer les coordonnees du chasseur
      * 
-     * @return Les coordonnées du chasseur
+     * @return Les coordonnees du chasseur
      */
     public ICoordinate getHunterCoord() {
         return this.hunterCoord;
     }
 
     /**
-     * Méthode permettant de récupérer les coordonnées des monstres connus par le
+     * Methode permettant de recuperer les coordonnees des monstres connus par le
      * chasseur
      * 
-     * @return Les coordonnées des monstres connus par le chasseur
+     * @return Les coordonnees des monstres connus par le chasseur
      */
     public Map<Integer, ICoordinate> getKnowMonsterCoords() {
         return this.knowMonsterCoords;
     }
 
     /**
-     * Méthode permettant de récupérer le dernier tour durant lequel le monstre est
-     * passé
-     * sur la case donnée en paramètre
+     * Methode permettant de recuperer le dernier tour durant lequel le monstre est
+     * passe sur la case donnee en parametre
      * 
-     * @param coord Les coordonnées de la case
+     * @param coord Les coordonnees de la case
      */
     public Integer getLastTurnFromCoordinate(ICoordinate coord) {
         Integer lastTurn = null;
@@ -95,22 +90,23 @@ public class Hunter implements Observer {
 
     @Override
     public void update(Subject arg0) {
-        // Methode non utilisée
+        // Methode non utilisee
     }
 
     /**
-     * Méthode permettant de mettre à jour les coordonnées connus par le chasseur
-     * Vérifie si l'objet passé en paramètre est une instance de CellEvent
-     * Si c'est le cas, vérifie l'état de la case et met à jour les coordonnées
-     * connus par le chasseur
-     * Si l'état de la case est MONSTER, ajoute les coordonnées du monstre dans la
-     * liste des coordonnées connus par le chasseur
-     * Si l'état de la case est WALL, met à jour la case dans le tableau de booléens
-     * avec la valeur true
-     * Sinon met à jour la case dans le tableau de booléens avec la valeur false
+     * Methode permettant de mettre à jour les coordonnees connus par le
+     * chasseur<br>
+     * Verifie si l'objet passe en parametre est une instance de CellEvent<br>
+     * Si c'est le cas, verifie l'etat de la case et met à jour les coordonnees
+     * connus par le chasseur<br>
+     * Si l'etat de la case est MONSTER, ajoute les coordonnees du monstre dans la
+     * liste des coordonnees connus par le chasseur<br>
+     * Si l'etat de la case est WALL, met à jour la case dans le tableau de booleens
+     * avec la valeur true<br>
+     * Sinon met à jour la case dans le tableau de booleens avec la valeur false<br>
      * 
      * @param arg0 Le labyrinth
-     * @param arg1 Le CellEvent contenant les informations sur la case touchée
+     * @param arg1 Le CellEvent contenant les informations sur la case touchee
      * 
      */
     @Override

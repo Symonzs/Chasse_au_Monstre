@@ -12,25 +12,22 @@ import java.util.Map;
 
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
-import fr.univlille.iutinfo.r304.utils.Observer;
-import fr.univlille.iutinfo.r304.utils.Subject;
 
 /**
- * Classe représentant le labyrinthe
+ * Classe representant le labyrinthe
  * 
  * @see CellEvent
  * @see Coordinate
- * @author Simon HAYART, Raphael KIECKEN, Charles COUDE, Hugo
  */
 public class Maze extends Subject {
 
-    // Tableau de booléens représentant les murs du labyrinte
+    // Tableau de booleens representant les murs du labyrinte
     private boolean[][] wall;
-    // Map représentant les coordonnées des monstres
+    // Map representant les coordonnees des monstres
     private Map<Integer, ICoordinate> monster;
-    // Map représentant les coordonnées du chasseur
+    // Map representant les coordonnees du chasseur
     private Map<Integer, ICoordinate> hunter;
-    // Coordonnées de la sortie
+    // Coordonnees de la sortie
     private ICoordinate exit;
     // Tour actuel
     public static Integer turn = 1;
@@ -48,7 +45,7 @@ public class Maze extends Subject {
 
     /**
      * Constructeur de la classe Maze
-     * Créer un nom de fichier à partir du nombre de lignes et de colonnes sous la
+     * Creer un nom de fichier à partir du nombre de lignes et de colonnes sous la
      * forme "'nbRows'x'nbCols'.csv"
      * 
      * @param nbRows Nombre de lignes du labyrinthe
@@ -62,13 +59,13 @@ public class Maze extends Subject {
      * Charge le labyrinthe à partir d'un fichier
      * Instancie les attributs de la classe (wall, monster, hunter, exit)
      * Selon le caractère lu dans le fichier :
-     * - Rempli le tableau de booléens représentant les murs du labyrinthe
-     * - Ajoute les coordonnées des monstres dans la map
-     * - Met à jour les coordonnées de la sortie
+     * - Rempli le tableau de booleens representant les murs du labyrinthe
+     * - Ajoute les coordonnees des monstres dans la map
+     * - Met à jour les coordonnees de la sortie
      * 
      * Le fichier doit être au format CSV
      * 
-     * Si un caractère non reconnu est lu, une exception est levée
+     * Si un caractère non reconnu est lu, une exception est levee
      * 
      * @param fileName Nom du fichier contenant le labyrinthe
      */
@@ -109,13 +106,13 @@ public class Maze extends Subject {
      * Importe un fichier à partir de son nom
      * 
      * @param fileName Nom du fichier à importer
-     * @return Fichier importé
-     * @throws FileNotFoundException Si le fichier n'est pas trouvé
+     * @return Fichier importe
+     * @throws FileNotFoundException Si le fichier n'est pas trouve
      */
     public File importFile(String fileName) throws FileNotFoundException {
         File csv = FileFinder.find(fileName);
         if (csv == null) {
-            throw new FileNotFoundException(String.format("Le fichier '%s' n'a pas été trouvé", fileName));
+            throw new FileNotFoundException(String.format("Le fichier '%s' n'a pas ete trouve", fileName));
         }
         return csv;
     }
@@ -124,7 +121,7 @@ public class Maze extends Subject {
      * Importe un fichier à partir de son chemin absolu
      * 
      * @param pathName Chemin du fichier à importer
-     * @return Fichier importé
+     * @return Fichier importe
      * @throws NullPointerException Si le chemin est null
      */
     public File importFileWithPath(String fileName) throws NullPointerException {
@@ -132,9 +129,9 @@ public class Maze extends Subject {
     }
 
     /**
-     * Met à jour la case du labyrinthe ciclée par le CellEvent
-     * Si l'état du CellEvent est HUNTER, appel la méthode cellUpdateHunter
-     * Si l'état du CellEvent est MONSTER, appel la méthode cellUpdateMonster
+     * Met à jour la case du labyrinthe ciclee par le CellEvent
+     * Si l'etat du CellEvent est HUNTER, appel la methode cellUpdateHunter
+     * Si l'etat du CellEvent est MONSTER, appel la methode cellUpdateMonster
      * 
      * @param eventRequest CellEvent à traiter
      */
@@ -147,14 +144,14 @@ public class Maze extends Subject {
     }
 
     /**
-     * Met à jour la case du labyrinthe ciclée par le CellEvent
-     * Ajoute les coordonnées du monstre dans la map
-     * Si après l'ajout des coordonnées du monstre, le monstre est sur la sortie,
-     * appel la méthode end
-     * Sinon, appel la méthode notifyObserver
+     * Met à jour la case du labyrinthe ciclee par le CellEvent
+     * Ajoute les coordonnees du monstre dans la map
+     * Si après l'ajout des coordonnees du monstre, le monstre est sur la sortie,
+     * appel la methode end
+     * Sinon, appel la methode notifyObserver
      * 
-     * @param eventCoord Nouvelle coordonnées du monstre
-     * @param eventTurn  Tour du déplacement du monstre
+     * @param eventCoord Nouvelle coordonnees du monstre
+     * @param eventTurn  Tour du deplacement du monstre
      */
     private void cellUpdateMonster(ICoordinate eventCoord, Integer eventTurn) {
         this.monster.put(eventTurn, eventCoord);
@@ -166,29 +163,29 @@ public class Maze extends Subject {
     }
 
     /**
-     * Met à jour la case du labyrinthe ciclée par le CellEvent
-     * Ajoute les coordonnées du chasseur dans la map
-     * Si le monstre a déjà été sur cette case, on vérifie si le monstre y est
+     * Met à jour la case du labyrinthe ciclee par le CellEvent
+     * Ajoute les coordonnees du chasseur dans la map
+     * Si le monstre a dejà ete sur cette case, on verifie si le monstre y est
      * toujours
-     * Si le monstre y est toujours, appel la méthode end
-     * Sinon, on stocke dans eventHunter qui est un CellEvent(Coordonnées, Tour,
+     * Si le monstre y est toujours, appel la methode end
+     * Sinon, on stocke dans eventHunter qui est un CellEvent(Coordonnees, Tour,
      * Etat)
-     * - Les coordonnées de la case
+     * - Les coordonnees de la case
      * - Le tour du tir
-     * - L'état de la case (MONSTER)
-     * Si le monstre n'a jamais été sur cette case, on stocke dans eventHunter qui
-     * est un CellEvent(Coordonnées, Etat)
-     * - Les coordonnées de la case
-     * - L'état de la case (EMPTY ou WALL selon si la case est vide ou non)
+     * - L'etat de la case (MONSTER)
+     * Si le monstre n'a jamais ete sur cette case, on stocke dans eventHunter qui
+     * est un CellEvent(Coordonnees, Etat)
+     * - Les coordonnees de la case
+     * - L'etat de la case (EMPTY ou WALL selon si la case est vide ou non)
      * 
-     * On stocke également dans eventMonster qui est un CellEvent(Coordonnées, Etat)
-     * - Les coordonnées de la case
-     * - L'état de la case (HUNTER)
+     * On stocke egalement dans eventMonster qui est un CellEvent(Coordonnees, Etat)
+     * - Les coordonnees de la case
+     * - L'etat de la case (HUNTER)
      * 
-     * Enfin, on appel la méthode notifyObserver
+     * Enfin, on appel la methode notifyObserver
      * 
-     * @param eventCoord Nouvelle coordonnées du chasseur
-     * @param eventTurn  Tour du déplacement du chasseur
+     * @param eventCoord Nouvelle coordonnees du chasseur
+     * @param eventTurn  Tour du deplacement du chasseur
      */
     private void cellUpdateHunter(ICoordinate eventCoord, Integer eventTurn) {
         CellEvent eventHunter = null;
@@ -214,17 +211,17 @@ public class Maze extends Subject {
     }
 
     /**
-     * Vérifie si le monstre est déjà passé sur la case
+     * Verifie si le monstre est dejà passe sur la case
      * 
      * @param eventCoord
-     * @return true si le monstre est déjà passé sur la case, false sinon
+     * @return true si le monstre est dejà passe sur la case, false sinon
      */
     public boolean monsterWasHere(ICoordinate eventCoord) {
         return this.monster.containsValue(eventCoord);
     }
 
     /**
-     * Vérifie si le monstre est sur la case
+     * Verifie si le monstre est sur la case
      * 
      * @param eventCoord
      * @return true si le monstre est sur la case, false sinon
@@ -234,7 +231,7 @@ public class Maze extends Subject {
     }
 
     /**
-     * Vérifie si la case est un mur
+     * Verifie si la case est un mur
      * 
      * @param eventCoord
      * @return true si la case est un mur, false sinon
@@ -244,7 +241,7 @@ public class Maze extends Subject {
     }
 
     /**
-     * Vérifie si le monstre est sur la sortie
+     * Verifie si le monstre est sur la sortie
      * 
      * @return true si le monstre est sur la sortie, false sinon
      */
@@ -254,59 +251,59 @@ public class Maze extends Subject {
 
     /**
      * Met fin à la partie
-     * Pas encore implémenté
+     * Pas encore implemente
      * 
-     * @param victoryInfo Qui du monstre ou du chasseur a gagné
+     * @param victoryInfo Qui du monstre ou du chasseur a gagne
      */
     public void end(CellInfo victoryInfo) {
         this.winner = victoryInfo;
     }
 
     /**
-     * Incrémente le compteur de tour
+     * Incremente le compteur de tour
      */
     public static void incrementTurn() {
         Maze.turn++;
     }
 
     /**
-     * Réinitialise le compteur de tour
+     * Reinitialise le compteur de tour
      */
     public static void resetTurn() {
         Maze.turn = 1;
     }
 
     /**
-     * Retourne le tableau de booléens représentant les murs du labyrinthe
+     * Retourne le tableau de booleens representant les murs du labyrinthe
      * 
-     * @return Tableau de booléens représentant les murs du labyrinthe
+     * @return Tableau de booleens representant les murs du labyrinthe
      */
     public boolean[][] getWall() {
         return this.wall;
     }
 
     /**
-     * Retourne les coordonnées de la sortie
+     * Retourne les coordonnees de la sortie
      * 
-     * @return Coordonnées de la sortie
+     * @return Coordonnees de la sortie
      */
     public ICoordinate getExit() {
         return this.exit;
     }
 
     /**
-     * Retourne la map des coordonnées du monstre
+     * Retourne la map des coordonnees du monstre
      * 
-     * @return Map des coordonnées du monstre
+     * @return Map des coordonnees du monstre
      */
     public Map<Integer, ICoordinate> getMonster() {
         return this.monster;
     }
 
     /**
-     * Retourne la map des coordonnées du chasseur
+     * Retourne la map des coordonnees du chasseur
      * 
-     * @return Map des coordonnées du chasseur
+     * @return Map des coordonnees du chasseur
      */
     public Map<Integer, ICoordinate> getHunter() {
         return this.hunter;
@@ -322,10 +319,10 @@ public class Maze extends Subject {
     }
 
     /**
-     * Retourne les coordonnées du monstre au tour actuel si elles existent, sinon
-     * retourne les coordonnées du monstre au tour précédent
+     * Retourne les coordonnees du monstre au tour actuel si elles existent, sinon
+     * retourne les coordonnees du monstre au tour precedent
      * 
-     * @return Coordonnées du monstre au tour actuel ou au tour précédent
+     * @return Coordonnees du monstre au tour actuel ou au tour precedent
      */
     public ICoordinate getLastMonsterCoordinate() {
         ICoordinate lastMonsterCoord = this.monster.get(Maze.turn);
@@ -336,10 +333,10 @@ public class Maze extends Subject {
     }
 
     /**
-     * Retourne les coordonnées du chasseur au tour actuel si elles existent, sinon
-     * retourne les coordonnées du chasseur au tour précédent
+     * Retourne les coordonnees du chasseur au tour actuel si elles existent, sinon
+     * retourne les coordonnees du chasseur au tour precedent
      * 
-     * @return Coordonnées du chasseur au tour actuel ou au tour précédent
+     * @return Coordonnees du chasseur au tour actuel ou au tour precedent
      */
     public ICoordinate getLastHunterCoordinate() {
         ICoordinate lastHunterCoord = this.hunter.get(Maze.turn);
@@ -361,12 +358,12 @@ public class Maze extends Subject {
 
     /**
      * Notifie les observateurs de la classe
-     * Si l'observateur est un chasseur et que ses données ne sont pas null,
-     * appel la méthode update de la classe Hunter
-     * Si l'observateur est un monstre, appel la méthode update de la classe Monster
+     * Si l'observateur est un chasseur et que ses donnees ne sont pas null,
+     * appel la methode update de la classe Hunter
+     * Si l'observateur est un monstre, appel la methode update de la classe Monster
      */
     public void notifyObserver(Object hunterData, Object monsterData) {
-        for (Observer observer : this.attached) {
+        for (Observer observer : this.observers) {
             if (Hunter.class == observer.getClass()) {
                 Hunter hunterTemp = (Hunter) observer;
                 if (hunterData != null) {
