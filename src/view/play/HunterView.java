@@ -1,4 +1,6 @@
-package view.player;
+package view.play;
+
+import java.nio.file.Paths;
 
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import javafx.geometry.Pos;
@@ -13,12 +15,13 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import main.MonsterHunter;
 import model.Coordinate;
 import model.Hunter;
 import model.Maze;
 import view.game.GameView;
 
-public class HunterView {
+public class HunterView extends PlayView {
 
     private static final int RECT_COL = 60;
     private static final int RECT_ROW = 60;
@@ -28,17 +31,15 @@ public class HunterView {
     private GridPane gameBoard;
     private Button shot;
     private Button exit;
-    private GameView gameView;
 
     public HunterView(Hunter hunter, GameView gameView) {
+        super(gameView, Paths.get(MonsterHunter.PROPERTIES.getProperty("HunterViewApparence")).toFile());
         this.hunter = hunter;
-        this.gameView = gameView;
         this.gameBoard = new GridPane();
         this.shot = new Button("Shot");
         this.exit = new Button("Exit game");
         // VBox buttonsBox = new VBox(shot, exit);
-
-        this.gameView.display(new VBox[] { new VBox(gameBoard), new VBox(shot, exit) });
+        super.display(new VBox[] { new VBox(gameBoard), new VBox(shot, exit) });
 
         // this.root.getChildren().addAll(gameBoard, buttonsBox);
         // Scene scene = new Scene(root);
@@ -121,7 +122,4 @@ public class HunterView {
         return this.exit;
     }
 
-    public void close() {
-        gameView.clear();
-    }
 }

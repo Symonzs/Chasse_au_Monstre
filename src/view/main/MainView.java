@@ -14,7 +14,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import main.MonsterHunter;
 import model.Maze;
-import view.player.NumberInStringComparator;
+import view.play.NumberInStringComparator;
 
 public class MainView extends Stage {
     private final ListView<String> mazeList;

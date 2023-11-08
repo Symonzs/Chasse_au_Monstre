@@ -15,7 +15,7 @@ import view.game.GameView;
 import view.main.MainView;
 
 public class MonsterHunter extends Application {
-    public static final File INIT_FILE = Paths.get("./ressources/config/init.prop").toFile();
+    public static final File INIT_FILE = Paths.get("./resources/config/init.prop").toFile();
     public static final Properties PROPERTIES = DataProp.read(INIT_FILE);
 
     // public static final String PATH = System.getProperty("user.dir");

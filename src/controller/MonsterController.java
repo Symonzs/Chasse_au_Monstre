@@ -19,7 +19,7 @@ import model.Coordinate;
 import model.Maze;
 import model.Monster;
 import view.game.GameView;
-import view.player.MonsterView;
+import view.play.MonsterView;
 
 public class MonsterController {
 
@@ -132,7 +132,8 @@ public class MonsterController {
                 }
                 maze.cellUpdate(new CellEvent(coord, Maze.turn, CellInfo.MONSTER));
                 makeGameBoard(view.getMonster().getWall());
-                view.getRoot().getChildren().set(0, view.getGameBoard());
+                // view.getRoot().getChildren().set(0, view.getGameBoard());
+                view.getGameView().gethBox().getChildren().set(0, view.getGameBoard());
                 selectedStack = null;
                 monsterHasPlayed = true;
                 view.close();

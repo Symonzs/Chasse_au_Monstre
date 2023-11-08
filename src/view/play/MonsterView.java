@@ -1,51 +1,53 @@
-package view.player;
+package view.play;
+
+import java.nio.file.Paths;
 
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
-import model.Maze;
+import main.MonsterHunter;
 import model.Monster;
 import view.game.GameView;
 
-public class MonsterView extends Stage {
+public class MonsterView extends PlayView {
 
     private static final int RECT_COL = 60;
     private static final int RECT_ROW = 60;
     private Monster monster;
 
-    private HBox root;
+    // private HBox root;
     private GridPane gameBoard;
     private Button move;
     private Button exit;
 
     public MonsterView(Monster monster, GameView gameView) {
+        super(gameView, Paths.get(MonsterHunter.PROPERTIES.getProperty("MonsterViewApparence")).toFile());
         this.monster = monster;
-        this.setTitle("Monster View | Tour : " + Maze.turn);
-        this.root = new HBox();
+        // this.setTitle("Monster View | Tour : " + Maze.turn);
+        // this.root = new HBox();
         this.gameBoard = new GridPane();
         this.move = new Button("Move");
         this.exit = new Button("Exit game");
-        VBox buttonsBox = new VBox(move, exit);
-        this.root.getChildren().addAll(gameBoard, buttonsBox);
-        Scene scene = new Scene(root);
-        this.setScene(scene);
+
+        super.display(new VBox[] { new VBox(gameBoard), new VBox(move, exit) });
+        // VBox buttonsBox = new VBox(move, exit);
+        // this.root.getChildren().addAll(gameBoard, buttonsBox);
+        // Scene scene = new Scene(root);
+        // this.setScene(scene);
     }
 
     public void makeGameBoard(boolean[][] board) {
-        this.setTitle("Monster View | Tour : " + Maze.turn);
+        // this.setTitle("Monster View | Tour : " + Maze.turn);
         gameBoard.setHgap(3);
         gameBoard.setVgap(3);
         gameBoard.setBackground(new Background(
@@ -101,9 +103,11 @@ public class MonsterView extends Stage {
         return this.monster;
     }
 
-    public HBox getRoot() {
-        return this.root;
-    }
+    /*
+     * public HBox getRoot() {
+     * return this.root;
+     * }
+     */
 
     public GridPane getGameBoard() {
         return this.gameBoard;

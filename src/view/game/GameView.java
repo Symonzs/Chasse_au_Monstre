@@ -11,13 +11,14 @@ public class GameView extends Stage {
     public GameView(HBox hBox) {
         this.hBox = hBox;
         this.setScene(new Scene(hBox));
+        showAndWait();
     }
 
     public void display(VBox[] vBoxs) {
         clear();
-        for (VBox vBox : vBoxs) {
-            this.hBox.getChildren().add(vBox);
-        }
+        this.hBox.getChildren().addAll(vBoxs);
+        hBox.requestLayout();
+        this.setScene(new Scene(hBox));
     }
 
     public void clear() {
