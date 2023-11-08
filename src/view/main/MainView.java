@@ -1,6 +1,8 @@
-package view;
+package view.main;
 
 import java.io.File;
+import java.nio.file.Paths;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
@@ -12,14 +14,14 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import main.MonsterHunter;
 import model.Maze;
+import view.player.NumberInStringComparator;
 
 public class MainView extends Stage {
-
     private final ListView<String> mazeList;
     private final ObservableList<String> mazeListItems = FXCollections.observableArrayList();
     private Maze maze;
 
-    public MainView() {
+    public MainView(File file) {
         VBox root = new VBox();
         Text title = new Text("Monster Hunter");
         Text selectMaze = new Text("Select a maze to play with : ");
@@ -28,7 +30,7 @@ public class MainView extends Stage {
 
         mazeList = new ListView<>();
         mazeList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        File resources = new File(MonsterHunter.RESOURCES_PATH);
+        File resources = Paths.get(MonsterHunter.PROPERTIES.getProperty("MapFindFolder")).toFile();
         if (!resources.isDirectory()) {
             System.out.println("Le dossier resources n'existe pas");
         }
@@ -58,7 +60,7 @@ public class MainView extends Stage {
         private void handle() {
             if (mazeList.getSelectionModel().getSelectedItem() != null) {
                 Maze.resetTurn();
-                maze = new Maze(MonsterHunter.RESOURCES_PATH + File.separator
+                maze = new Maze(MonsterHunter.PROPERTIES.getProperty("MapFindFolder")
                         + mazeList.getSelectionModel().getSelectedItem() + ".csv");
                 MainView.this.close();
             }

@@ -1,4 +1,4 @@
-package view;
+package view.player;
 
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import javafx.geometry.Pos;
@@ -16,53 +16,53 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import model.Coordinate;
-import model.Hunter;
 import model.Maze;
+import model.Monster;
+import view.game.GameView;
 
-public class HunterView extends Stage {
+public class MonsterView extends Stage {
 
     private static final int RECT_COL = 60;
     private static final int RECT_ROW = 60;
-    private Hunter hunter;
+    private Monster monster;
 
     private HBox root;
     private GridPane gameBoard;
-    private Button shot;
+    private Button move;
     private Button exit;
 
-    public HunterView(Hunter hunter) {
-        this.hunter = hunter;
-        this.setTitle("Hunter View | Tour : " + Maze.turn);
+    public MonsterView(Monster monster, GameView gameView) {
+        this.monster = monster;
+        this.setTitle("Monster View | Tour : " + Maze.turn);
         this.root = new HBox();
         this.gameBoard = new GridPane();
-        this.shot = new Button("Shot");
+        this.move = new Button("Move");
         this.exit = new Button("Exit game");
-        VBox buttonsBox = new VBox(shot, exit);
+        VBox buttonsBox = new VBox(move, exit);
         this.root.getChildren().addAll(gameBoard, buttonsBox);
         Scene scene = new Scene(root);
         this.setScene(scene);
     }
 
     public void makeGameBoard(boolean[][] board) {
-        this.setTitle("Hunter View | Tour : " + Maze.turn);
-        this.gameBoard.setHgap(3);
-        this.gameBoard.setVgap(3);
-        this.gameBoard.setBackground(new Background(
+        this.setTitle("Monster View | Tour : " + Maze.turn);
+        gameBoard.setHgap(3);
+        gameBoard.setVgap(3);
+        gameBoard.setBackground(new Background(
                 new BackgroundFill(javafx.scene.paint.Color.LIGHTGRAY, null, null)));
 
         for (int i = 0; i < board.length; i++) {
             Label columnHeader = new Label(String.valueOf(i));
             columnHeader.setFont(Font.font("Arial", FontWeight.BOLD, 12));
             columnHeader.setAlignment(Pos.CENTER);
-            this.gameBoard.add(columnHeader, i + 1, 0);
+            gameBoard.add(columnHeader, i + 1, 0);
         }
 
         for (int j = 0; j < board[0].length; j++) {
             Label rowHeader = new Label(String.valueOf((char) ('A' + j)));
             rowHeader.setFont(Font.font("Arial", FontWeight.BOLD, 12));
             rowHeader.setAlignment(Pos.CENTER);
-            this.gameBoard.add(rowHeader, 0, j + 1);
+            gameBoard.add(rowHeader, 0, j + 1);
         }
 
         for (int i = 0; i < board.length; i++) {
@@ -72,16 +72,15 @@ public class HunterView extends Stage {
                 if (board[i][j]) {
                     cell.setFill(javafx.scene.paint.Color.BLACK);
                 } else {
-                    ICoordinate cellCoord = new Coordinate(i, j);
-                    Integer turn = hunter.getLastTurnFromCoordinate(cellCoord);
-                    if (Maze.turn.equals(turn)) {
+                    ICoordinate monsterCoord = monster.getMonsterCoord();
+                    if (i == monster.getExit().getRow() && j == monster.getExit().getCol()) {
+                        text = new Text("Exit");
+                    } else if (i == monsterCoord.getRow() && j == monsterCoord.getCol()) {
                         text = new Text("Monster");
-                    } else if (turn != null) {
-                        text = new Text(turn.toString());
                     }
                     cell.setFill(javafx.scene.paint.Color.WHITE);
                 }
-                ICoordinate hunterCoord = hunter.getHunterCoord();
+                ICoordinate hunterCoord = monster.getHunterCoord();
                 if (hunterCoord != null && (i == hunterCoord.getRow() && j == hunterCoord.getCol())) {
                     cell.setStroke(javafx.scene.paint.Color.LIGHTGREEN);
                     cell.setStrokeWidth(3);
@@ -93,13 +92,13 @@ public class HunterView extends Stage {
                 StackPane stack = new StackPane();
                 stack.getChildren().addAll(cell, text);
 
-                this.gameBoard.add(stack, j + 1, i + 1);
+                gameBoard.add(stack, j + 1, i + 1);
             }
         }
     }
 
-    public Hunter getHunter() {
-        return this.hunter;
+    public Monster getMonster() {
+        return this.monster;
     }
 
     public HBox getRoot() {
@@ -110,8 +109,8 @@ public class HunterView extends Stage {
         return this.gameBoard;
     }
 
-    public Button getShotButton() {
-        return this.shot;
+    public Button getMoveButton() {
+        return this.move;
     }
 
     public Button getExitButton() {

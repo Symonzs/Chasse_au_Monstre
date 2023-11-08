@@ -15,7 +15,8 @@ import model.CellEvent;
 import model.Coordinate;
 import model.Hunter;
 import model.Maze;
-import view.HunterView;
+import view.player.HunterView;
+import view.game.GameView;
 
 public class HunterController {
 
@@ -26,11 +27,11 @@ public class HunterController {
 
     private boolean hunterHasPlayed = false;
 
-    public HunterController(Maze maze) {
+    public HunterController(Maze maze, GameView gameView) {
         this.maze = maze;
         Hunter hunter = new Hunter(maze.getWall().length, maze.getWall()[0].length);
         maze.attach(hunter);
-        this.view = new HunterView(hunter);
+        this.view = new HunterView(hunter, gameView);
         this.shot = view.getShotButton();
         this.shot.setOnAction(new ActionHandler());
         view.getExitButton().setOnAction(e -> {
@@ -68,7 +69,7 @@ public class HunterController {
     public boolean play() {
         hunterHasPlayed = false;
         makeGameBoard(view.getHunter().getKnowWall());
-        view.showAndWait();
+        // view.showAndWait();
         return hunterHasPlayed;
     }
 

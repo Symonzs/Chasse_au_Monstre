@@ -1,0 +1,3 @@
+MapFindFolder=./ressources/map/
+HunterViewApparence=./ressources/view/player/hunter.jpg
+MonsterViewApparence=./ressources/view/player/monster.jpg
