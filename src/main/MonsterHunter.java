@@ -13,6 +13,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import view.game.GameView;
 import view.main.MainView;
+import view.play.PlayView;
 
 public class MonsterHunter extends Application {
     public static final File INIT_FILE = Paths.get("./resources/config/init.prop").toFile();
@@ -29,8 +30,10 @@ public class MonsterHunter extends Application {
         MainView mv = new MainView(INIT_FILE);
         mv.showAndWait();
         GameView gameView = new GameView(new HBox());
-        MonsterController mc = new MonsterController(mv.getMaze(), gameView);
-        HunterController hc = new HunterController(mv.getMaze(), gameView);
+        PlayView.setGameView(gameView);
+        gameView.showAndWait();
+        MonsterController mc = new MonsterController(mv.getMaze());
+        HunterController hc = new HunterController(mv.getMaze());
         Alert turnChange = new Alert(Alert.AlertType.INFORMATION);
         turnChange.setTitle("Changement de tour");
         Alert winner = new Alert(Alert.AlertType.INFORMATION);

@@ -1,53 +1,51 @@
 package view.play;
 
-import java.nio.file.Paths;
-
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import main.MonsterHunter;
+import javafx.stage.Stage;
 import model.Coordinate;
 import model.Hunter;
 import model.Maze;
-import view.game.GameView;
 
-public class HunterView extends PlayView {
+public class HunterView extends Stage {
 
     private static final int RECT_COL = 60;
     private static final int RECT_ROW = 60;
     private Hunter hunter;
 
-    // private HBox root;
+    private HBox root;
     private GridPane gameBoard;
     private Button shot;
     private Button exit;
 
-    public HunterView(Hunter hunter, GameView gameView) {
-        super(gameView, Paths.get(MonsterHunter.PROPERTIES.getProperty("HunterViewApparence")).toFile());
+    public HunterView(Hunter hunter) {
         this.hunter = hunter;
+        this.setTitle("Hunter View | Tour : " + Maze.turn);
+        this.root = new HBox();
         this.gameBoard = new GridPane();
         this.shot = new Button("Shot");
         this.exit = new Button("Exit game");
-        // VBox buttonsBox = new VBox(shot, exit);
-        super.display(new VBox[] { new VBox(gameBoard), new VBox(shot, exit) });
-
-        // this.root.getChildren().addAll(gameBoard, buttonsBox);
-        // Scene scene = new Scene(root);
-        // this.setScene(scene);
+        VBox buttonsBox = new VBox(shot, exit);
+        this.root.getChildren().addAll(gameBoard, buttonsBox);
+        Scene scene = new Scene(root);
+        this.setScene(scene);
     }
 
     public void makeGameBoard(boolean[][] board) {
-        // this.setTitle("Hunter View | Tour : " + Maze.turn);
+        this.setTitle("Hunter View | Tour : " + Maze.turn);
         this.gameBoard.setHgap(3);
         this.gameBoard.setVgap(3);
         this.gameBoard.setBackground(new Background(
@@ -104,11 +102,9 @@ public class HunterView extends PlayView {
         return this.hunter;
     }
 
-    /*
-     * public HBox getRoot() {
-     * return this.root;
-     * }
-     */
+    public HBox getRoot() {
+        return this.root;
+    }
 
     public GridPane getGameBoard() {
         return this.gameBoard;

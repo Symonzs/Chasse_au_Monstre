@@ -3,24 +3,36 @@ package view.play;
 import java.io.File;
 
 import data.DataStream;
+import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import view.game.GameView;
 
 public abstract class PlayView {
-    GameView gameView;
-    ImageView imageView;
-    VBox[] mainvBoxs;
+    private static GameView gameView;
+    private ImageView imageView;
+    private Scene scene;
 
-    public PlayView(GameView gameview, File fileName) {
+    protected PlayView(File fileName) {
         // this.imageView = new ImageView(new Image(DataStream.read(fileName)));
-        this.gameView = gameview;
+    }
+
+    public void setScene(Scene scene) {
+        this.scene = scene;
+    }
+
+    public static void setGameView(GameView gV) {
+        gameView = gV;
     }
 
     public void display(VBox[] vBoxs) {
         gameView.display(vBoxs);
-        this.mainvBoxs = vBoxs;
+    }
+
+    public void display(Scene scene) {
+        gameView.display(scene);
     }
 
     public GameView getGameView() {
@@ -32,6 +44,6 @@ public abstract class PlayView {
     }
 
     public void showAndWait() {
-        display(mainvBoxs);
+        display(scene);
     }
 }
