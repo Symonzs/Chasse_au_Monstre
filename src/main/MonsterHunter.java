@@ -13,7 +13,6 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import view.game.GameView;
 import view.main.MainView;
-import view.play.PlayView;
 
 public class MonsterHunter extends Application {
     public static final File INIT_FILE = Paths.get("./resources/config/init.prop").toFile();
@@ -29,11 +28,11 @@ public class MonsterHunter extends Application {
     public void start(Stage primaryStage) throws InterruptedException {
         MainView mv = new MainView(INIT_FILE);
         mv.showAndWait();
-        GameView gameView = new GameView(new HBox());
-        PlayView.setGameView(gameView);
-        gameView.showAndWait();
         MonsterController mc = new MonsterController(mv.getMaze());
         HunterController hc = new HunterController(mv.getMaze());
+        GameView gameView = new GameView(hc.getHunterView().getScene(), mc.getMonsterView().getScene());
+        gameView.showAndWait();
+
         Alert turnChange = new Alert(Alert.AlertType.INFORMATION);
         turnChange.setTitle("Changement de tour");
         Alert winner = new Alert(Alert.AlertType.INFORMATION);
@@ -46,7 +45,8 @@ public class MonsterHunter extends Application {
                 do {
                     turnChange.setHeaderText("C'est au tour du chasseur");
                     turnChange.showAndWait();
-                    playerHasPlayed = hc.play();
+                    playerHasPlayed = hc.play(gameView);
+                    // gameView.setScene(hc.getHunterView().getScene());
                 } while (!playerHasPlayed);
             }
             if (mv.getMaze().getWinner() != null) {
@@ -55,7 +55,7 @@ public class MonsterHunter extends Application {
                 do {
                     turnChange.setHeaderText("C'est au tour du monstre");
                     turnChange.showAndWait();
-                    playerHasPlayed = mc.play();
+                    playerHasPlayed = mc.play(gameView);
                 } while (!playerHasPlayed);
             }
         }

@@ -13,17 +13,20 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
 import main.MonsterHunter;
 import model.CellEvent;
 import model.Coordinate;
 import model.Maze;
 import model.Monster;
+import view.game.GameView;
 import view.play.MonsterView;
 
 public class MonsterController {
 
     private Maze maze;
     private MonsterView view;
+    private GameView gameView;
     private Button move;
     private StackPane selectedStack;
 
@@ -105,10 +108,16 @@ public class MonsterController {
         }
     }
 
-    public boolean play() {
+    public boolean play(GameView gameView) {
+        // this.gameView = gameView;
         monsterHasPlayed = false;
+        Stage st = new Stage();
+        st.setScene(view.getScene());
+        st.showAndWait();
         makeGameBoard(view.getMonster().getWall());
-        view.showAndWait();
+
+        // gameView.display(view.getScene());
+        // view.showAndWait();
         return monsterHasPlayed;
     }
 
@@ -134,7 +143,9 @@ public class MonsterController {
                 view.getRoot().getChildren().set(0, view.getGameBoard());
                 selectedStack = null;
                 monsterHasPlayed = true;
-                view.close();
+                // todo
+                gameView.nextPlayScenes();
+                // view.close();
             }
         }
 
