@@ -42,7 +42,8 @@ public class MonsterController {
         this.move = view.getMoveButton();
         this.move.setOnAction(new ActionHandler());
         view.getExitButton().setOnAction(e -> {
-            gameView.nextPlayScenes();
+            view.showWaitScene();
+            gameView.display(view.getWaitScene(), true);
             MonsterHunter.exitedGame();
         });
     }
@@ -142,8 +143,8 @@ public class MonsterController {
                 view.getRoot().getChildren().set(0, view.getGameBoard());
                 selectedStack = null;
                 monsterHasPlayed = true;
-                // todo
-                gameView.nextPlayScenes();
+                view.showWaitScene();
+                gameView.display(view.getScene(), true);
                 // view.close();
             }
         }

@@ -15,53 +15,76 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import model.Maze;
 import model.Monster;
 
-public class MonsterView extends Stage {
+public class MonsterView extends PlayView {
 
     private static final int RECT_COL = 60;
     private static final int RECT_ROW = 60;
     private Monster monster;
 
-    private HBox root;
-    private GridPane gameBoard;
-    private Button move;
-    private Button exit;
+    /* Play atribut */
+    private HBox playRoot;
+    private GridPane playGameBoard;
+    private VBox playButtonBox;
+    private Button playMoveButton;
+    private Button playExitButton;
+
+    /* Waiting atribut */
+
+    private HBox waitRoot;
+    private Label waitLabel;
+    private Button waitButton;
 
     public MonsterView(Monster monster) {
         this.monster = monster;
-        this.setTitle("Monster View | Tour : " + Maze.turn);
-        this.root = new HBox();
-        this.gameBoard = new GridPane();
-        this.move = new Button("Move");
-        this.exit = new Button("Exit game");
-        VBox buttonsBox = new VBox(move, exit);
-        this.root.getChildren().addAll(gameBoard, buttonsBox);
-        Scene scene = new Scene(root);
-        this.setScene(scene);
+
+        initWaitingScene();
+        initPlayScene();
+        showPlayScene();
+    }
+
+    public void initWaitingScene() {
+        waitRoot = new HBox();
+        waitLabel = new Label("Vous avez jouez. C'est au tour du Chasseur de jouer.");
+        waitButton = new Button("Passez au tour suivant");
+
+        waitRoot.getChildren().addAll(waitLabel, waitButton);
+
+        super.setWaitScene(new Scene(waitRoot));
+    }
+
+    public void initPlayScene() {
+        playRoot = new HBox();
+        playGameBoard = new GridPane();
+        playMoveButton = new Button("Confirmer le déplacement.");
+        playExitButton = new Button("Quitter le jeux.");
+        playButtonBox = new VBox(playMoveButton, playExitButton);
+        playRoot.getChildren().addAll(playGameBoard, playButtonBox);
+
+        super.setPlayScene(new Scene(playRoot));
     }
 
     public void makeGameBoard(boolean[][] board) {
         this.setTitle("Monster View | Tour : " + Maze.turn);
-        gameBoard.setHgap(3);
-        gameBoard.setVgap(3);
-        gameBoard.setBackground(new Background(
+        playGameBoard.setHgap(3);
+        playGameBoard.setVgap(3);
+        playGameBoard.setBackground(new Background(
                 new BackgroundFill(javafx.scene.paint.Color.LIGHTGRAY, null, null)));
 
         for (int i = 0; i < board.length; i++) {
             Label columnHeader = new Label(String.valueOf(i));
             columnHeader.setFont(Font.font("Arial", FontWeight.BOLD, 12));
             columnHeader.setAlignment(Pos.CENTER);
-            gameBoard.add(columnHeader, i + 1, 0);
+            playGameBoard.add(columnHeader, i + 1, 0);
         }
 
         for (int j = 0; j < board[0].length; j++) {
             Label rowHeader = new Label(String.valueOf((char) ('A' + j)));
             rowHeader.setFont(Font.font("Arial", FontWeight.BOLD, 12));
             rowHeader.setAlignment(Pos.CENTER);
-            gameBoard.add(rowHeader, 0, j + 1);
+            playGameBoard.add(rowHeader, 0, j + 1);
         }
 
         for (int i = 0; i < board.length; i++) {
@@ -91,7 +114,7 @@ public class MonsterView extends Stage {
                 StackPane stack = new StackPane();
                 stack.getChildren().addAll(cell, text);
 
-                gameBoard.add(stack, j + 1, i + 1);
+                playGameBoard.add(stack, j + 1, i + 1);
             }
         }
     }
@@ -101,19 +124,19 @@ public class MonsterView extends Stage {
     }
 
     public HBox getRoot() {
-        return this.root;
+        return this.playRoot;
     }
 
     public GridPane getGameBoard() {
-        return this.gameBoard;
+        return this.playGameBoard;
     }
 
     public Button getMoveButton() {
-        return this.move;
+        return this.playMoveButton;
     }
 
     public Button getExitButton() {
-        return this.exit;
+        return this.playExitButton;
     }
 
 }

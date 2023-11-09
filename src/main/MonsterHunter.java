@@ -9,7 +9,6 @@ import controller.MonsterController;
 import data.DataProp;
 import javafx.application.Application;
 import javafx.scene.control.Alert;
-import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import view.game.GameView;
 import view.main.MainView;
@@ -21,8 +20,6 @@ public class MonsterHunter extends Application {
     // public static final String PATH = System.getProperty("user.dir");
     // public static final String RESOURCES_PATH = PATH + File.separator +
     // "resources";
-
-    private boolean gameIsOver = false;
 
     @Override
     public void start(Stage primaryStage) throws InterruptedException {

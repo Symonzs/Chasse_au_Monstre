@@ -15,54 +15,77 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import model.Coordinate;
 import model.Hunter;
 import model.Maze;
 
-public class HunterView extends Stage {
+public class HunterView extends PlayView {
 
     private static final int RECT_COL = 60;
     private static final int RECT_ROW = 60;
     private Hunter hunter;
 
-    private HBox root;
-    private GridPane gameBoard;
-    private Button shot;
-    private Button exit;
+    /* Play Button : */
+    private HBox playRoot;
+    private GridPane playGameBoard;
+    private VBox playVBoxNav;
+    private Button playShotButton;
+    private Button playExitButton;
+
+    /* Waiting Button */
+    private HBox waitRoot;
+    private Label waitLabel;
+    private Button waitButton;
 
     public HunterView(Hunter hunter) {
         this.hunter = hunter;
-        this.setTitle("Hunter View | Tour : " + Maze.turn);
-        this.root = new HBox();
-        this.gameBoard = new GridPane();
-        this.shot = new Button("Shot");
-        this.exit = new Button("Exit game");
-        VBox buttonsBox = new VBox(shot, exit);
-        this.root.getChildren().addAll(gameBoard, buttonsBox);
-        Scene scene = new Scene(root);
-        this.setScene(scene);
+        initPlayView();
+        initWaitView();
+        showPlayScene();
+    }
+
+    public void initPlayView() {
+        playRoot = new HBox();
+        playGameBoard = new GridPane();
+        playShotButton = new Button("Confirmer le tir");
+        playExitButton = new Button("Quitter le jeux");
+        playVBoxNav = new VBox(playShotButton, playExitButton);
+
+        playRoot.getChildren().addAll(playGameBoard, playVBoxNav);
+
+        super.setPlayScene(new Scene(playRoot));
+
+    }
+
+    public void initWaitView() {
+        waitRoot = new HBox();
+        waitLabel = new Label("Vous avez jouez. C'est au tour du Monstre de jouer.");
+        waitButton = new Button("Passez au tour suivant");
+
+        waitRoot.getChildren().addAll(waitLabel, waitButton);
+
+        super.setWaitScene(new Scene(waitRoot));
     }
 
     public void makeGameBoard(boolean[][] board) {
         this.setTitle("Hunter View | Tour : " + Maze.turn);
-        this.gameBoard.setHgap(3);
-        this.gameBoard.setVgap(3);
-        this.gameBoard.setBackground(new Background(
+        this.playGameBoard.setHgap(3);
+        this.playGameBoard.setVgap(3);
+        this.playGameBoard.setBackground(new Background(
                 new BackgroundFill(javafx.scene.paint.Color.LIGHTGRAY, null, null)));
 
         for (int i = 0; i < board.length; i++) {
             Label columnHeader = new Label(String.valueOf(i));
             columnHeader.setFont(Font.font("Arial", FontWeight.BOLD, 12));
             columnHeader.setAlignment(Pos.CENTER);
-            this.gameBoard.add(columnHeader, i + 1, 0);
+            this.playGameBoard.add(columnHeader, i + 1, 0);
         }
 
         for (int j = 0; j < board[0].length; j++) {
             Label rowHeader = new Label(String.valueOf((char) ('A' + j)));
             rowHeader.setFont(Font.font("Arial", FontWeight.BOLD, 12));
             rowHeader.setAlignment(Pos.CENTER);
-            this.gameBoard.add(rowHeader, 0, j + 1);
+            this.playGameBoard.add(rowHeader, 0, j + 1);
         }
 
         for (int i = 0; i < board.length; i++) {
@@ -93,7 +116,7 @@ public class HunterView extends Stage {
                 StackPane stack = new StackPane();
                 stack.getChildren().addAll(cell, text);
 
-                this.gameBoard.add(stack, j + 1, i + 1);
+                this.playGameBoard.add(stack, j + 1, i + 1);
             }
         }
     }
@@ -102,20 +125,20 @@ public class HunterView extends Stage {
         return this.hunter;
     }
 
-    public HBox getRoot() {
-        return this.root;
+    public HBox getPlayRoot() {
+        return this.playRoot;
     }
 
-    public GridPane getGameBoard() {
-        return this.gameBoard;
+    public GridPane getPlayGameBoard() {
+        return this.playGameBoard;
     }
 
-    public Button getShotButton() {
-        return this.shot;
+    public Button getPlayShotButton() {
+        return this.playShotButton;
     }
 
-    public Button getExitButton() {
-        return this.exit;
+    public Button getPlayExitButton() {
+        return this.playExitButton;
     }
 
 }
