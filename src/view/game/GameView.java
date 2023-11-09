@@ -1,6 +1,5 @@
 package view.game;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import javafx.scene.Scene;
@@ -11,18 +10,34 @@ public class GameView extends Stage {
 
     public GameView(Scene scene1, Scene scene2) {
         this.playScenes = new ArrayList<Scene>();
-        playScenes.add(scene1);
-        playScenes.add(scene2);
+        if (scene1 != null && scene2 != null) {
+            playScenes.add(scene1);
+            playScenes.add(scene2);
+        }
         // setScene(scene1);
     }
 
-    public void display(Scene scene) {
+    public GameView() {
+        this(null, null);
+    }
+
+    public void addPlayScene(Scene scene) {
+        if (!playScenes.contains(scene)) {
+            playScenes.add(scene);
+        }
+    }
+
+    public void display(Scene scene, boolean isPlayScene) {
         setScene(scene);
+        if (isPlayScene) {
+            addPlayScene(scene);
+        }
+
     }
 
     public void nextPlayScenes() {
-        setScene(playScenes.get(playScenes.indexOf(getScene()) + 1 % playScenes.size()));
-
+        System.out.println("scene is changed");
+        setScene(playScenes.get((playScenes.indexOf(getScene()) + 1) % playScenes.size()));
     }
 
 }

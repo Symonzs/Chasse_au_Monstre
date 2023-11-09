@@ -28,37 +28,15 @@ public class MonsterHunter extends Application {
     public void start(Stage primaryStage) throws InterruptedException {
         MainView mv = new MainView(INIT_FILE);
         mv.showAndWait();
-        MonsterController mc = new MonsterController(mv.getMaze());
-        HunterController hc = new HunterController(mv.getMaze());
-        GameView gameView = new GameView(hc.getHunterView().getScene(), mc.getMonsterView().getScene());
+        GameView gameView = new GameView();
+        MonsterController mc = new MonsterController(mv.getMaze(), gameView);
+        HunterController hc = new HunterController(mv.getMaze(), gameView);
         gameView.showAndWait();
 
         Alert turnChange = new Alert(Alert.AlertType.INFORMATION);
         turnChange.setTitle("Changement de tour");
         Alert winner = new Alert(Alert.AlertType.INFORMATION);
         winner.setTitle("Fin de la partie");
-        boolean playerHasPlayed;
-        while (!gameIsOver) {
-            if (mv.getMaze().getWinner() != null) {
-                gameIsOver = true;
-            } else {
-                do {
-                    turnChange.setHeaderText("C'est au tour du chasseur");
-                    turnChange.showAndWait();
-                    playerHasPlayed = hc.play(gameView);
-                    // gameView.setScene(hc.getHunterView().getScene());
-                } while (!playerHasPlayed);
-            }
-            if (mv.getMaze().getWinner() != null) {
-                gameIsOver = true;
-            } else {
-                do {
-                    turnChange.setHeaderText("C'est au tour du monstre");
-                    turnChange.showAndWait();
-                    playerHasPlayed = mc.play(gameView);
-                } while (!playerHasPlayed);
-            }
-        }
         winner.setHeaderText("Le gagnant est " + mv.getMaze().getWinner().name());
         winner.showAndWait();
     }

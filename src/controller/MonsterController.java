@@ -13,7 +13,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
-import javafx.stage.Stage;
 import main.MonsterHunter;
 import model.CellEvent;
 import model.Coordinate;
@@ -32,15 +31,18 @@ public class MonsterController {
 
     private boolean monsterHasPlayed = false;
 
-    public MonsterController(Maze maze) {
+    public MonsterController(Maze maze, GameView gameView) {
         this.maze = maze;
+        this.gameView = gameView;
         Monster monster = new Monster(maze);
         maze.attach(monster);
         this.view = new MonsterView(monster);
+        this.makeGameBoard(view.getMonster().getWall());
+        this.gameView.addPlayScene(view.getScene());
         this.move = view.getMoveButton();
         this.move.setOnAction(new ActionHandler());
         view.getExitButton().setOnAction(e -> {
-            view.close();
+            gameView.nextPlayScenes();
             MonsterHunter.exitedGame();
         });
     }
@@ -108,15 +110,12 @@ public class MonsterController {
         }
     }
 
-    public boolean play(GameView gameView) {
-        // this.gameView = gameView;
+    public boolean play() {
         monsterHasPlayed = false;
-        Stage st = new Stage();
-        st.setScene(view.getScene());
-        st.showAndWait();
         makeGameBoard(view.getMonster().getWall());
 
-        // gameView.display(view.getScene());
+        gameView.display(view.getScene(), true);
+        gameView.showAndWait();
         // view.showAndWait();
         return monsterHasPlayed;
     }

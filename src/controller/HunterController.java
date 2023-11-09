@@ -29,15 +29,18 @@ public class HunterController {
 
     private boolean hunterHasPlayed = false;
 
-    public HunterController(Maze maze) {
+    public HunterController(Maze maze, GameView gameView) {
         this.maze = maze;
+        this.gameView = gameView;
         Hunter hunter = new Hunter(maze.getWall().length, maze.getWall()[0].length);
         maze.attach(hunter);
         this.view = new HunterView(hunter);
+        this.makeGameBoard(view.getHunter().getKnowWall());
+        this.gameView.display(view.getScene(), true);
         this.shot = view.getShotButton();
         this.shot.setOnAction(new ActionHandler());
         view.getExitButton().setOnAction(e -> {
-            view.close();
+            gameView.nextPlayScenes();
             MonsterHunter.exitedGame();
         });
     }
@@ -68,16 +71,6 @@ public class HunterController {
         }
     }
 
-    public boolean play(GameView gameView) {
-        this.gameView = gameView;
-        hunterHasPlayed = false;
-        makeGameBoard(view.getHunter().getKnowWall());
-        // view.showAndWait();
-
-        gameView.display(view.getScene());
-        return hunterHasPlayed;
-    }
-
     public HunterView getHunterView() {
         return this.view;
     }
@@ -94,9 +87,7 @@ public class HunterController {
                 makeGameBoard(view.getHunter().getKnowWall());
                 view.getRoot().getChildren().set(0, view.getGameBoard());
                 selectedStack = null;
-                hunterHasPlayed = true;
                 gameView.nextPlayScenes();
-                // view.close();
             }
         }
 
