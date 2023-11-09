@@ -58,8 +58,7 @@ public class MainView extends Stage {
         private void handle() {
             if (mazeList.getSelectionModel().getSelectedItem() != null) {
                 Maze.resetTurn();
-                maze = new Maze(MonsterHunter.RESOURCES_PATH + File.separator
-                        + mazeList.getSelectionModel().getSelectedItem() + ".csv");
+                maze = new Maze(11, 11);
                 MainView.this.close();
             }
         }

@@ -52,7 +52,7 @@ public class Maze extends Subject {
      * @param nbCols Nombre de colonnes du labyrinthe
      */
     public Maze(Integer nbRows, Integer nbCols) {
-        loadMaze(String.format("%dx%d.csv", nbRows, nbCols));
+        generateMaze(nbRows, nbCols, 60);
     }
 
     /**
@@ -100,6 +100,14 @@ public class Maze extends Subject {
         } catch (IOException | InputMismatchException | NullPointerException e) {
             System.err.println(e.getMessage());
         }
+    }
+
+    public void generateMaze(Integer nbRows, Integer nbCols, Integer wallPercentage) {
+        MazeGenerator mazeGen = new MazeGenerator(nbRows, nbCols, wallPercentage);
+        this.wall = mazeGen.getWall();
+        this.monster = mazeGen.getMonster();
+        this.hunter = mazeGen.getHunter();
+        this.exit = mazeGen.getExit();
     }
 
     /**
