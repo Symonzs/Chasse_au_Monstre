@@ -45,10 +45,6 @@ public class MonsterController {
             gameView.close();
             MonsterHunter.exitedGame();
         });
-        view.getPlayMoveButton().setOnAction(e -> {
-            view.showWaitScene();
-            gameView.display(view.getWaitScene(), false);
-        });
         view.getWaitButton().setOnAction(e -> {
             // view.showPlayScene();
             gameView.nextPlayScenes();
@@ -119,16 +115,6 @@ public class MonsterController {
         }
     }
 
-    public boolean play() {
-        monsterHasPlayed = false;
-        makeGameBoard(view.getMonster().getWall());
-
-        gameView.display(view.getScene(), true);
-        gameView.showAndWait();
-        // view.showAndWait();
-        return monsterHasPlayed;
-    }
-
     private class ActionHandler implements EventHandler<ActionEvent> {
 
         @Override
@@ -151,7 +137,8 @@ public class MonsterController {
                 view.getRoot().getChildren().set(0, view.getGameBoard());
                 selectedStack = null;
                 monsterHasPlayed = true;
-                // view.close();
+                view.showWaitScene();
+                gameView.display(view.getWaitScene(), false);
             }
         }
 

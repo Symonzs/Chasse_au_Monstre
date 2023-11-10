@@ -41,10 +41,6 @@ public class HunterController {
             gameView.close();
             MonsterHunter.exitedGame();
         });
-        view.getPlayShotButton().setOnAction(e -> {
-            view.showWaitScene();
-            gameView.display(view.getWaitScene(), false);
-        });
         view.getWaitButton().setOnAction(e -> {
             // view.showPlayScene();
             gameView.nextPlayScenes();

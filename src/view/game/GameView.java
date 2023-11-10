@@ -7,6 +7,7 @@ import javafx.stage.Stage;
 
 public class GameView extends Stage {
     private ArrayList<Scene> playScenes;
+    private Scene lastPlayedScene;
     // private Scene nextPlayScene;
 
     public GameView(Scene scene1, Scene scene2) {
@@ -41,15 +42,15 @@ public class GameView extends Stage {
         setFullScreenExitHint("");
         setFullScreen(true);
         if (isPlayScene) {
+            lastPlayedScene = scene;
             addPlayScene(scene);
         }
 
     }
 
     public void nextPlayScenes() {
-        setScene(playScenes.get(playScenes.indexOf(getScene()) + 1 % (playScenes.size())));
-        System.out.println("scene is changed. \n The new scene is " + getScene());
-        System.out.println(playScenes);
+        setScene(playScenes.get((playScenes.indexOf(lastPlayedScene) + 1) % (playScenes.size())));
+        lastPlayedScene = getScene();
         setFullScreenExitHint("");
         setFullScreen(true);
 
