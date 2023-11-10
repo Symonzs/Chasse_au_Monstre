@@ -1,6 +1,7 @@
 package view.play;
 
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -24,20 +25,23 @@ public class MonsterView extends PlayView {
     private static final int RECT_ROW = 60;
     private Monster monster;
 
+    private Font font;
+
     /* Play atribut */
-    private HBox playRoot;
+    private VBox playRoot;
     private GridPane playGameBoard;
-    private VBox playButtonBox;
+    private HBox playButtonBox;
     private Button playMoveButton;
     private Button playExitButton;
 
     /* Waiting atribut */
 
-    private HBox waitRoot;
+    private VBox waitRoot;
     private Label waitLabel;
     private Button waitButton;
 
     public MonsterView(Monster monster) {
+        this.font = new Font("Arial", 24);
         this.monster = monster;
 
         initWaitingScene();
@@ -46,9 +50,12 @@ public class MonsterView extends PlayView {
     }
 
     public void initWaitingScene() {
-        waitRoot = new HBox();
-        waitLabel = new Label("Vous avez jouez. C'est au tour du Chasseur de jouer.");
+        waitRoot = new VBox();
+        waitRoot.setAlignment(Pos.CENTER);
+        waitLabel = new Label("Vous avez joué. C'est au tour du Chasseur de jouer.");
+        waitLabel.setFont(font);
         waitButton = new Button("Passez au tour suivant");
+        waitLabel.setFont(font);
 
         waitRoot.getChildren().addAll(waitLabel, waitButton);
 
@@ -56,11 +63,18 @@ public class MonsterView extends PlayView {
     }
 
     public void initPlayScene() {
-        playRoot = new HBox();
+        playRoot = new VBox();
+        playRoot.setPadding(new Insets(10));
+        playRoot.setAlignment(Pos.CENTER);
         playGameBoard = new GridPane();
         playMoveButton = new Button("Confirmer le déplacement.");
+        playMoveButton.setPadding(new Insets(10));
+        playMoveButton.setFont(font);
         playExitButton = new Button("Quitter le jeux.");
-        playButtonBox = new VBox(playMoveButton, playExitButton);
+        playExitButton.setPadding(new Insets(10));
+        playExitButton.setFont(font);
+        playButtonBox = new HBox(playMoveButton, playExitButton);
+
         playRoot.getChildren().addAll(playGameBoard, playButtonBox);
 
         super.setPlayScene(new Scene(playRoot));
@@ -123,7 +137,7 @@ public class MonsterView extends PlayView {
         return this.monster;
     }
 
-    public HBox getRoot() {
+    public VBox getRoot() {
         return this.playRoot;
     }
 
@@ -131,7 +145,7 @@ public class MonsterView extends PlayView {
         return this.playGameBoard;
     }
 
-    public Button getMoveButton() {
+    public Button getPlayMoveButton() {
         return this.playMoveButton;
     }
 
@@ -139,4 +153,7 @@ public class MonsterView extends PlayView {
         return this.playExitButton;
     }
 
+    public Button getWaitButton() {
+        return waitButton;
+    }
 }

@@ -8,6 +8,7 @@ import controller.HunterController;
 import controller.MonsterController;
 import data.DataProp;
 import javafx.application.Application;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import view.game.GameView;
@@ -28,6 +29,7 @@ public class MonsterHunter extends Application {
         GameView gameView = new GameView();
         MonsterController mc = new MonsterController(mv.getMaze(), gameView);
         HunterController hc = new HunterController(mv.getMaze(), gameView);
+        gameView.display(hc.getHunterView().getPlayScene(), true);
         gameView.showAndWait();
 
         Alert turnChange = new Alert(Alert.AlertType.INFORMATION);

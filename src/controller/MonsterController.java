@@ -38,14 +38,22 @@ public class MonsterController {
         maze.attach(monster);
         this.view = new MonsterView(monster);
         this.makeGameBoard(view.getMonster().getWall());
-        this.gameView.addPlayScene(view.getScene());
-        this.move = view.getMoveButton();
-        this.move.setOnAction(new ActionHandler());
+        this.gameView.addPlayScene(view.getPlayScene());
+        this.move = view.getPlayMoveButton();
+        // this.move.setOnAction(new ActionHandler());
         view.getExitButton().setOnAction(e -> {
-            view.showWaitScene();
-            gameView.display(view.getWaitScene(), true);
+            gameView.close();
             MonsterHunter.exitedGame();
         });
+        view.getPlayMoveButton().setOnAction(e -> {
+            view.showWaitScene();
+            gameView.display(view.getWaitScene(), false);
+        });
+        view.getWaitButton().setOnAction(e -> {
+            // view.showPlayScene();
+            gameView.nextPlayScenes();
+        });
+
     }
 
     public void makeGameBoard(boolean[][] board) {
@@ -143,8 +151,6 @@ public class MonsterController {
                 view.getRoot().getChildren().set(0, view.getGameBoard());
                 selectedStack = null;
                 monsterHasPlayed = true;
-                view.showWaitScene();
-                gameView.display(view.getScene(), true);
                 // view.close();
             }
         }

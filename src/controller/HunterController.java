@@ -34,13 +34,20 @@ public class HunterController {
         maze.attach(hunter);
         this.view = new HunterView(hunter);
         this.makeGameBoard(view.getHunter().getKnowWall());
-        this.gameView.display(view.getScene(), true);
+        this.gameView.addPlayScene(view.getPlayScene());
         this.shot = view.getPlayShotButton();
         this.shot.setOnAction(new ActionHandler());
         view.getPlayExitButton().setOnAction(e -> {
-            view.showWaitScene();
-            gameView.display(view.getWaitScene(), true);
+            gameView.close();
             MonsterHunter.exitedGame();
+        });
+        view.getPlayShotButton().setOnAction(e -> {
+            view.showWaitScene();
+            gameView.display(view.getWaitScene(), false);
+        });
+        view.getWaitButton().setOnAction(e -> {
+            // view.showPlayScene();
+            gameView.nextPlayScenes();
         });
     }
 
@@ -87,7 +94,7 @@ public class HunterController {
                 view.getPlayRoot().getChildren().set(0, view.getPlayGameBoard());
                 selectedStack = null;
                 view.showWaitScene();
-                gameView.display(view.getScene(), true);
+                gameView.display(view.getWaitScene(), false);
             }
         }
 

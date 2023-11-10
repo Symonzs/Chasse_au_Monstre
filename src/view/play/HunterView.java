@@ -1,6 +1,7 @@
 package view.play;
 
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -25,31 +26,41 @@ public class HunterView extends PlayView {
     private static final int RECT_ROW = 60;
     private Hunter hunter;
 
+    private Font font;
+
     /* Play Button : */
-    private HBox playRoot;
+    private VBox playRoot;
     private GridPane playGameBoard;
-    private VBox playVBoxNav;
+    private HBox playVBoxNav;
     private Button playShotButton;
     private Button playExitButton;
 
     /* Waiting Button */
-    private HBox waitRoot;
+    private VBox waitRoot;
     private Label waitLabel;
     private Button waitButton;
 
     public HunterView(Hunter hunter) {
+        this.font = new Font("Arial", 30);
         this.hunter = hunter;
+
         initPlayView();
         initWaitView();
         showPlayScene();
     }
 
     public void initPlayView() {
-        playRoot = new HBox();
+        playRoot = new VBox();
+        playRoot.setPadding(new Insets(10));
+        playRoot.setAlignment(Pos.CENTER);
         playGameBoard = new GridPane();
         playShotButton = new Button("Confirmer le tir");
+        playShotButton.setPadding(new Insets(10));
+        playShotButton.setFont(font);
         playExitButton = new Button("Quitter le jeux");
-        playVBoxNav = new VBox(playShotButton, playExitButton);
+        playExitButton.setPadding(new Insets(10));
+        playExitButton.setFont(font);
+        playVBoxNav = new HBox(playShotButton, playExitButton);
 
         playRoot.getChildren().addAll(playGameBoard, playVBoxNav);
 
@@ -58,10 +69,15 @@ public class HunterView extends PlayView {
     }
 
     public void initWaitView() {
-        waitRoot = new HBox();
-        waitLabel = new Label("Vous avez jouez. C'est au tour du Monstre de jouer.");
-        waitButton = new Button("Passez au tour suivant");
+        waitRoot = new VBox();
 
+        waitRoot.setPadding(new Insets(10));
+        waitRoot.setAlignment(Pos.CENTER);
+        waitLabel = new Label("Vous avez joué. C'est au tour du Monstre de jouer.");
+        waitLabel.setFont(font);
+        waitButton = new Button("Passez au tour suivant");
+        waitButton.setFont(font);
+        waitButton.setPadding(new Insets(10));
         waitRoot.getChildren().addAll(waitLabel, waitButton);
 
         super.setWaitScene(new Scene(waitRoot));
@@ -125,7 +141,7 @@ public class HunterView extends PlayView {
         return this.hunter;
     }
 
-    public HBox getPlayRoot() {
+    public VBox getPlayRoot() {
         return this.playRoot;
     }
 
@@ -139,6 +155,10 @@ public class HunterView extends PlayView {
 
     public Button getPlayExitButton() {
         return this.playExitButton;
+    }
+
+    public Button getWaitButton() {
+        return waitButton;
     }
 
 }
