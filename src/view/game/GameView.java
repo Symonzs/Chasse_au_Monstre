@@ -7,14 +7,14 @@ import javafx.stage.Stage;
 
 public class GameView extends Stage {
     private ArrayList<Scene> playScenes;
-    private Scene nextPlayScene;
+    // private Scene nextPlayScene;
 
     public GameView(Scene scene1, Scene scene2) {
         this.playScenes = new ArrayList<Scene>();
         if (scene1 != null && scene2 != null) {
             playScenes.add(scene1);
             playScenes.add(scene2);
-            nextPlayScene = scene2;
+            // nextPlayScene = scene2;
             setScene(scene1);
         }
     }

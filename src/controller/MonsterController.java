@@ -40,7 +40,7 @@ public class MonsterController {
         this.makeGameBoard(view.getMonster().getWall());
         this.gameView.addPlayScene(view.getPlayScene());
         this.move = view.getPlayMoveButton();
-        // this.move.setOnAction(new ActionHandler());
+        this.move.setOnAction(new ActionHandler());
         view.getExitButton().setOnAction(e -> {
             gameView.close();
             MonsterHunter.exitedGame();

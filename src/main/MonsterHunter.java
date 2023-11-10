@@ -8,7 +8,6 @@ import controller.HunterController;
 import controller.MonsterController;
 import data.DataProp;
 import javafx.application.Application;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import view.game.GameView;
