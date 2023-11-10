@@ -1,6 +1,9 @@
 package controller;
 
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
+
+import java.util.Properties;
+
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -27,12 +30,12 @@ public class HunterController {
 
     private GameView gameView;
 
-    public HunterController(Maze maze, GameView gameView) {
+    public HunterController(Maze maze, GameView gameView, Properties properties) {
         this.maze = maze;
         this.gameView = gameView;
         Hunter hunter = new Hunter(maze.getWall().length, maze.getWall()[0].length);
         maze.attach(hunter);
-        this.view = new HunterView(hunter);
+        this.view = new HunterView(hunter, properties);
         this.makeGameBoard(view.getHunter().getKnowWall());
         this.gameView.addPlayScene(view.getPlayScene());
         this.shot = view.getPlayShotButton();

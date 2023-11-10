@@ -1,3 +1,7 @@
 MapFindFolder=./resources/map/
 HunterViewApparence=./resources/view/player/hunter.jpg
 MonsterViewApparence=./resources/view/player/monster.jpg
+WallViewAsset=./resources/view/asset/wall.jpg
+GroundViewAsset=./resources/view/asset/ground.jpg
+ExitViewAsset=./resources/view/asset/exitdoor.jpg
+UnknowTexture=./resources/view/asset/unknow.jpg

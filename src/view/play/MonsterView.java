@@ -1,28 +1,33 @@
 package view.play;
 
+import java.util.Properties;
+
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import model.Maze;
 import model.Monster;
 
 public class MonsterView extends PlayView {
 
-    private static final int RECT_COL = 60;
-    private static final int RECT_ROW = 60;
+    private static final int RECT_COL = 75;
+    private static final int RECT_ROW = 75;
     private Monster monster;
 
     private Font font;
@@ -40,9 +45,13 @@ public class MonsterView extends PlayView {
     private Label waitLabel;
     private Button waitButton;
 
-    public MonsterView(Monster monster) {
-        this.font = new Font("Arial", 24);
+    private Properties properties;
+
+    public MonsterView(Monster monster, Properties properties) {
         this.monster = monster;
+        this.properties = properties;
+
+        this.font = new Font("Arial", 24);
 
         initWaitingScene();
         initPlayScene();
@@ -81,11 +90,15 @@ public class MonsterView extends PlayView {
     }
 
     public void makeGameBoard(boolean[][] board) {
-        this.setTitle("Monster View | Tour : " + Maze.turn);
+        ImagePattern monsterTexture = new ImagePattern(
+                new Image("file:" + properties.getProperty("MonsterViewApparence")));
+        ImagePattern wallTexture = new ImagePattern(new Image("file:" + properties.getProperty("WallViewAsset")));
+        ImagePattern groundTexture = new ImagePattern(new Image("file:" + properties.getProperty("GroundViewAsset")));
+        ImagePattern exitTexture = new ImagePattern(new Image("file:" + properties.getProperty("ExitViewAsset")));
         playGameBoard.setHgap(3);
         playGameBoard.setVgap(3);
         playGameBoard.setBackground(new Background(
-                new BackgroundFill(javafx.scene.paint.Color.LIGHTGRAY, null, null)));
+                new BackgroundFill(javafx.scene.paint.Color.WHITE, null, null)));
 
         for (int i = 0; i < board.length; i++) {
             Label columnHeader = new Label(String.valueOf(i));
@@ -106,15 +119,17 @@ public class MonsterView extends PlayView {
                 Rectangle cell = new Rectangle(RECT_ROW, RECT_COL);
                 Text text = new Text(RECT_ROW, RECT_COL, "");
                 if (board[i][j]) {
-                    cell.setFill(javafx.scene.paint.Color.BLACK);
+                    cell.setFill(wallTexture);
                 } else {
                     ICoordinate monsterCoord = monster.getMonsterCoord();
                     if (i == monster.getExit().getRow() && j == monster.getExit().getCol()) {
-                        text = new Text("Exit");
+                        cell.setFill(exitTexture);
                     } else if (i == monsterCoord.getRow() && j == monsterCoord.getCol()) {
-                        text = new Text("Monster");
+                        cell.setFill(monsterTexture);
+
+                    } else {
+                        cell.setFill(groundTexture);
                     }
-                    cell.setFill(javafx.scene.paint.Color.WHITE);
                 }
                 ICoordinate hunterCoord = monster.getHunterCoord();
                 if (hunterCoord != null && (i == hunterCoord.getRow() && j == hunterCoord.getCol())) {

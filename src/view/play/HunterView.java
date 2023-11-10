@@ -1,17 +1,21 @@
 package view.play;
 
+import java.util.Properties;
+
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -40,9 +44,13 @@ public class HunterView extends PlayView {
     private Label waitLabel;
     private Button waitButton;
 
-    public HunterView(Hunter hunter) {
-        this.font = new Font("Arial", 30);
+    private Properties properties;
+
+    public HunterView(Hunter hunter, Properties properties) {
         this.hunter = hunter;
+        this.properties = properties;
+
+        this.font = new Font("Arial", 30);
 
         initPlayView();
         initWaitView();
@@ -84,6 +92,13 @@ public class HunterView extends PlayView {
     }
 
     public void makeGameBoard(boolean[][] board) {
+        ImagePattern monsterTexture = new ImagePattern(
+                new Image("file:" + properties.getProperty("MonsterViewApparence")));
+        ImagePattern wallTexture = new ImagePattern(new Image("file:" + properties.getProperty("WallViewAsset")));
+        ImagePattern groundTexture = new ImagePattern(new Image("file:" + properties.getProperty("GroundViewAsset")));
+        ImagePattern exitTexture = new ImagePattern(new Image("file:" + properties.getProperty("ExitViewAsset")));
+        ImagePattern unkwonTexture = new ImagePattern(new Image("file:" + properties.getProperty("UnknowTexture")));
+
         this.setTitle("Hunter View | Tour : " + Maze.turn);
         this.playGameBoard.setHgap(3);
         this.playGameBoard.setVgap(3);
@@ -109,23 +124,27 @@ public class HunterView extends PlayView {
                 Rectangle cell = new Rectangle(RECT_ROW, RECT_COL);
                 Text text = new Text(RECT_ROW, RECT_COL, "");
                 if (board[i][j]) {
-                    cell.setFill(javafx.scene.paint.Color.BLACK);
+                    cell.setFill(wallTexture);
                 } else {
                     ICoordinate cellCoord = new Coordinate(i, j);
                     Integer turn = hunter.getLastTurnFromCoordinate(cellCoord);
                     if (Maze.turn.equals(turn)) {
-                        text = new Text("Monster");
+                        cell.setFill(monsterTexture);
                     } else if (turn != null) {
                         text = new Text(turn.toString());
+                        cell.setFill(groundTexture);
+                    } else if (isFocused()) {// to do est une case connu avec une texture une cellule.
+                        cell.setFill(groundTexture);
+                    } else {
+                        cell.setFill(unkwonTexture);
                     }
-                    cell.setFill(javafx.scene.paint.Color.WHITE);
                 }
                 ICoordinate hunterCoord = hunter.getHunterCoord();
                 if (hunterCoord != null && (i == hunterCoord.getRow() && j == hunterCoord.getCol())) {
                     cell.setStroke(javafx.scene.paint.Color.LIGHTGREEN);
                     cell.setStrokeWidth(3);
                 } else {
-                    cell.setStroke(javafx.scene.paint.Color.BLACK);
+                    cell.setStroke(wallTexture);
                     cell.setStrokeWidth(1);
                 }
 

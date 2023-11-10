@@ -1,6 +1,7 @@
 package controller;
 
 import java.util.InputMismatchException;
+import java.util.Properties;
 
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
@@ -31,12 +32,12 @@ public class MonsterController {
 
     private boolean monsterHasPlayed = false;
 
-    public MonsterController(Maze maze, GameView gameView) {
+    public MonsterController(Maze maze, GameView gameView, Properties properties) {
         this.maze = maze;
         this.gameView = gameView;
         Monster monster = new Monster(maze);
         maze.attach(monster);
-        this.view = new MonsterView(monster);
+        this.view = new MonsterView(monster, properties);
         this.makeGameBoard(view.getMonster().getWall());
         this.gameView.addPlayScene(view.getPlayScene());
         this.move = view.getPlayMoveButton();

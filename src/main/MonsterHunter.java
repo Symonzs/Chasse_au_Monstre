@@ -17,17 +17,13 @@ public class MonsterHunter extends Application {
     public static final File INIT_FILE = Paths.get("./resources/config/init.prop").toFile();
     public static final Properties PROPERTIES = DataProp.read(INIT_FILE);
 
-    // public static final String PATH = System.getProperty("user.dir");
-    // public static final String RESOURCES_PATH = PATH + File.separator +
-    // "resources";
-
     @Override
     public void start(Stage primaryStage) throws InterruptedException {
         MainView mv = new MainView(INIT_FILE);
         mv.showAndWait();
         GameView gameView = new GameView();
-        MonsterController mc = new MonsterController(mv.getMaze(), gameView);
-        HunterController hc = new HunterController(mv.getMaze(), gameView);
+        MonsterController mc = new MonsterController(mv.getMaze(), gameView, PROPERTIES);
+        HunterController hc = new HunterController(mv.getMaze(), gameView, PROPERTIES);
         gameView.display(hc.getHunterView().getPlayScene(), true);
         gameView.showAndWait();
 
