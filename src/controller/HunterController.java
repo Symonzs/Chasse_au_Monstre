@@ -36,7 +36,7 @@ public class HunterController {
         Hunter hunter = new Hunter(maze.getWall().length, maze.getWall()[0].length);
         maze.attach(hunter);
         this.view = new HunterView(hunter, properties);
-        this.makeGameBoard(view.getHunter().getKnowWall());
+        this.makeGameBoard(view.getHunter().getKnowWall(), view.getHunter().getKnowEmpty());
         this.gameView.addPlayScene(view.getPlayScene());
         this.shot = view.getPlayShotButton();
         this.shot.setOnAction(new ActionHandler());
@@ -50,8 +50,8 @@ public class HunterController {
         });
     }
 
-    public void makeGameBoard(boolean[][] board) {
-        view.makeGameBoard(board);
+    public void makeGameBoard(boolean[][] wall, boolean[][] empty) {
+        view.makeGameBoard(wall, empty);
         for (Node node : view.getPlayGameBoard().getChildren()) {
             if (StackPane.class == node.getClass()) {
                 StackPane stack = (StackPane) node;
@@ -89,7 +89,7 @@ public class HunterController {
                 ICoordinate coord = new Coordinate(GridPane.getRowIndex(selectedStack) - 1,
                         GridPane.getColumnIndex(selectedStack) - 1);
                 maze.cellUpdate(new CellEvent(coord, Maze.turn, CellInfo.HUNTER));
-                makeGameBoard(view.getHunter().getKnowWall());
+                makeGameBoard(view.getHunter().getKnowWall(), view.getHunter().getKnowEmpty());
                 view.getPlayRoot().getChildren().set(0, view.getPlayGameBoard());
                 selectedStack = null;
                 view.showWaitScene();

@@ -91,7 +91,7 @@ public class HunterView extends PlayView {
         super.setWaitScene(new Scene(waitRoot));
     }
 
-    public void makeGameBoard(boolean[][] board) {
+    public void makeGameBoard(boolean[][] wall, boolean[][] empty) {
         ImagePattern monsterTexture = new ImagePattern(
                 new Image("file:" + properties.getProperty("MonsterViewApparence")));
         ImagePattern wallTexture = new ImagePattern(new Image("file:" + properties.getProperty("WallViewAsset")));
@@ -105,25 +105,25 @@ public class HunterView extends PlayView {
         this.playGameBoard.setBackground(new Background(
                 new BackgroundFill(javafx.scene.paint.Color.LIGHTGRAY, null, null)));
 
-        for (int i = 0; i < board.length; i++) {
+        for (int i = 0; i < wall.length; i++) {
             Label columnHeader = new Label(String.valueOf(i));
             columnHeader.setFont(Font.font("Arial", FontWeight.BOLD, 12));
             columnHeader.setAlignment(Pos.CENTER);
             this.playGameBoard.add(columnHeader, i + 1, 0);
         }
 
-        for (int j = 0; j < board[0].length; j++) {
+        for (int j = 0; j < wall[0].length; j++) {
             Label rowHeader = new Label(String.valueOf((char) ('A' + j)));
             rowHeader.setFont(Font.font("Arial", FontWeight.BOLD, 12));
             rowHeader.setAlignment(Pos.CENTER);
             this.playGameBoard.add(rowHeader, 0, j + 1);
         }
 
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[i].length; j++) {
+        for (int i = 0; i < wall.length; i++) {
+            for (int j = 0; j < wall[i].length; j++) {
                 Rectangle cell = new Rectangle(RECT_ROW, RECT_COL);
                 Text text = new Text(RECT_ROW, RECT_COL, "");
-                if (board[i][j]) {
+                if (wall[i][j]) {
                     cell.setFill(wallTexture);
                 } else {
                     ICoordinate cellCoord = new Coordinate(i, j);
@@ -133,7 +133,7 @@ public class HunterView extends PlayView {
                     } else if (turn != null) {
                         text = new Text(turn.toString());
                         cell.setFill(groundTexture);
-                    } else if (isFocused()) {// to do est une case connu avec une texture une cellule.
+                    } else if (empty[i][j]) {
                         cell.setFill(groundTexture);
                     } else {
                         cell.setFill(unkwonTexture);
