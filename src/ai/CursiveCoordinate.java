@@ -24,4 +24,9 @@ public class CursiveCoordinate extends Coordinate {
         return parent;
     }
 
+    @Override
+    public String toString() {
+        return getRow() + ":" + getCol();
+    }
+
 }

@@ -1,9 +1,9 @@
 package ai;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import model.Maze;
@@ -17,72 +17,142 @@ import model.Maze;
  */
 public class MazeSolver {
     private Maze maze;
-    private List<ICoordinate> path;
-    private List<ICoordinate> cellExplored;
-    private static final int[][] DIRECTIONS = { { 0, 1 }, { 1, 0 }, { 0, -1 }, { -1, 0 } };
+    // private List<ICoordinate> path;
+    // private List<ICoordinate> cellExplored;
+    // private static final int[][] DIRECTIONS = { { 0, 1 }, { 1, 0 }, { 0, -1 }, {
+    // -1, 0 } };
 
     public MazeSolver(Maze maze) {
-        this.cellExplored = new ArrayList<>();
+        // this.cellExplored = new ArrayList<>();
         this.maze = maze;
-        this.path = solve(this.maze);
     }
 
-    private List<ICoordinate> backtrackPath(
-            ICoordinate cur) {
-        List<ICoordinate> path = new ArrayList<>();
-        CursiveCoordinate iter = (CursiveCoordinate) cur;
+    // private List<ICoordinate> backtrackPath(
+    // ICoordinate cur) {
+    // List<ICoordinate> path = new ArrayList<>();
+    // CursiveCoordinate iter = (CursiveCoordinate) cur;
 
-        while (iter != null) {
-            path.add(iter);
-            iter = iter.getParent();
-        }
+    // while (iter != null) {
+    // path.add(iter);
+    // iter = iter.getParent();
+    // }
 
-        return path;
-    }
+    // return path;
+    // }
 
-    public List<ICoordinate> solve(Maze maze) {
-        LinkedList<ICoordinate> nextToVisit = new LinkedList<>();
-        ICoordinate start = maze.getMonster().get(1);
-        nextToVisit.add(start);
+    // public List<ICoordinate> solve(Maze maze) {
+    // LinkedList<ICoordinate> nextToVisit = new LinkedList<>();
+    // ICoordinate start = maze.getMonster().get(1);
+    // nextToVisit.add(start);
 
-        while (!nextToVisit.isEmpty()) {
-            ICoordinate cur = nextToVisit.remove();
+    // while (!nextToVisit.isEmpty()) {
+    // ICoordinate cur = nextToVisit.remove();
 
-            if (maze.cellIsWall(cur) || cellExplored.contains(cur)) {
-                continue;
-            }
+    // if (maze.cellIsWall(cur) || cellExplored.contains(cur)) {
+    // continue;
+    // }
 
-            if (maze.cellIsWall(cur)) {
-                cellExplored.add(cur);
-                continue;
-            }
+    // if (maze.cellIsWall(cur)) {
+    // cellExplored.add(cur);
+    // continue;
+    // }
 
-            if (maze.getExit().getCol() == cur.getCol() && maze.getExit().getRow() == cur.getRow()) {
-                return backtrackPath(cur);
-            }
+    // if (maze.getExit().getCol() == cur.getCol() && maze.getExit().getRow() ==
+    // cur.getRow()) {
+    // return backtrackPath(cur);
+    // }
 
-            for (int[] direction : DIRECTIONS) {
-                CursiveCoordinate coordinate = new CursiveCoordinate(
-                        (Integer) (cur.getRow() + direction[0]),
-                        (Integer) (cur.getCol() + direction[1]), (CursiveCoordinate) cur);
-                nextToVisit.add(coordinate);
-                cellExplored.add(cur);
-            }
-        }
-        return Collections.emptyList();
-    }
-
-    /**
-     * @return the path
-     */
-    public List<ICoordinate> getPath() {
-        return path;
-    }
+    // for (int[] direction : DIRECTIONS) {
+    // CursiveCoordinate coordinate = new CursiveCoordinate(
+    // (Integer) (cur.getRow() + direction[0]),
+    // (Integer) (cur.getCol() + direction[1]), (CursiveCoordinate) cur);
+    // nextToVisit.add(coordinate);
+    // cellExplored.add(cur);
+    // }
+    // }
+    // return Collections.emptyList();
+    // }
 
     public static void main(String[] args) {
         Maze maze = new Maze("/home/infoetu/hugo.vallee2.etu/S3/sae/J1_SAE3A/resources/11x11.csv");
         MazeSolver ms = new MazeSolver(maze);
-        System.out.println(ms.getPath());
+        System.out.println(ms.solve());
     }
 
+    public boolean solve() {
+        Queue<CursiveCoordinate> f = new LinkedList<CursiveCoordinate>();
+        List<CursiveCoordinate> discoveredCell = new ArrayList<>();
+
+        CursiveCoordinate entry = new CursiveCoordinate(maze.getMonster().get(1).getRow(),
+                maze.getMonster().get(1).getCol(), null);
+        f.add(entry);
+        discoveredCell.add(entry);
+
+        boolean estSortieTrouve = false;
+        while (!f.isEmpty() && !estSortieTrouve) {
+            CursiveCoordinate c = f.peek();
+            ICoordinate exit = maze.getExit();
+            if (exit.getCol() == c.getCol() && exit.getRow() == c.getRow()) {
+                estSortieTrouve = true;
+                // return true;
+            } else {
+                // Haut
+                if (c.getRow() - 1 >= 0) {
+                    CursiveCoordinate cHaut = new CursiveCoordinate((Integer) (c.getRow() - 1), (Integer) (c.getCol()),
+                            c);
+                    if (!this.maze.cellIsWall((ICoordinate) cHaut) && !discoveredCell.contains(cHaut)) {
+                        f.add(cHaut);
+                        discoveredCell.add(cHaut);
+                    }
+                }
+
+                // Bas
+                if (c.getRow() + 1 < maze.getWall().length) {
+                    CursiveCoordinate cBas = new CursiveCoordinate((Integer) (c.getRow() + 1), (Integer) (c.getCol()),
+                            c);
+                    if (!this.maze.cellIsWall((ICoordinate) cBas) && !discoveredCell.contains(cBas)) {
+                        f.add(cBas);
+                        discoveredCell.contains(cBas);
+                    }
+                }
+
+                // Gauche
+                if (c.getCol() - 1 >= 0) {
+                    CursiveCoordinate cGauche = new CursiveCoordinate((Integer) (c.getRow()),
+                            (Integer) (c.getCol() - 1), c);
+                    if (!this.maze.cellIsWall((ICoordinate) cGauche) && !discoveredCell.contains(cGauche)) {
+                        f.add(cGauche);
+                        discoveredCell.add(cGauche);
+                    }
+                }
+
+                // Droite
+                if (c.getCol() + 1 < maze.getWall()[1].length) {
+                    CursiveCoordinate cDroite = new CursiveCoordinate((Integer) c.getRow(), (Integer) (c.getCol() + 1),
+                            c);
+                    if (!this.maze.cellIsWall((ICoordinate) cDroite) && !discoveredCell.contains(cDroite)) {
+                        f.add(cDroite);
+                        discoveredCell.add(cDroite);
+                    }
+                }
+
+                f.poll();
+            }
+        }
+
+        for (CursiveCoordinate c : f) {
+            int i = 0;
+            while (c.getParent() != null) {
+                System.out.println(c);
+                c = c.getParent();
+                ++i;
+            }
+            System.out.println(c);
+            System.out.println(i);
+
+            System.out.println("--------------------");
+        }
+
+        return false;
+    }
 }
