@@ -60,7 +60,7 @@ public class MainView extends Stage {
         private void handle() {
             if (mazeList.getSelectionModel().getSelectedItem() != null) {
                 Maze.resetTurn();
-                maze = new Maze(111, 11);
+                maze = new Maze(11, 11);
                 MainView.this.close();
             }
         }
