@@ -26,7 +26,7 @@ import model.Maze;
 
 public class HunterView extends PlayView {
 
-    private static final int RECT_COL = 60;
+    private static final int RECT_COL = 75;
     private static final int RECT_ROW = 60;
     private Hunter hunter;
 
@@ -43,6 +43,11 @@ public class HunterView extends PlayView {
     private VBox waitRoot;
     private Label waitLabel;
     private Button waitButton;
+
+    /* Error */
+    private VBox errorRoot;
+    private Label errorLabel;
+    private Button errorButton;
 
     private Properties properties;
 
@@ -65,9 +70,11 @@ public class HunterView extends PlayView {
         playShotButton = new Button("Confirmer le tir");
         playShotButton.setPadding(new Insets(10));
         playShotButton.setFont(font);
+        playShotButton.setPadding(new Insets(10));
         playExitButton = new Button("Quitter le jeux");
         playExitButton.setPadding(new Insets(10));
         playExitButton.setFont(font);
+        playExitButton.setPadding(new Insets(10));
         playVBoxNav = new HBox(playShotButton, playExitButton);
 
         playRoot.getChildren().addAll(playGameBoard, playVBoxNav);
@@ -91,6 +98,12 @@ public class HunterView extends PlayView {
         super.setWaitScene(new Scene(waitRoot));
     }
 
+    public void initErrorView(String message) {
+        errorRoot = new VBox();
+        errorLabel = new Label(message);
+        errorButton = new Button("J'ai compris");
+    }
+
     public void makeGameBoard(boolean[][] wall, boolean[][] empty) {
         ImagePattern monsterTexture = new ImagePattern(
                 new Image("file:" + properties.getProperty("MonsterViewApparence")));
@@ -103,7 +116,7 @@ public class HunterView extends PlayView {
         this.playGameBoard.setHgap(3);
         this.playGameBoard.setVgap(3);
         this.playGameBoard.setBackground(new Background(
-                new BackgroundFill(javafx.scene.paint.Color.LIGHTGRAY, null, null)));
+                new BackgroundFill(javafx.scene.paint.Color.GRAY, null, null)));
 
         for (int i = 0; i < wall.length; i++) {
             Label columnHeader = new Label(String.valueOf(i));

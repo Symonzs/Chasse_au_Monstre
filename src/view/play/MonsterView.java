@@ -95,10 +95,11 @@ public class MonsterView extends PlayView {
         ImagePattern wallTexture = new ImagePattern(new Image("file:" + properties.getProperty("WallViewAsset")));
         ImagePattern groundTexture = new ImagePattern(new Image("file:" + properties.getProperty("GroundViewAsset")));
         ImagePattern exitTexture = new ImagePattern(new Image("file:" + properties.getProperty("ExitViewAsset")));
+
         playGameBoard.setHgap(3);
         playGameBoard.setVgap(3);
         playGameBoard.setBackground(new Background(
-                new BackgroundFill(javafx.scene.paint.Color.WHITE, null, null)));
+                new BackgroundFill(javafx.scene.paint.Color.GRAY, null, null)));
 
         for (int i = 0; i < board.length; i++) {
             Label columnHeader = new Label(String.valueOf(i));
@@ -133,7 +134,7 @@ public class MonsterView extends PlayView {
                 }
                 ICoordinate hunterCoord = monster.getHunterCoord();
                 if (hunterCoord != null && (i == hunterCoord.getRow() && j == hunterCoord.getCol())) {
-                    cell.setStroke(javafx.scene.paint.Color.LIGHTGREEN);
+                    cell.setStroke(javafx.scene.paint.Color.BROWN);
                     cell.setStrokeWidth(3);
                 } else {
                     cell.setStroke(javafx.scene.paint.Color.BLACK);

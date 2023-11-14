@@ -13,6 +13,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 import main.MonsterHunter;
 import model.CellEvent;
 import model.Coordinate;
@@ -92,6 +93,14 @@ public class HunterController {
                 makeGameBoard(view.getHunter().getKnowWall(), view.getHunter().getKnowEmpty());
                 view.getPlayRoot().getChildren().set(0, view.getPlayGameBoard());
                 selectedStack = null;
+                view.showPlayScene();
+                gameView.display(view.getPlayScene(), true);
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
                 view.showWaitScene();
                 gameView.display(view.getWaitScene(), false);
             }
@@ -119,6 +128,7 @@ public class HunterController {
                     selectedStack = stack;
                     amplifyStackStroke(selectedStack);
                 }
+
             }
         }
 
