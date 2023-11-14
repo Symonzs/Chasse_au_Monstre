@@ -18,7 +18,8 @@ import model.CellEvent;
 import model.Coordinate;
 import model.Maze;
 import model.Monster;
-import view.MonsterView;
+import view.game.GameView;
+import view.play.MonsterView;
 
 public class MonsterController {
 
@@ -29,11 +30,11 @@ public class MonsterController {
 
     private boolean monsterHasPlayed = false;
 
-    public MonsterController(Maze maze) {
+    public MonsterController(Maze maze, GameView gameView) {
         this.maze = maze;
         Monster monster = new Monster(maze);
         maze.attach(monster);
-        this.view = new MonsterView(monster);
+        this.view = new MonsterView(monster, gameView);
         this.move = view.getMoveButton();
         this.move.setOnAction(new ActionHandler());
         view.getExitButton().setOnAction(e -> {
@@ -131,7 +132,8 @@ public class MonsterController {
                 }
                 maze.cellUpdate(new CellEvent(coord, Maze.turn, CellInfo.MONSTER));
                 makeGameBoard(view.getMonster().getWall());
-                view.getRoot().getChildren().set(0, view.getGameBoard());
+                // view.getRoot().getChildren().set(0, view.getGameBoard());
+                view.getGameView().gethBox().getChildren().set(0, view.getGameBoard());
                 selectedStack = null;
                 monsterHasPlayed = true;
                 view.close();
