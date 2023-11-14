@@ -16,7 +16,10 @@ public class Hunter implements Observer {
 
     // Tableau de booleens representant les murs connus par le chasseur
     private boolean[][] knowWall;
-    // Coordonnees des monstres connus par le chasseur
+    // Tableau de booléens représentant les cases vides du labyrinte connus par le
+    // chasseur
+    private boolean[][] knowEmpty;
+    // Coordonnées des monstres connus par le chasseur
     private Map<Integer, ICoordinate> knowMonsterCoords;
     // Coordonnees du chasseur
     private ICoordinate hunterCoord;
@@ -30,6 +33,7 @@ public class Hunter implements Observer {
      */
     public Hunter(Integer rows, Integer cols) {
         this.knowWall = new boolean[rows][cols];
+        this.knowEmpty = new boolean[rows][cols];
         this.knowMonsterCoords = new TreeMap<>();
         this.hunterCoord = null;
     }
@@ -51,6 +55,15 @@ public class Hunter implements Observer {
      */
     public boolean[][] getKnowWall() {
         return this.knowWall;
+    }
+
+    /**
+     * Méthode permettant de récupérer les cases vides connus par le chasseur
+     * 
+     * @return Les cases vides connus par le chasseur
+     */
+    public boolean[][] getKnowEmpty() {
+        return this.knowEmpty;
     }
 
     /**
@@ -119,7 +132,7 @@ public class Hunter implements Observer {
             } else if (event.getState() == CellInfo.WALL) {
                 this.knowWall[event.getCoord().getRow()][event.getCoord().getCol()] = true;
             } else {
-                this.knowWall[event.getCoord().getRow()][event.getCoord().getCol()] = false;
+                this.knowEmpty[event.getCoord().getRow()][event.getCoord().getCol()] = true;
             }
         }
     }

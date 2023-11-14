@@ -1,31 +1,59 @@
 package view.game;
 
+import java.util.ArrayList;
+
 import javafx.scene.Scene;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class GameView extends Stage {
-    HBox hBox;
+    private ArrayList<Scene> playScenes;
+    private Scene lastPlayedScene;
+    // private Scene nextPlayScene;
 
-    public GameView(HBox hBox) {
-        this.hBox = hBox;
-        this.setScene(new Scene(hBox));
-        showAndWait();
+    public GameView(Scene scene1, Scene scene2) {
+        this.playScenes = new ArrayList<Scene>();
+        if (scene1 != null && scene2 != null) {
+            playScenes.add(scene1);
+            playScenes.add(scene2);
+            // nextPlayScene = scene2;
+            setScene(scene1);
+        }
     }
 
-    public void display(VBox[] vBoxs) {
-        clear();
-        this.hBox.getChildren().addAll(vBoxs);
-        hBox.requestLayout();
-        this.setScene(new Scene(hBox));
+    public GameView() {
+        this(null, null);
     }
 
-    public void clear() {
-        this.hBox.getChildren().clear();
+    public ArrayList<Scene> getPlayScenes() {
+        return playScenes;
     }
 
-    public HBox gethBox() {
-        return hBox;
+    public void addPlayScene(Scene scene) {
+        if (!playScenes.contains(scene)) {
+            playScenes.add(scene);
+            System.out.println("added to playscenes : " + scene);
+        } else {
+            System.out.println("not added to playscenes :" + scene + " is already in the list.");
+        }
     }
+
+    public void display(Scene scene, boolean isPlayScene) {
+        setScene(scene);
+        setFullScreenExitHint("");
+        setFullScreen(true);
+        if (isPlayScene) {
+            lastPlayedScene = scene;
+            addPlayScene(scene);
+        }
+
+    }
+
+    public void nextPlayScenes() {
+        setScene(playScenes.get((playScenes.indexOf(lastPlayedScene) + 1) % (playScenes.size())));
+        lastPlayedScene = getScene();
+        setFullScreenExitHint("");
+        setFullScreen(true);
+
+    }
+
 }

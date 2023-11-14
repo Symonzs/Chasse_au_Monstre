@@ -1,37 +1,34 @@
 package view.play;
 
-import java.io.File;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
-import data.DataStream;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.VBox;
-import view.game.GameView;
+public class PlayView extends Stage {
+    private Scene playScene;
+    private Scene waitScene;
 
-public abstract class PlayView {
-    GameView gameView;
-    ImageView imageView;
-    VBox[] mainvBoxs;
-
-    public PlayView(GameView gameview, File fileName) {
-        // this.imageView = new ImageView(new Image(DataStream.read(fileName)));
-        this.gameView = gameview;
+    public void setPlayScene(Scene scene) {
+        playScene = scene;
     }
 
-    public void display(VBox[] vBoxs) {
-        gameView.display(vBoxs);
-        this.mainvBoxs = vBoxs;
+    public void setWaitScene(Scene scene) {
+        waitScene = scene;
     }
 
-    public GameView getGameView() {
-        return gameView;
+    public Scene getPlayScene() {
+        return playScene;
     }
 
-    public void close() {
-        gameView.clear();
+    public Scene getWaitScene() {
+        return waitScene;
     }
 
-    public void showAndWait() {
-        display(mainvBoxs);
+    public void showPlayScene() {
+        setScene(playScene);
     }
+
+    public void showWaitScene() {
+        setScene(waitScene);
+    }
+
 }

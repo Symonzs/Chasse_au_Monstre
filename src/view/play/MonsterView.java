@@ -1,70 +1,118 @@
 package view.play;
 
-import java.nio.file.Paths;
+import java.util.Properties;
 
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import main.MonsterHunter;
 import model.Monster;
-import view.game.GameView;
 
 public class MonsterView extends PlayView {
 
-    private static final int RECT_COL = 60;
-    private static final int RECT_ROW = 60;
+    private static final int RECT_COL = 75;
+    private static final int RECT_ROW = 75;
     private Monster monster;
 
-    // private HBox root;
-    private GridPane gameBoard;
-    private Button move;
-    private Button exit;
+    private Font font;
 
-    public MonsterView(Monster monster, GameView gameView) {
-        super(gameView, Paths.get(MonsterHunter.PROPERTIES.getProperty("MonsterViewApparence")).toFile());
+    /* Play atribut */
+    private VBox playRoot;
+    private GridPane playGameBoard;
+    private HBox playButtonBox;
+    private Button playMoveButton;
+    private Button playExitButton;
+
+    /* Waiting atribut */
+
+    private VBox waitRoot;
+    private Label waitLabel;
+    private Button waitButton;
+
+    private Properties properties;
+
+    public MonsterView(Monster monster, Properties properties) {
         this.monster = monster;
-        // this.setTitle("Monster View | Tour : " + Maze.turn);
-        // this.root = new HBox();
-        this.gameBoard = new GridPane();
-        this.move = new Button("Move");
-        this.exit = new Button("Exit game");
+        this.properties = properties;
 
-        super.display(new VBox[] { new VBox(gameBoard), new VBox(move, exit) });
-        // VBox buttonsBox = new VBox(move, exit);
-        // this.root.getChildren().addAll(gameBoard, buttonsBox);
-        // Scene scene = new Scene(root);
-        // this.setScene(scene);
+        this.font = new Font("Arial", 24);
+
+        initWaitingScene();
+        initPlayScene();
+        showPlayScene();
+    }
+
+    public void initWaitingScene() {
+        waitRoot = new VBox();
+        waitRoot.setAlignment(Pos.CENTER);
+        waitLabel = new Label("Vous avez joué. C'est au tour du Chasseur de jouer.");
+        waitLabel.setFont(font);
+        waitButton = new Button("Passez au tour suivant");
+        waitLabel.setFont(font);
+
+        waitRoot.getChildren().addAll(waitLabel, waitButton);
+
+        super.setWaitScene(new Scene(waitRoot));
+    }
+
+    public void initPlayScene() {
+        playRoot = new VBox();
+        playRoot.setPadding(new Insets(10));
+        playRoot.setAlignment(Pos.CENTER);
+        playGameBoard = new GridPane();
+        playMoveButton = new Button("Confirmer le déplacement.");
+        playMoveButton.setPadding(new Insets(10));
+        playMoveButton.setFont(font);
+        playExitButton = new Button("Quitter le jeux.");
+        playExitButton.setPadding(new Insets(10));
+        playExitButton.setFont(font);
+        playButtonBox = new HBox(playMoveButton, playExitButton);
+
+        playRoot.getChildren().addAll(playGameBoard, playButtonBox);
+
+        super.setPlayScene(new Scene(playRoot));
     }
 
     public void makeGameBoard(boolean[][] board) {
-        // this.setTitle("Monster View | Tour : " + Maze.turn);
-        gameBoard.setHgap(3);
-        gameBoard.setVgap(3);
-        gameBoard.setBackground(new Background(
-                new BackgroundFill(javafx.scene.paint.Color.LIGHTGRAY, null, null)));
+        ImagePattern monsterTexture = new ImagePattern(
+                new Image("file:" + properties.getProperty("MonsterViewApparence")));
+        ImagePattern wallTexture = new ImagePattern(new Image("file:" + properties.getProperty("WallViewAsset")));
+        ImagePattern groundTexture = new ImagePattern(new Image("file:" + properties.getProperty("GroundViewAsset")));
+        ImagePattern exitTexture = new ImagePattern(new Image("file:" + properties.getProperty("ExitViewAsset")));
+
+        playGameBoard.setHgap(3);
+        playGameBoard.setVgap(3);
+        playGameBoard.setBackground(new Background(
+                new BackgroundFill(javafx.scene.paint.Color.GRAY, null, null)));
 
         for (int i = 0; i < board.length; i++) {
             Label columnHeader = new Label(String.valueOf(i));
             columnHeader.setFont(Font.font("Arial", FontWeight.BOLD, 12));
             columnHeader.setAlignment(Pos.CENTER);
-            gameBoard.add(columnHeader, i + 1, 0);
+            playGameBoard.add(columnHeader, i + 1, 0);
         }
 
         for (int j = 0; j < board[0].length; j++) {
             Label rowHeader = new Label(String.valueOf((char) ('A' + j)));
             rowHeader.setFont(Font.font("Arial", FontWeight.BOLD, 12));
             rowHeader.setAlignment(Pos.CENTER);
-            gameBoard.add(rowHeader, 0, j + 1);
+            playGameBoard.add(rowHeader, 0, j + 1);
         }
 
         for (int i = 0; i < board.length; i++) {
@@ -72,19 +120,21 @@ public class MonsterView extends PlayView {
                 Rectangle cell = new Rectangle(RECT_ROW, RECT_COL);
                 Text text = new Text(RECT_ROW, RECT_COL, "");
                 if (board[i][j]) {
-                    cell.setFill(javafx.scene.paint.Color.BLACK);
+                    cell.setFill(wallTexture);
                 } else {
                     ICoordinate monsterCoord = monster.getMonsterCoord();
                     if (i == monster.getExit().getRow() && j == monster.getExit().getCol()) {
-                        text = new Text("Exit");
+                        cell.setFill(exitTexture);
                     } else if (i == monsterCoord.getRow() && j == monsterCoord.getCol()) {
-                        text = new Text("Monster");
+                        cell.setFill(monsterTexture);
+
+                    } else {
+                        cell.setFill(groundTexture);
                     }
-                    cell.setFill(javafx.scene.paint.Color.WHITE);
                 }
                 ICoordinate hunterCoord = monster.getHunterCoord();
                 if (hunterCoord != null && (i == hunterCoord.getRow() && j == hunterCoord.getCol())) {
-                    cell.setStroke(javafx.scene.paint.Color.LIGHTGREEN);
+                    cell.setStroke(javafx.scene.paint.Color.BROWN);
                     cell.setStrokeWidth(3);
                 } else {
                     cell.setStroke(javafx.scene.paint.Color.BLACK);
@@ -94,7 +144,7 @@ public class MonsterView extends PlayView {
                 StackPane stack = new StackPane();
                 stack.getChildren().addAll(cell, text);
 
-                gameBoard.add(stack, j + 1, i + 1);
+                playGameBoard.add(stack, j + 1, i + 1);
             }
         }
     }
@@ -103,22 +153,23 @@ public class MonsterView extends PlayView {
         return this.monster;
     }
 
-    /*
-     * public HBox getRoot() {
-     * return this.root;
-     * }
-     */
-
-    public GridPane getGameBoard() {
-        return this.gameBoard;
+    public VBox getRoot() {
+        return this.playRoot;
     }
 
-    public Button getMoveButton() {
-        return this.move;
+    public GridPane getGameBoard() {
+        return this.playGameBoard;
+    }
+
+    public Button getPlayMoveButton() {
+        return this.playMoveButton;
     }
 
     public Button getExitButton() {
-        return this.exit;
+        return this.playExitButton;
     }
 
+    public Button getWaitButton() {
+        return waitButton;
+    }
 }

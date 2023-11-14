@@ -1,6 +1,7 @@
 package controller;
 
 import java.util.InputMismatchException;
+import java.util.Properties;
 
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
@@ -25,22 +26,31 @@ public class MonsterController {
 
     private Maze maze;
     private MonsterView view;
+    private GameView gameView;
     private Button move;
     private StackPane selectedStack;
 
     private boolean monsterHasPlayed = false;
 
-    public MonsterController(Maze maze, GameView gameView) {
+    public MonsterController(Maze maze, GameView gameView, Properties properties) {
         this.maze = maze;
+        this.gameView = gameView;
         Monster monster = new Monster(maze);
         maze.attach(monster);
-        this.view = new MonsterView(monster, gameView);
-        this.move = view.getMoveButton();
+        this.view = new MonsterView(monster, properties);
+        this.makeGameBoard(view.getMonster().getWall());
+        this.gameView.addPlayScene(view.getPlayScene());
+        this.move = view.getPlayMoveButton();
         this.move.setOnAction(new ActionHandler());
         view.getExitButton().setOnAction(e -> {
-            view.close();
+            gameView.close();
             MonsterHunter.exitedGame();
         });
+        view.getWaitButton().setOnAction(e -> {
+            // view.showPlayScene();
+            gameView.nextPlayScenes();
+        });
+
     }
 
     public void makeGameBoard(boolean[][] board) {
@@ -106,13 +116,6 @@ public class MonsterController {
         }
     }
 
-    public boolean play() {
-        monsterHasPlayed = false;
-        makeGameBoard(view.getMonster().getWall());
-        view.showAndWait();
-        return monsterHasPlayed;
-    }
-
     private class ActionHandler implements EventHandler<ActionEvent> {
 
         @Override
@@ -132,11 +135,11 @@ public class MonsterController {
                 }
                 maze.cellUpdate(new CellEvent(coord, Maze.turn, CellInfo.MONSTER));
                 makeGameBoard(view.getMonster().getWall());
-                // view.getRoot().getChildren().set(0, view.getGameBoard());
-                view.getGameView().gethBox().getChildren().set(0, view.getGameBoard());
+                view.getRoot().getChildren().set(0, view.getGameBoard());
                 selectedStack = null;
                 monsterHasPlayed = true;
-                view.close();
+                view.showWaitScene();
+                gameView.display(view.getWaitScene(), false);
             }
         }
 
