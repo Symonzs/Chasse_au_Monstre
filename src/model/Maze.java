@@ -103,7 +103,7 @@ public class Maze extends Subject {
     }
 
     public void generateMaze(Integer nbRows, Integer nbCols, Integer wallPercentage) {
-        MazeGenerator mazeGen = new MazeGenerator(nbRows, nbCols, wallPercentage);
+        MazeGenerator mazeGen = new MazeGenerator(nbRows, nbCols);
         this.wall = mazeGen.getWall();
         this.monster = mazeGen.getMonster();
         this.hunter = mazeGen.getHunter();
