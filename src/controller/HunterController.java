@@ -1,6 +1,9 @@
 package controller;
 
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
+
+import java.util.Properties;
+
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -10,12 +13,14 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 import main.MonsterHunter;
 import model.CellEvent;
 import model.Coordinate;
 import model.Hunter;
 import model.Maze;
-import view.HunterView;
+import view.game.GameView;
+import view.play.HunterView;
 
 public class HunterController {
 
@@ -24,24 +29,31 @@ public class HunterController {
     private Button shot;
     private StackPane selectedStack;
 
-    private boolean hunterHasPlayed = false;
+    private GameView gameView;
 
-    public HunterController(Maze maze) {
+    public HunterController(Maze maze, GameView gameView, Properties properties) {
         this.maze = maze;
+        this.gameView = gameView;
         Hunter hunter = new Hunter(maze.getWall().length, maze.getWall()[0].length);
         maze.attach(hunter);
-        this.view = new HunterView(hunter);
-        this.shot = view.getShotButton();
+        this.view = new HunterView(hunter, properties);
+        this.makeGameBoard(view.getHunter().getKnowWall(), view.getHunter().getKnowEmpty());
+        this.gameView.addPlayScene(view.getPlayScene());
+        this.shot = view.getPlayShotButton();
         this.shot.setOnAction(new ActionHandler());
-        view.getExitButton().setOnAction(e -> {
-            view.close();
+        view.getPlayExitButton().setOnAction(e -> {
+            gameView.close();
             MonsterHunter.exitedGame();
+        });
+        view.getWaitButton().setOnAction(e -> {
+            // view.showPlayScene();
+            gameView.nextPlayScenes();
         });
     }
 
-    public void makeGameBoard(boolean[][] board) {
-        view.makeGameBoard(board);
-        for (Node node : view.getGameBoard().getChildren()) {
+    public void makeGameBoard(boolean[][] wall, boolean[][] empty) {
+        view.makeGameBoard(wall, empty);
+        for (Node node : view.getPlayGameBoard().getChildren()) {
             if (StackPane.class == node.getClass()) {
                 StackPane stack = (StackPane) node;
                 stack.setOnMouseClicked(new MouseHandler());
@@ -65,13 +77,6 @@ public class HunterController {
         }
     }
 
-    public boolean play() {
-        hunterHasPlayed = false;
-        makeGameBoard(view.getHunter().getKnowWall());
-        view.showAndWait();
-        return hunterHasPlayed;
-    }
-
     public HunterView getHunterView() {
         return this.view;
     }
@@ -85,11 +90,19 @@ public class HunterController {
                 ICoordinate coord = new Coordinate(GridPane.getRowIndex(selectedStack) - 1,
                         GridPane.getColumnIndex(selectedStack) - 1);
                 maze.cellUpdate(new CellEvent(coord, Maze.turn, CellInfo.HUNTER));
-                makeGameBoard(view.getHunter().getKnowWall());
-                view.getRoot().getChildren().set(0, view.getGameBoard());
+                makeGameBoard(view.getHunter().getKnowWall(), view.getHunter().getKnowEmpty());
+                view.getPlayRoot().getChildren().set(0, view.getPlayGameBoard());
                 selectedStack = null;
-                hunterHasPlayed = true;
-                view.close();
+                view.showPlayScene();
+                gameView.display(view.getPlayScene(), true);
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                view.showWaitScene();
+                gameView.display(view.getWaitScene(), false);
             }
         }
 
@@ -115,6 +128,7 @@ public class HunterController {
                     selectedStack = stack;
                     amplifyStackStroke(selectedStack);
                 }
+
             }
         }
 

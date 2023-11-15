@@ -1,4 +1,4 @@
-package view;
+package view.play;
 
 import java.util.Comparator;
 
