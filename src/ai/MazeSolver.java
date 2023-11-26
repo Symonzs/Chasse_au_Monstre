@@ -1,11 +1,18 @@
 package ai;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
+import model.Coordinate;
 import model.Maze;
 
 /**
@@ -16,70 +23,36 @@ import model.Maze;
  * @version Nov 09, 2023
  */
 public class MazeSolver {
-    private Maze maze;
-    // private List<ICoordinate> path;
-    // private List<ICoordinate> cellExplored;
-    // private static final int[][] DIRECTIONS = { { 0, 1 }, { 1, 0 }, { 0, -1 }, {
-    // -1, 0 } };
+    private static Maze maze;
 
     public MazeSolver(Maze maze) {
-        // this.cellExplored = new ArrayList<>();
-        this.maze = maze;
+        setMaze(maze);
     }
 
-    // private List<ICoordinate> backtrackPath(
-    // ICoordinate cur) {
-    // List<ICoordinate> path = new ArrayList<>();
-    // CursiveCoordinate iter = (CursiveCoordinate) cur;
-
-    // while (iter != null) {
-    // path.add(iter);
-    // iter = iter.getParent();
-    // }
-
-    // return path;
-    // }
-
-    // public List<ICoordinate> solve(Maze maze) {
-    // LinkedList<ICoordinate> nextToVisit = new LinkedList<>();
-    // ICoordinate start = maze.getMonster().get(1);
-    // nextToVisit.add(start);
-
-    // while (!nextToVisit.isEmpty()) {
-    // ICoordinate cur = nextToVisit.remove();
-
-    // if (maze.cellIsWall(cur) || cellExplored.contains(cur)) {
-    // continue;
-    // }
-
-    // if (maze.cellIsWall(cur)) {
-    // cellExplored.add(cur);
-    // continue;
-    // }
-
-    // if (maze.getExit().getCol() == cur.getCol() && maze.getExit().getRow() ==
-    // cur.getRow()) {
-    // return backtrackPath(cur);
-    // }
-
-    // for (int[] direction : DIRECTIONS) {
-    // CursiveCoordinate coordinate = new CursiveCoordinate(
-    // (Integer) (cur.getRow() + direction[0]),
-    // (Integer) (cur.getCol() + direction[1]), (CursiveCoordinate) cur);
-    // nextToVisit.add(coordinate);
-    // cellExplored.add(cur);
-    // }
-    // }
-    // return Collections.emptyList();
-    // }
+    /**
+     * @param maze the maze to set
+     */
+    public static void setMaze(Maze maze) {
+        MazeSolver.maze = maze;
+    }
 
     public static void main(String[] args) {
-        Maze maze = new Maze("/home/infoetu/hugo.vallee2.etu/S3/sae/J1_SAE3A/resources/11x11.csv");
-        MazeSolver ms = new MazeSolver(maze);
-        System.out.println(ms.solve());
+        maze = new Maze("E:\\iutinfo\\S3\\J1_SAE3A\\resources\\11x11.csv");
+        CursiveCoordinate start = new CursiveCoordinate(maze.getMonster().get(1).getRow(),
+                maze.getMonster().get(1).getCol(), null);
+        CursiveCoordinate end = new CursiveCoordinate(maze.getExit().getRow(), maze.getExit().getCol(), null);
+
+        System.out.println(findPath(start, end));
+        // MazeSolver ms = new MazeSolver(maze);
+        // System.out.println(ms.isMazeCorrect());
     }
 
-    public boolean solve() {
+    /**
+     * Checks if the maze is correct by performing a breadth-first search.
+     * 
+     * @return true if the maze is correct, false otherwise.
+     */
+    public boolean isMazeCorrect() {
         Queue<CursiveCoordinate> f = new LinkedList<CursiveCoordinate>();
         List<CursiveCoordinate> discoveredCell = new ArrayList<>();
 
@@ -154,5 +127,114 @@ public class MazeSolver {
         }
 
         return false;
+    }
+
+    /**
+     * Finds a path from the start coordinate to the end coordinate in a maze.
+     * Uses the A* algorithm to find the shortest path.
+     *
+     * @param start The starting coordinate.
+     * @param end   The ending coordinate.
+     * @return A list of CursiveCoordinates representing the path from start to end,
+     *         or null if no path is found.
+     */
+    public static List<CursiveCoordinate> findPath(CursiveCoordinate start, CursiveCoordinate end) {
+        Set<CursiveCoordinate> openSet = new HashSet<>();
+        Set<CursiveCoordinate> closedSet = new HashSet<>();
+
+        openSet.add(start);
+
+        Map<CursiveCoordinate, Double> gScore = new HashMap<>();
+        gScore.put(start, 0.0);
+
+        Map<CursiveCoordinate, Double> fScore = new HashMap<>();
+        fScore.put(start, heuristicCostEstimate(start, end));
+
+        while (!openSet.isEmpty()) {
+            CursiveCoordinate current = getLowestFScore(openSet, fScore);
+
+            if (current.equals(end)) {
+                return reconstructPath(current);
+            }
+
+            openSet.remove(current);
+            closedSet.add(current);
+
+            for (CursiveCoordinate neighbor : getNeighbors(current)) {
+                if (closedSet.contains(neighbor)) {
+                    continue;
+                }
+
+                double tentativeGScore = gScore.getOrDefault(current, Double.POSITIVE_INFINITY)
+                        + distanceBetween(current, neighbor);
+
+                if (!openSet.contains(neighbor)
+                        || tentativeGScore < gScore.getOrDefault(neighbor, Double.POSITIVE_INFINITY)) {
+                    neighbor.setParent(current);
+                    gScore.put(neighbor, tentativeGScore);
+                    fScore.put(neighbor, tentativeGScore + heuristicCostEstimate(neighbor, end));
+
+                    if (!openSet.contains(neighbor)) {
+                        openSet.add(neighbor);
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private static double distanceBetween(CursiveCoordinate a, CursiveCoordinate b) {
+        return 1.0;
+    }
+
+    private static double heuristicCostEstimate(CursiveCoordinate current, CursiveCoordinate end) {
+        return Math.abs(current.getRow() - end.getRow()) + Math.abs(current.getCol() - end.getCol());
+    }
+
+    private static CursiveCoordinate getLowestFScore(Set<CursiveCoordinate> openSet,
+            Map<CursiveCoordinate, Double> fScore) {
+        return openSet.stream().min(Comparator.comparingDouble(fScore::get)).orElse(null);
+    }
+
+    private static List<CursiveCoordinate> reconstructPath(CursiveCoordinate current) {
+        List<CursiveCoordinate> path = new ArrayList<>();
+        while (current != null) {
+            path.add(current);
+            current = current.getParent();
+        }
+        Collections.reverse(path);
+        return path;
+    }
+
+    private static List<CursiveCoordinate> getNeighbors(CursiveCoordinate current) {
+        // Only 4 directions movements
+        List<CursiveCoordinate> neighbors = new ArrayList<>();
+        int row = current.getRow();
+        int col = current.getCol();
+
+        // Add neighbors
+        ICoordinate upperCell = new Coordinate(row - 1, col);
+        if (upperCell.getRow() >= 0 && !maze.cellIsWall(upperCell)) {
+            neighbors.add(new CursiveCoordinate(row - 1, col, current));
+        }
+        ICoordinate lowerCell = new Coordinate(row + 1, col);
+        if (lowerCell.getRow() < maze.getWall().length && !maze.cellIsWall(lowerCell)) {
+            neighbors.add(new CursiveCoordinate(row + 1, col, current));
+        }
+        ICoordinate leftCell = new Coordinate(row, col - 1);
+        if (leftCell.getCol() >= 0 && !maze.cellIsWall(leftCell)) {
+            neighbors.add(new CursiveCoordinate(row, col - 1, current));
+        }
+        ICoordinate rightCell = new Coordinate(row, col + 1);
+        if (rightCell.getCol() < maze.getWall()[1].length && !maze.cellIsWall(rightCell)) {
+            neighbors.add(new CursiveCoordinate(row, col + 1, current));
+        }
+        // neighbors.add(new CursiveCoordinate(row - 1, col - 1, current));
+        // neighbors.add(new CursiveCoordinate(row - 1, col + 1, current));
+        // neighbors.add(new CursiveCoordinate(row + 1, col - 1, current));
+        // neighbors.add(new CursiveCoordinate(row + 1, col + 1, current));
+
+        return neighbors;
     }
 }

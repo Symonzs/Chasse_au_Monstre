@@ -24,6 +24,13 @@ public class CursiveCoordinate extends Coordinate {
         return parent;
     }
 
+    /**
+     * @param parent the parent to set
+     */
+    public void setParent(CursiveCoordinate parent) {
+        this.parent = parent;
+    }
+
     @Override
     public String toString() {
         return getRow() + ":" + getCol();
