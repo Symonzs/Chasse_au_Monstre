@@ -34,29 +34,6 @@ public class MonsterFinder implements IHunterStrategy {
         return new Coordinate(randomRow, randomCol);
     }
 
-    // private static void setSurrondingCell(ICoordinate cell) {
-    // int row = cell.getRow();
-    // int col = cell.getCol();
-
-    // ICoordinate north = new Coordinate(row - 1, col);
-    // ICoordinate northEast = new Coordinate(row - 1, col + 1);
-    // ICoordinate east = new Coordinate(row, col + 1);
-    // ICoordinate southEast = new Coordinate(row + 1, col + 1);
-    // ICoordinate south = new Coordinate(row + 1, col);
-    // ICoordinate southWest = new Coordinate(row + 1, col - 1);
-    // ICoordinate west = new Coordinate(row, col - 1);
-    // ICoordinate northWest = new Coordinate(row - 1, col - 1);
-
-    // maze.monsterWasHere(north);
-    // maze.monsterWasHere(south);
-    // maze.monsterWasHere(east);
-    // maze.monsterWasHere(west);
-    // maze.monsterWasHere(northEast);
-    // maze.monsterWasHere(northWest);
-    // maze.monsterWasHere(southEast);
-    // maze.monsterWasHere(southWest);
-    // }
-
     @Override
     public void update(ICellEvent arg0) {
         // DO NOTHING
