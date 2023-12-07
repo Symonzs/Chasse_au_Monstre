@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import fr.univlille.iutinfo.cam.player.monster.IMonsterStrategy;
+import fr.univlille.iutinfo.cam.player.perception.ICellEvent;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import model.Coordinate;
 import model.Maze;
@@ -22,9 +24,8 @@ import model.Maze;
  * @author <a href=hugo.vallee2.etu@univ-lille.fr>Hugo Vallée</a>
  * @version Nov 09, 2023
  */
-public class MazeSolver {
-    private static final double DISTANCEBETWEENTWOCELL = 1.0;
-    private static Maze maze;
+public class MazeSolver implements IMonsterStrategy {
+    private Maze maze;
     private List<CursiveCoordinate> movements;
 
     /**
@@ -32,7 +33,7 @@ public class MazeSolver {
      * @param maze
      */
     public MazeSolver(Maze maze) {
-        setMaze(maze);
+        this.maze = maze;
         loadMovements();
     }
 
@@ -53,13 +54,6 @@ public class MazeSolver {
         } else {
             return null;
         }
-    }
-
-    /**
-     * @param maze the maze to set
-     */
-    public static void setMaze(Maze maze) {
-        MazeSolver.maze = maze;
     }
 
     public static void main(String[] args) {
@@ -163,7 +157,7 @@ public class MazeSolver {
      * @return A list of CursiveCoordinates representing the path from start to end,
      *         or null if no path is found.
      */
-    public static List<CursiveCoordinate> findPath(CursiveCoordinate start, CursiveCoordinate end) {
+    private List<CursiveCoordinate> findPath(CursiveCoordinate start, CursiveCoordinate end) {
         Set<CursiveCoordinate> openSet = new HashSet<>();
         Set<CursiveCoordinate> closedSet = new HashSet<>();
 
@@ -209,20 +203,20 @@ public class MazeSolver {
         return new ArrayList<>();
     }
 
-    private static double distanceBetween(CursiveCoordinate a, CursiveCoordinate b) {
-        return DISTANCEBETWEENTWOCELL;
+    private double distanceBetween(CursiveCoordinate a, CursiveCoordinate b) {
+        return Math.abs(a.getCol() - b.getCol()) + (double) Math.abs(a.getRow() - b.getRow());
     }
 
-    private static double heuristicCostEstimate(CursiveCoordinate current, CursiveCoordinate end) {
+    private double heuristicCostEstimate(CursiveCoordinate current, CursiveCoordinate end) {
         return Math.abs(current.getRow() - end.getRow()) + (double) Math.abs(current.getCol() - end.getCol());
     }
 
-    private static CursiveCoordinate getLowestFScore(Set<CursiveCoordinate> openSet,
+    private CursiveCoordinate getLowestFScore(Set<CursiveCoordinate> openSet,
             Map<CursiveCoordinate, Double> fScore) {
         return openSet.stream().min(Comparator.comparingDouble(fScore::get)).orElse(null);
     }
 
-    private static List<CursiveCoordinate> reconstructPath(CursiveCoordinate current) {
+    private List<CursiveCoordinate> reconstructPath(CursiveCoordinate current) {
         List<CursiveCoordinate> path = new ArrayList<>();
         while (current != null) {
             path.add(current);
@@ -232,7 +226,7 @@ public class MazeSolver {
         return path;
     }
 
-    private static List<CursiveCoordinate> getNeighbors(CursiveCoordinate current) {
+    private List<CursiveCoordinate> getNeighbors(CursiveCoordinate current) {
         List<CursiveCoordinate> neighbors = new ArrayList<>();
         int row = current.getRow();
         int col = current.getCol();
@@ -260,5 +254,15 @@ public class MazeSolver {
         // neighbors.add(new CursiveCoordinate(row + 1, col + 1, current));
 
         return neighbors;
+    }
+
+    @Override
+    public void update(ICellEvent arg0) {
+        // DO NOTHING
+    }
+
+    @Override
+    public void initialize(boolean[][] arg0) {
+        // DO NOTHING
     }
 }

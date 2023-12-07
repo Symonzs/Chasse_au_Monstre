@@ -2,55 +2,69 @@ package ai;
 
 import java.util.Random;
 
+import fr.univlille.iutinfo.cam.player.hunter.IHunterStrategy;
+import fr.univlille.iutinfo.cam.player.perception.ICellEvent;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import model.Coordinate;
-import model.Maze;
 
-public class MonsterFinder {
-    private static Maze maze;
+public class MonsterFinder implements IHunterStrategy {
+    private final Random rand = new Random();
 
-    private static Random random = new Random();
+    private int maxCol;
+    private int maxRow;
+
+    public MonsterFinder() {
+        maxCol = 0;
+        maxRow = 0;
+    }
 
     public static void main(String[] args) {
+        MonsterFinder mf = new MonsterFinder();
+        mf.initialize(11, 11);
+        for (int i = 0; i < 50; ++i) {
+            mf.play();
+        }
     }
 
-    public static void findMonster() {
-        int maxRow = maze.getWall().length;
-        int maxCol = maze.getWall()[0].length;
+    @Override
+    public ICoordinate play() {
+        int randomRow = rand.nextInt(maxRow + 1);
+        int randomCol = rand.nextInt(maxCol + 1);
 
-        ICoordinate result = shoot(maxRow, maxCol);
+        return new Coordinate(randomRow, randomCol);
     }
 
-    private static ICoordinate shoot(int maxRow, int maxCol) {
-        int randomRow = random.nextInt(maxRow) - 1;
-        int randomCol = random.nextInt(maxCol) - 1;
+    // private static void setSurrondingCell(ICoordinate cell) {
+    // int row = cell.getRow();
+    // int col = cell.getCol();
 
-        ICoordinate cell = new Coordinate(randomRow, randomCol);
-        maze.monsterWasHere(cell);
+    // ICoordinate north = new Coordinate(row - 1, col);
+    // ICoordinate northEast = new Coordinate(row - 1, col + 1);
+    // ICoordinate east = new Coordinate(row, col + 1);
+    // ICoordinate southEast = new Coordinate(row + 1, col + 1);
+    // ICoordinate south = new Coordinate(row + 1, col);
+    // ICoordinate southWest = new Coordinate(row + 1, col - 1);
+    // ICoordinate west = new Coordinate(row, col - 1);
+    // ICoordinate northWest = new Coordinate(row - 1, col - 1);
 
-        return cell != null ? cell : null;
+    // maze.monsterWasHere(north);
+    // maze.monsterWasHere(south);
+    // maze.monsterWasHere(east);
+    // maze.monsterWasHere(west);
+    // maze.monsterWasHere(northEast);
+    // maze.monsterWasHere(northWest);
+    // maze.monsterWasHere(southEast);
+    // maze.monsterWasHere(southWest);
+    // }
+
+    @Override
+    public void update(ICellEvent arg0) {
+        // DO NOTHING
     }
 
-    private static void setSurrondingCell(ICoordinate cell) {
-        int row = cell.getRow();
-        int col = cell.getCol();
-
-        ICoordinate north = new Coordinate(row - 1, col);
-        ICoordinate northEast = new Coordinate(row - 1, col + 1);
-        ICoordinate east = new Coordinate(row, col + 1);
-        ICoordinate southEast = new Coordinate(row + 1, col + 1);
-        ICoordinate south = new Coordinate(row + 1, col);
-        ICoordinate southWest = new Coordinate(row + 1, col - 1);
-        ICoordinate west = new Coordinate(row, col - 1);
-        ICoordinate northWest = new Coordinate(row - 1, col - 1);
-
-        maze.monsterWasHere(north);
-        maze.monsterWasHere(south);
-        maze.monsterWasHere(east);
-        maze.monsterWasHere(west);
-        maze.monsterWasHere(northEast);
-        maze.monsterWasHere(northWest);
-        maze.monsterWasHere(southEast);
-        maze.monsterWasHere(southWest);
+    @Override
+    public void initialize(int arg0, int arg1) {
+        maxCol = arg0;
+        maxRow = arg1;
     }
 }
