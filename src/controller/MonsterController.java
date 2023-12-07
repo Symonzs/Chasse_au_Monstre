@@ -44,10 +44,10 @@ public class MonsterController {
         this.move.setOnAction(new ActionHandler());
         view.getExitButton().setOnAction(e -> {
             gameView.close();
+            maze.SetgameIsExited(true);
             MonsterHunter.exitedGame();
         });
         view.getWaitButton().setOnAction(e -> {
-            // view.showPlayScene();
             gameView.nextPlayScenes();
         });
 

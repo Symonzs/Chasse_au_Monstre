@@ -13,7 +13,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
-import javafx.util.Duration;
 import main.MonsterHunter;
 import model.CellEvent;
 import model.Coordinate;
@@ -43,6 +42,7 @@ public class HunterController {
         this.shot.setOnAction(new ActionHandler());
         view.getPlayExitButton().setOnAction(e -> {
             gameView.close();
+            maze.SetgameIsExited(true);
             MonsterHunter.exitedGame();
         });
         view.getWaitButton().setOnAction(e -> {

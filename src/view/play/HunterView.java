@@ -27,7 +27,7 @@ import model.Maze;
 public class HunterView extends PlayView {
 
     private static final int RECT_COL = 75;
-    private static final int RECT_ROW = 60;
+    private static final int RECT_ROW = 75;
     private Hunter hunter;
 
     private Font font;
@@ -109,7 +109,8 @@ public class HunterView extends PlayView {
                 new Image("file:" + properties.getProperty("MonsterViewApparence")));
         ImagePattern wallTexture = new ImagePattern(new Image("file:" + properties.getProperty("WallViewAsset")));
         ImagePattern groundTexture = new ImagePattern(new Image("file:" + properties.getProperty("GroundViewAsset")));
-        ImagePattern exitTexture = new ImagePattern(new Image("file:" + properties.getProperty("ExitViewAsset")));
+        // ImagePattern exitTexture = new ImagePattern(new Image("file:" +
+        // properties.getProperty("ExitViewAsset")));
         ImagePattern unkwonTexture = new ImagePattern(new Image("file:" + properties.getProperty("UnknowTexture")));
 
         this.setTitle("Hunter View | Tour : " + Maze.turn);
@@ -193,4 +194,15 @@ public class HunterView extends PlayView {
         return waitButton;
     }
 
+    public Button getErrorButton() {
+        return errorButton;
+    }
+
+    public VBox getErrorRoot() {
+        return errorRoot;
+    }
+
+    public Label getErrorLabel() {
+        return errorLabel;
+    }
 }

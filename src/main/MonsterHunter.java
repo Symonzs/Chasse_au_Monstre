@@ -17,22 +17,37 @@ public class MonsterHunter extends Application {
     public static final File INIT_FILE = Paths.get("./resources/config/init.conf").toFile();
     public static final Properties PROPERTIES = DataProp.read(INIT_FILE);
 
+    private static MainView mainView;
+    private static GameView gameView;
+
+    private static MonsterController monsterController;
+    private static HunterController hunterController;
+
     @Override
     public void start(Stage primaryStage) throws InterruptedException {
-        MainView mv = new MainView(INIT_FILE);
-        mv.showAndWait();
-        GameView gameView = new GameView();
-        MonsterController mc = new MonsterController(mv.getMaze(), gameView, PROPERTIES);
-        HunterController hc = new HunterController(mv.getMaze(), gameView, PROPERTIES);
-        gameView.display(hc.getHunterView().getPlayScene(), true);
+
+        initgame();
+        while (mainView.getMaze().getWinner() == null || !mainView.getMaze().gameIsExited()) {
+            play();
+        }
+        exitedGame();
+    }
+
+    public static void initgame() {
+        mainView = new MainView(INIT_FILE);
+        mainView.showAndWait();
+
+        gameView = new GameView();
+        monsterController = new MonsterController(mainView.getMaze(), gameView, PROPERTIES);
+        hunterController = new HunterController(mainView.getMaze(), gameView, PROPERTIES);
+
+        gameView.display(hunterController.getHunterView().getPlayScene(), true);
         gameView.showAndWait();
 
-        Alert turnChange = new Alert(Alert.AlertType.INFORMATION);
-        turnChange.setTitle("Changement de tour");
-        Alert winner = new Alert(Alert.AlertType.INFORMATION);
-        winner.setTitle("Fin de la partie");
-        winner.setHeaderText("Le gagnant est " + mv.getMaze().getWinner().name());
-        winner.showAndWait();
+    }
+
+    public static void play() {
+
     }
 
     public static void exitedGame() {

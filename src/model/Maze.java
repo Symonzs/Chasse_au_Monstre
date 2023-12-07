@@ -36,6 +36,7 @@ public class Maze extends Subject {
     public static Integer turn = 1;
     // Vainqueur
     private CellInfo winner;
+    private boolean exitedGame = false;
 
     /**
      * Constructeur de la classe Maze
@@ -197,6 +198,7 @@ public class Maze extends Subject {
         if (this.monsterWasHere(eventCoord)) {
             if (this.monsterIsHere(eventCoord)) {
                 this.end(CellInfo.HUNTER);
+
             } else {
                 eventHunter = new CellEvent(eventCoord, this.getLastTurnFromCoordinate(eventCoord),
                         CellInfo.MONSTER);
@@ -260,6 +262,7 @@ public class Maze extends Subject {
      */
     public void end(CellInfo victoryInfo) {
         this.winner = victoryInfo;
+        this.exitedGame = true;
     }
 
     /**
@@ -369,6 +372,14 @@ public class Maze extends Subject {
                 monsterTemp.update(this, hunterData, monsterData);
             }
         }
+    }
+
+    public boolean gameIsExited() {
+        return exitedGame;
+    }
+
+    public void SetgameIsExited(boolean gameIsExited) {
+        this.exitedGame = gameIsExited;
     }
 
     public CellInfo getWinner() {
