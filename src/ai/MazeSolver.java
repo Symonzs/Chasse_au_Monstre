@@ -23,10 +23,36 @@ import model.Maze;
  * @version Nov 09, 2023
  */
 public class MazeSolver {
+    private static final double DISTANCEBETWEENTWOCELL = 1.0;
     private static Maze maze;
+    private List<CursiveCoordinate> movements;
 
+    /**
+     * 
+     * @param maze
+     */
     public MazeSolver(Maze maze) {
         setMaze(maze);
+        loadMovements();
+    }
+
+    public void loadMovements() {
+        CursiveCoordinate start = new CursiveCoordinate(maze.getMonster().get(1).getRow(),
+                maze.getMonster().get(1).getCol(), null);
+        CursiveCoordinate end = new CursiveCoordinate(maze.getExit().getRow(), maze.getExit().getCol(), null);
+        movements = findPath(start, end);
+    }
+
+    /**
+     * 
+     * @return the next movement of the AI
+     */
+    public ICoordinate play() {
+        if (!movements.isEmpty()) {
+            return movements.remove(0);
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -37,14 +63,13 @@ public class MazeSolver {
     }
 
     public static void main(String[] args) {
-        maze = new Maze("E:\\iutinfo\\S3\\J1_SAE3A\\resources\\11x11.csv");
-        CursiveCoordinate start = new CursiveCoordinate(maze.getMonster().get(1).getRow(),
-                maze.getMonster().get(1).getCol(), null);
-        CursiveCoordinate end = new CursiveCoordinate(maze.getExit().getRow(), maze.getExit().getCol(), null);
+        MazeSolver ms = new MazeSolver(new Maze("/home/infoetu/hugo.vallee2.etu/S3/sae/J1_SAE3A/resources/11x11.csv"));
 
-        System.out.println(findPath(start, end));
-        // MazeSolver ms = new MazeSolver(maze);
-        // System.out.println(ms.isMazeCorrect());
+        ICoordinate cell = null;
+        do {
+            cell = ms.play();
+            System.out.println(cell);
+        } while (cell != null);
     }
 
     /**
@@ -153,7 +178,7 @@ public class MazeSolver {
         while (!openSet.isEmpty()) {
             CursiveCoordinate current = getLowestFScore(openSet, fScore);
 
-            if (current.equals(end)) {
+            if (current != null && current.equals(end)) {
                 return reconstructPath(current);
             }
 
@@ -181,15 +206,15 @@ public class MazeSolver {
             }
         }
 
-        return null;
+        return new ArrayList<>();
     }
 
     private static double distanceBetween(CursiveCoordinate a, CursiveCoordinate b) {
-        return 1.0;
+        return DISTANCEBETWEENTWOCELL;
     }
 
     private static double heuristicCostEstimate(CursiveCoordinate current, CursiveCoordinate end) {
-        return Math.abs(current.getRow() - end.getRow()) + Math.abs(current.getCol() - end.getCol());
+        return Math.abs(current.getRow() - end.getRow()) + (double) Math.abs(current.getCol() - end.getCol());
     }
 
     private static CursiveCoordinate getLowestFScore(Set<CursiveCoordinate> openSet,
@@ -208,7 +233,6 @@ public class MazeSolver {
     }
 
     private static List<CursiveCoordinate> getNeighbors(CursiveCoordinate current) {
-        // Only 4 directions movements
         List<CursiveCoordinate> neighbors = new ArrayList<>();
         int row = current.getRow();
         int col = current.getCol();
