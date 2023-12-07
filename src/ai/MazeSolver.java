@@ -26,6 +26,7 @@ import model.Maze;
  */
 public class MazeSolver implements IMonsterStrategy {
     private Maze maze;
+    private boolean[][] wall;
     private List<CursiveCoordinate> movements;
 
     /**
@@ -34,7 +35,6 @@ public class MazeSolver implements IMonsterStrategy {
      */
     public MazeSolver(Maze maze) {
         this.maze = maze;
-        loadMovements();
     }
 
     public void loadMovements() {
@@ -233,19 +233,19 @@ public class MazeSolver implements IMonsterStrategy {
 
         // Add neighbors
         ICoordinate upperCell = new Coordinate(row - 1, col);
-        if (upperCell.getRow() >= 0 && !maze.cellIsWall(upperCell)) {
+        if (upperCell.getRow() >= 0 && !wall[upperCell.getRow()][upperCell.getCol()]) {
             neighbors.add(new CursiveCoordinate(row - 1, col, current));
         }
         ICoordinate lowerCell = new Coordinate(row + 1, col);
-        if (lowerCell.getRow() < maze.getWall().length && !maze.cellIsWall(lowerCell)) {
+        if (lowerCell.getRow() < maze.getWall().length && !wall[lowerCell.getRow()][lowerCell.getCol()]) {
             neighbors.add(new CursiveCoordinate(row + 1, col, current));
         }
         ICoordinate leftCell = new Coordinate(row, col - 1);
-        if (leftCell.getCol() >= 0 && !maze.cellIsWall(leftCell)) {
+        if (leftCell.getCol() >= 0 && !wall[leftCell.getRow()][leftCell.getCol()]) {
             neighbors.add(new CursiveCoordinate(row, col - 1, current));
         }
         ICoordinate rightCell = new Coordinate(row, col + 1);
-        if (rightCell.getCol() < maze.getWall()[1].length && !maze.cellIsWall(rightCell)) {
+        if (rightCell.getCol() < maze.getWall()[1].length && !wall[rightCell.getRow()][rightCell.getCol()]) {
             neighbors.add(new CursiveCoordinate(row, col + 1, current));
         }
         // neighbors.add(new CursiveCoordinate(row - 1, col - 1, current));
@@ -263,6 +263,7 @@ public class MazeSolver implements IMonsterStrategy {
 
     @Override
     public void initialize(boolean[][] arg0) {
-        // DO NOTHING
+        wall = arg0;
+        loadMovements();
     }
 }
