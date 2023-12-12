@@ -23,17 +23,25 @@ public class MazeGenerator {
     private Map<Integer, ICoordinate> hunter;
     private ICoordinate exit;
 
-    public MazeGenerator(Integer nbRows, Integer nbCols) {
+    public MazeGenerator(Integer nbRows, Integer nbCols, Integer wallPercent) {
         wall = new boolean[nbRows][nbCols];
         path = new ArrayList<>();
         visited = new ArrayList<>();
         monster = new TreeMap<>();
         hunter = new TreeMap<>();
         tunnel();
+        breakWall(wallPercent);
     }
 
-    public MazeGenerator() {
-        this(ROWS, COLS);
+    private void breakWall(Integer wallPercent) {
+        for (int i = 0; i < this.wall.length; i++) {
+            for (int j = 0; j < this.wall[0].length; j++) {
+                if (this.wall[i][j] && (random.nextInt(0, 101) < wallPercent)) {
+                    this.wall[i][j] = false;
+
+                }
+            }
+        }
     }
 
     private ICoordinate chooseBorderCoord() {
@@ -91,7 +99,6 @@ public class MazeGenerator {
             }
         }
         exit = maxPath.get(random.nextInt(maxPath.size() / 2, maxPath.size()));
-        System.out.println("Exit : " + exit.getRow() + " " + exit.getCol());
     }
 
     public List<ICoordinate> getNeighbors(ICoordinate coord) {

@@ -52,7 +52,7 @@ public class Maze extends Subject {
      * @param nbCols Nombre de colonnes du labyrinthe
      */
     public Maze(Integer nbRows, Integer nbCols) {
-        generateMaze(nbRows, nbCols, 60);
+        generateMaze(nbRows, nbCols, 50);
     }
 
     /**
@@ -103,7 +103,7 @@ public class Maze extends Subject {
     }
 
     public void generateMaze(Integer nbRows, Integer nbCols, Integer wallPercentage) {
-        MazeGenerator mazeGen = new MazeGenerator(nbRows, nbCols);
+        MazeGenerator mazeGen = new MazeGenerator(nbRows, nbCols, wallPercentage);
         this.wall = mazeGen.getWall();
         this.monster = mazeGen.getMonster();
         this.hunter = mazeGen.getHunter();
