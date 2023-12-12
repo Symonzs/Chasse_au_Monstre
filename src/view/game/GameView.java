@@ -16,6 +16,8 @@ public class GameView extends Stage {
             playScenes.add(scene1);
             playScenes.add(scene2);
             // nextPlayScene = scene2;
+            setFullScreenExitHint("");
+            setFullScreen(true);
             setScene(scene1);
         }
     }

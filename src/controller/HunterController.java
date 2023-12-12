@@ -28,6 +28,9 @@ public class HunterController {
     private Button shot;
     private StackPane selectedStack;
 
+    private boolean hasPlayed;
+    private boolean isReadyToNext;
+
     private GameView gameView;
 
     public HunterController(Maze maze, GameView gameView, Properties properties) {
@@ -35,19 +38,19 @@ public class HunterController {
         this.gameView = gameView;
         Hunter hunter = new Hunter(maze.getWall().length, maze.getWall()[0].length);
         maze.attach(hunter);
+        this.view.getPlayGameBoard();
         this.view = new HunterView(hunter, properties);
         this.makeGameBoard(view.getHunter().getKnowWall(), view.getHunter().getKnowEmpty());
         this.gameView.addPlayScene(view.getPlayScene());
-        this.shot = view.getPlayShotButton();
-        this.shot.setOnAction(new ActionHandler());
+        view.getPlayShotButton().setOnAction(e -> {
+            shot(e);
+        });
         view.getPlayExitButton().setOnAction(e -> {
-            gameView.close();
             maze.SetgameIsExited(true);
             MonsterHunter.exitedGame();
         });
         view.getWaitButton().setOnAction(e -> {
-            // view.showPlayScene();
-            gameView.nextPlayScenes();
+            isReadyToNext = true;
         });
     }
 
@@ -81,32 +84,69 @@ public class HunterController {
         return this.view;
     }
 
-    private class ActionHandler implements EventHandler<ActionEvent> {
-
-        @Override
-        public void handle(ActionEvent event) {
-            if (event.getSource() == shot && selectedStack != null) {
+    public void shot(ActionEvent e) {
+        StackPane stack = (StackPane) e.getSource();
+        if (selectedStack == stack) {
+            resetStackStroke(selectedStack);
+            selectedStack = null;
+        } else {
+            if (selectedStack != null) {
                 resetStackStroke(selectedStack);
-                ICoordinate coord = new Coordinate(GridPane.getRowIndex(selectedStack) - 1,
-                        GridPane.getColumnIndex(selectedStack) - 1);
-                maze.cellUpdate(new CellEvent(coord, Maze.turn, CellInfo.HUNTER));
-                makeGameBoard(view.getHunter().getKnowWall(), view.getHunter().getKnowEmpty());
-                view.getPlayRoot().getChildren().set(0, view.getPlayGameBoard());
-                selectedStack = null;
-                view.showPlayScene();
-                gameView.display(view.getPlayScene(), true);
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-                view.showWaitScene();
-                gameView.display(view.getWaitScene(), false);
             }
+            selectedStack = stack;
+            amplifyStackStroke(selectedStack);
         }
-
     }
+
+    public void update(ActionEvent e) {
+        if (e.getSource() == shot && selectedStack != null) {
+            resetStackStroke(selectedStack);
+            ICoordinate coord = new Coordinate(GridPane.getRowIndex(selectedStack) - 1,
+                    GridPane.getColumnIndex(selectedStack) - 1);
+            maze.cellUpdate(new CellEvent(coord, Maze.turn, CellInfo.HUNTER));
+            makeGameBoard(view.getHunter().getKnowWall(), view.getHunter().getKnowEmpty());
+            view.getPlayRoot().getChildren().set(0, view.getPlayGameBoard());
+            selectedStack = null;
+            view.showPlayScene();
+            gameView.display(view.getPlayScene(), true);
+            try {
+                Thread.sleep(2500);
+            } catch (InterruptedException ec) {
+                ec.printStackTrace();
+            }
+            view.showWaitScene();
+            gameView.display(view.getWaitScene(), false);
+        }
+    }
+    /*
+     * private class ActionHandler implements EventHandler<ActionEvent> {
+     * 
+     * @Override
+     * public void handle(ActionEvent event) {
+     * if (event.getSource() == shot && selectedStack != null) {
+     * resetStackStroke(selectedStack);
+     * ICoordinate coord = new Coordinate(GridPane.getRowIndex(selectedStack) - 1,
+     * GridPane.getColumnIndex(selectedStack) - 1);
+     * maze.cellUpdate(new CellEvent(coord, Maze.turn, CellInfo.HUNTER));
+     * makeGameBoard(view.getHunter().getKnowWall(),
+     * view.getHunter().getKnowEmpty());
+     * view.getPlayRoot().getChildren().set(0, view.getPlayGameBoard());
+     * selectedStack = null;
+     * view.showPlayScene();
+     * gameView.display(view.getPlayScene(), true);
+     * try {
+     * Thread.sleep(2500);
+     * } catch (InterruptedException e) {
+     * // TODO Auto-generated catch block
+     * e.printStackTrace();
+     * }
+     * view.showWaitScene();
+     * gameView.display(view.getWaitScene(), false);
+     * }
+     * }
+     * 
+     * }
+     */
 
     private class MouseHandler implements EventHandler<MouseEvent> {
 

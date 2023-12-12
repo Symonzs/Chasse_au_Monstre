@@ -53,7 +53,10 @@ public class MonsterHunter extends Application {
     public static void exitedGame() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Fin de la partie");
-        alert.setHeaderText("Vous avez quitté la partie");
+        alert.setHeaderText("La partie est terminée.");
+        if (mainView.getMaze().getWinner() != null) {
+            alert.setHeaderText(alert.getHeaderText() + " Le gagnant est " + mainView.getMaze().getWinner());
+        }
         alert.showAndWait();
         System.exit(0);
     }
