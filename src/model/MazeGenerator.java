@@ -89,23 +89,6 @@ public class MazeGenerator {
             if (path.size() > maxPath.size()) {
                 maxPath = new ArrayList<>(path);
             }
-            System.out.println("Monster : " + monster.get(Maze.turn).getRow() + " " + monster.get(Maze.turn).getCol());
-            for (boolean[] row : wall) {
-                for (boolean cell : row) {
-                    if (cell) {
-                        System.out.print("1");
-                    } else {
-                        System.out.print("0");
-                    }
-                }
-                System.out.println();
-            }
-            System.out.println("Max distance : " + maxPath.size());
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
         }
         exit = maxPath.get(random.nextInt(maxPath.size() / 2, maxPath.size()));
         System.out.println("Exit : " + exit.getRow() + " " + exit.getCol());
