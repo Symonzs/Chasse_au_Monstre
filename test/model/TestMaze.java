@@ -23,7 +23,7 @@ public class TestMaze {
         Maze.resetTurn();
         // Pensé a changer le chemin du fichier csv (Pour le moment il est en absolu
         // dans les tests)
-        maze = new Maze("D:\\Document\\IUT\\J1_SAE3A\\resources\\4x4.csv");
+        maze = new Maze("/home/infoetu/simon.hayart.etu/J1_SAE3A/resources/map/4x4.csv");
         monster = new Monster(maze);
         hunter = new Hunter(maze.getWall().length, maze.getWall()[0].length);
         maze.attach(monster);
@@ -46,6 +46,13 @@ public class TestMaze {
          * le monstre se deplace en 1,2 au troisieme tour le chasseur ne tire pas !!
          */
 
+    }
+
+    @Test
+    public void test_cell_update(){
+        assertFalse(this.maze.monsterIsHere(new Coordinate(1, 0)));
+        maze.cellUpdate(new CellEvent(new Coordinate(1, 0), CellInfo.MONSTER));
+        assertTrue(this.maze.monsterIsHere(new Coordinate(1,0)));
     }
 
     @Test
@@ -167,5 +174,6 @@ public class TestMaze {
         assertEquals(new Coordinate(2, 0), this.maze.getLastMonsterCoordinate());
         assertNotEquals(new Coordinate(1, 0), this.maze.getLastMonsterCoordinate());
     }
+
 
 }
