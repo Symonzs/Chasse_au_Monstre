@@ -53,6 +53,10 @@ public class TestMaze {
         assertFalse(this.maze.monsterIsHere(new Coordinate(1, 0)));
         maze.cellUpdate(new CellEvent(new Coordinate(1, 0),Maze.turn, CellInfo.MONSTER));
         assertTrue(this.maze.monsterIsHere(new Coordinate(1,0)));
+
+        assertNotEquals(this.maze.getLastHunterCoordinate(), new Coordinate(3, 3));
+        maze.cellUpdate(new CellEvent(new Coordinate(3, 3), CellInfo.HUNTER));
+        assertEquals(this.maze.getLastHunterCoordinate(), new Coordinate(3, 3));
     }
 
     @Test

@@ -153,7 +153,7 @@ public class Maze extends Subject {
      */
     public void cellUpdate(CellEvent eventRequest) {
         if (CellInfo.HUNTER.equals(eventRequest.getState())) {
-            cellUpdateHunter(eventRequest.getCoord(), eventRequest.getTurn());
+            cellUpdateHunter(eventRequest.getCoord(), Maze.turn);
         } else if (CellInfo.MONSTER.equals(eventRequest.getState())) {
             cellUpdateMonster(eventRequest.getCoord(), eventRequest.getTurn());
         }
@@ -207,6 +207,7 @@ public class Maze extends Subject {
         CellEvent eventHunter = null;
         CellEvent eventMonster = null;
         this.hunter.put(eventTurn, eventCoord);
+        System.out.println(hunter);
         if (this.monsterWasHere(eventCoord)) {
             if (this.monsterIsHere(eventCoord)) {
                 this.end(CellInfo.HUNTER);
@@ -356,6 +357,7 @@ public class Maze extends Subject {
      */
     public ICoordinate getLastHunterCoordinate() {
         ICoordinate lastHunterCoord = this.hunter.get(Maze.turn);
+        System.out.println(lastHunterCoord);
         if (lastHunterCoord == null) {
             lastHunterCoord = this.hunter.get(Maze.turn - 1);
         }
