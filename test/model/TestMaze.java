@@ -199,5 +199,13 @@ public class TestMaze {
         assertNotEquals(CellInfo.MONSTER, this.maze.getWinner());
     }
 
+    @Test
+    public void test_reset_turn(){
+        assertNotEquals(1, Maze.turn);
+        assertEquals(4, Maze.turn);
+        Maze.resetTurn();
+        assertEquals(1, Maze.turn);
+    }
+
 
 }
