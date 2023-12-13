@@ -179,5 +179,12 @@ public class TestMaze {
         assertNotEquals(new Coordinate(1, 0), this.maze.getLastMonsterCoordinate());
     }
 
+    @Test
+    public void test_game_is_end_with_monster(){
+        assertEquals(this.maze.getWinner(), null);
+        maze.cellUpdate(new CellEvent(new Coordinate(3, 0), Maze.turn, CellInfo.MONSTER));
+        assertEquals(CellInfo.MONSTER, this.maze.getWinner());
+    }
+
 
 }
