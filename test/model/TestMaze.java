@@ -163,6 +163,9 @@ public class TestMaze {
     @Test
     public void test_increment_turn() {
         assertEquals(4, Maze.turn);
+        maze.cellUpdate(new CellEvent(new Coordinate(1, 0), Maze.turn, CellInfo.MONSTER));
+        maze.cellUpdate(new CellEvent(new Coordinate(3, 3), CellInfo.HUNTER));
+        assertEquals(5, Maze.turn);
         assertNotEquals(1, Maze.turn);
     }
 
