@@ -10,9 +10,6 @@ import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 
 public class MazeGenerator {
 
-    private static final int ROWS = 11;
-    private static final int COLS = 11;
-
     private final Random random = new Random();
 
     private List<ICoordinate> path;
@@ -36,7 +33,7 @@ public class MazeGenerator {
     private void breakWall(Integer wallPercent) {
         for (int i = 0; i < this.wall.length; i++) {
             for (int j = 0; j < this.wall[0].length; j++) {
-                if (this.wall[i][j] && (random.nextInt(0, 101) < wallPercent)) {
+                if (this.wall[i][j] && (random.nextInt(0, 101) > wallPercent)) {
                     this.wall[i][j] = false;
 
                 }

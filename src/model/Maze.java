@@ -21,6 +21,10 @@ import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
  */
 public class Maze extends Subject {
 
+    private static final int ROWS = 11;
+    private static final int COLS = 11;
+    private static final int WALL_PERCENT = 30;
+
     // Tableau de booleens representant les murs du labyrinte
     private boolean[][] wall;
     // Map representant les coordonnees des monstres
@@ -45,14 +49,18 @@ public class Maze extends Subject {
 
     /**
      * Constructeur de la classe Maze
-     * Creer un nom de fichier à partir du nombre de lignes et de colonnes sous la
-     * forme "'nbRows'x'nbCols'.csv"
-     * 
+     * Génére un labyrinthe aléatoire de taille ROWS x COLS avec WALL_PERCENT de
+     * murs
+     *
      * @param nbRows Nombre de lignes du labyrinthe
      * @param nbCols Nombre de colonnes du labyrinthe
      */
+    public Maze(Integer nbRows, Integer nbCols, Integer wallPercent) {
+        generateMaze(nbRows, nbCols, wallPercent);
+    }
+
     public Maze(Integer nbRows, Integer nbCols) {
-        generateMaze(nbRows, nbCols, 50);
+        generateMaze(nbRows, nbCols, WALL_PERCENT);
     }
 
     /**
