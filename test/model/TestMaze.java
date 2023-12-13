@@ -183,7 +183,17 @@ public class TestMaze {
     public void test_game_is_end_with_monster(){
         assertEquals(this.maze.getWinner(), null);
         maze.cellUpdate(new CellEvent(new Coordinate(3, 0), Maze.turn, CellInfo.MONSTER));
+        assertNotEquals(CellInfo.HUNTER, this.maze.getWinner());
         assertEquals(CellInfo.MONSTER, this.maze.getWinner());
+    }
+
+    @Test
+    public void test_game_is_end_with_hunter(){
+        assertEquals(this.maze.getWinner(), null);
+        maze.cellUpdate(new CellEvent(new Coordinate(1, 0), Maze.turn, CellInfo.MONSTER));
+        maze.cellUpdate(new CellEvent(new Coordinate(1, 0), CellInfo.HUNTER));
+        assertEquals(CellInfo.HUNTER, this.maze.getWinner());
+        assertNotEquals(CellInfo.MONSTER, this.maze.getWinner());
     }
 
 
