@@ -51,7 +51,7 @@ public class TestMaze {
     @Test
     public void test_cell_update(){
         assertFalse(this.maze.monsterIsHere(new Coordinate(1, 0)));
-        maze.cellUpdate(new CellEvent(new Coordinate(1, 0), CellInfo.MONSTER));
+        maze.cellUpdate(new CellEvent(new Coordinate(1, 0),Maze.turn, CellInfo.MONSTER));
         assertTrue(this.maze.monsterIsHere(new Coordinate(1,0)));
     }
 
