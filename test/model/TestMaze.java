@@ -1,12 +1,14 @@
 package model;
 
 import static org.junit.Assert.assertFalse;
-
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -61,6 +63,17 @@ public class TestMaze {
         maze.cellUpdate(new CellEvent(new Coordinate(3, 3), CellInfo.HUNTER));
         assertEquals(this.maze.getLastHunterCoordinate(), new Coordinate(3, 3));
     }
+
+    /*@Test
+    public void test_wrong_char_in_csv(){
+            InputMismatchException thrown = assertThrows(
+                   InputMismatchException.class,
+                   () -> maze = new Maze("/home/infoetu/simon.hayart.etu/J1_SAE3A/resources/map/5x5.csv"),
+                   "Caractère non reconnu"
+            );
+        
+            assertTrue(thrown.getMessage().contains("Caractère non reconnu"));
+    }*/
 
     @Test
     public void test_creation_maze_taille() {
