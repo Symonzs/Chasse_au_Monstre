@@ -6,9 +6,12 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
+import java.util.ArrayList;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
 
 public class TestMaze {
@@ -205,6 +208,21 @@ public class TestMaze {
         assertEquals(4, Maze.turn);
         Maze.resetTurn();
         assertEquals(1, Maze.turn);
+    }
+
+    @Test
+    public void test_get_monster_history(){
+        ArrayList<Coordinate> fictive_sorted_monster_history = new ArrayList<>();
+        fictive_sorted_monster_history.add(new Coordinate(1, 0));
+        fictive_sorted_monster_history.add(new Coordinate(2, 0));
+        ArrayList<Coordinate> real_sorted_monster_history = new ArrayList<>();
+        real_sorted_monster_history.add((Coordinate)this.maze.getMonster().get(2));//premier tour du monstre
+        real_sorted_monster_history.add((Coordinate)this.maze.getMonster().get(3));//deuxieme tour du monstre
+        assertEquals(fictive_sorted_monster_history.get(0).getCol(), real_sorted_monster_history.get(0).getCol());
+        assertEquals(fictive_sorted_monster_history.get(0).getRow(), real_sorted_monster_history.get(0).getRow());
+        assertNotEquals(fictive_sorted_monster_history.get(0).getRow(), real_sorted_monster_history.get(1).getRow());
+        assertEquals(fictive_sorted_monster_history.get(1).getCol(), real_sorted_monster_history.get(1).getCol());
+        assertEquals(fictive_sorted_monster_history.get(1).getRow(), real_sorted_monster_history.get(1).getRow());
     }
 
 
