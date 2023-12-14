@@ -1,11 +1,10 @@
 package model;
 
 import static org.junit.Assert.assertFalse;
-
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-
+import java.util.ArrayList;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -58,6 +57,17 @@ public class TestMaze {
         maze.cellUpdate(new CellEvent(new Coordinate(3, 3), CellInfo.HUNTER));
         assertEquals(this.maze.getLastHunterCoordinate(), new Coordinate(3, 3));
     }
+
+    /*@Test
+    public void test_wrong_char_in_csv(){
+            InputMismatchException thrown = assertThrows(
+                   InputMismatchException.class,
+                   () -> maze = new Maze("/home/infoetu/simon.hayart.etu/J1_SAE3A/resources/map/5x5.csv"),
+                   "Caractère non reconnu"
+            );
+        
+            assertTrue(thrown.getMessage().contains("Caractère non reconnu"));
+    }*/
 
     @Test
     public void test_creation_maze_taille() {
@@ -183,6 +193,12 @@ public class TestMaze {
     }
 
     @Test
+    public void test_get_last_hunter_coordinate() {
+        assertEquals(new Coordinate(0, 1), this.maze.getLastHunterCoordinate());
+        assertNotEquals(new Coordinate(1, 0), this.maze.getLastHunterCoordinate());
+    }
+
+    @Test
     public void test_game_is_end_with_monster(){
         assertEquals(this.maze.getWinner(), null);
         maze.cellUpdate(new CellEvent(new Coordinate(3, 0), Maze.turn, CellInfo.MONSTER));
@@ -207,5 +223,54 @@ public class TestMaze {
         assertEquals(1, Maze.turn);
     }
 
+    @Test
+    public void test_get_monster_history(){
+        ArrayList<Coordinate> fictive_sorted_monster_history = new ArrayList<>();
+        fictive_sorted_monster_history.add(new Coordinate(1, 0));
+        fictive_sorted_monster_history.add(new Coordinate(2, 0));
+        ArrayList<Coordinate> real_sorted_monster_history = new ArrayList<>();
+        real_sorted_monster_history.add((Coordinate)this.maze.getMonster().get(2));//premier tour du monstre
+        real_sorted_monster_history.add((Coordinate)this.maze.getMonster().get(3));//deuxieme tour du monstre
+        assertEquals(fictive_sorted_monster_history.get(0).getCol(), real_sorted_monster_history.get(0).getCol());
+        assertEquals(fictive_sorted_monster_history.get(0).getRow(), real_sorted_monster_history.get(0).getRow());
+        assertNotEquals(fictive_sorted_monster_history.get(0).getRow(), real_sorted_monster_history.get(1).getRow());
+        assertEquals(fictive_sorted_monster_history.get(1).getCol(), real_sorted_monster_history.get(1).getCol());
+        assertEquals(fictive_sorted_monster_history.get(1).getRow(), real_sorted_monster_history.get(1).getRow());
+    }
+
+    @Test
+    public void test_get_hunter_history(){
+        ArrayList<Coordinate> fictive_sorted_hunter_history = new ArrayList<>();
+        fictive_sorted_hunter_history.add(new Coordinate(0, 3));
+        fictive_sorted_hunter_history.add(new Coordinate(0, 0));
+        fictive_sorted_hunter_history.add(new Coordinate(0, 1));
+        ArrayList<Coordinate> real_sorted_hunter_history = new ArrayList<>();
+        real_sorted_hunter_history.add((Coordinate)this.maze.getHunter().get(1));//premier tour du chasseur
+        real_sorted_hunter_history.add((Coordinate)this.maze.getHunter().get(2));//deuxieme tour du chasseur
+        real_sorted_hunter_history.add((Coordinate)this.maze.getHunter().get(3));//troisieme tour du chasseur
+        assertEquals(fictive_sorted_hunter_history.get(0).getCol(), real_sorted_hunter_history.get(0).getCol());
+        assertEquals(fictive_sorted_hunter_history.get(0).getRow(), real_sorted_hunter_history.get(0).getRow());
+        assertNotEquals(fictive_sorted_hunter_history.get(0).getCol(), real_sorted_hunter_history.get(1).getCol());
+        assertEquals(fictive_sorted_hunter_history.get(1).getCol(), real_sorted_hunter_history.get(1).getCol());
+        assertEquals(fictive_sorted_hunter_history.get(1).getRow(), real_sorted_hunter_history.get(1).getRow());
+        assertNotEquals(fictive_sorted_hunter_history.get(1).getCol(), real_sorted_hunter_history.get(2).getCol());
+        assertEquals(fictive_sorted_hunter_history.get(2).getCol(), real_sorted_hunter_history.get(2).getCol());
+        assertEquals(fictive_sorted_hunter_history.get(2).getRow(), real_sorted_hunter_history.get(2).getRow());
+    }
+
+    @Test
+    public void test_maze_constructor_with_only_heigth_and_width(){
+        Maze mazetest = new Maze(5,6);
+        assertEquals(mazetest.getWall().length,5);
+        assertEquals(mazetest.getWall()[0].length,6);
+    }
+
+    @Test
+    public void test_maze_constructor_with_wall_percentage(){
+        Maze mazetest = new Maze(5,6,50);
+        assertEquals(mazetest.getWall().length,5);
+        assertEquals(mazetest.getWall()[0].length,6);
+        assertTrue(count_wall(mazetest)<12 && count_wall(mazetest) > 18 );
+    }
 
 }
