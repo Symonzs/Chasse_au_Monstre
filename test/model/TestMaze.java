@@ -186,6 +186,12 @@ public class TestMaze {
     }
 
     @Test
+    public void test_get_last_hunter_coordinate() {
+        assertEquals(new Coordinate(0, 1), this.maze.getLastHunterCoordinate());
+        assertNotEquals(new Coordinate(1, 0), this.maze.getLastHunterCoordinate());
+    }
+
+    @Test
     public void test_game_is_end_with_monster(){
         assertEquals(this.maze.getWinner(), null);
         maze.cellUpdate(new CellEvent(new Coordinate(3, 0), Maze.turn, CellInfo.MONSTER));
