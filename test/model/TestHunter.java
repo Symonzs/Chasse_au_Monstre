@@ -37,26 +37,16 @@ public class TestHunter {
         maze.cellUpdate(new CellEvent(new Coordinate(2, 0), Maze.turn, CellInfo.MONSTER));
         maze.cellUpdate(new CellEvent(new Coordinate(2, 1), CellInfo.HUNTER));
 
-        // to do faire une simulation de partie sur une grille 3x3
-
-        /*
-         * le monstre commence en 0,0 le chasseur tire jsp ou
-         * la sortie est en 2,2
-         * le monstre se deplace en 1,0 au premier tour le chasseur tire jsp ou
-         * le monstre de deplace en 1,1 au deuxieme tour le chasseur tire jsp ou
-         * le monstre se deplace en 1,2 au troisieme tour le chasseur ne tire pas !!
-         */
-
     }
 
     @Test
-    public void test_get_know_walls(){
+    public void test_get_hunter_know_walls(){
         assertTrue(hunter.getKnowWall()[2][1]);
         assertFalse(hunter.getKnowWall()[1][2]);
     }
 
     @Test
-    public void test_get_know_empty_cases(){
+    public void test_get_hunter_know_empty_cases(){
         assertTrue(hunter.getKnowEmpty()[0][3]);
         assertFalse(hunter.getKnowEmpty()[0][0]);
         assertFalse(hunter.getKnowEmpty()[2][1]);
@@ -64,13 +54,13 @@ public class TestHunter {
     }
 
     @Test
-    public void test_get_hunter_cord(){
+    public void test_get_hunter_last_cord(){
         assertEquals(new Coordinate(2, 1), hunter.getHunterCoord());
         assertNotEquals(new Coordinate(0, 0), hunter.getHunterCoord());
     }
 
     @Test
-    public void test_know_monster_coord(){
+    public void test_hunter_knowed_monster_coord(){
         ArrayList<Coordinate> fictive_sorted_monster_history = new ArrayList<>();
         fictive_sorted_monster_history.add(new Coordinate(0, 0));
         ArrayList<Coordinate> real_sorted_monster_history = new ArrayList<>();
@@ -80,7 +70,7 @@ public class TestHunter {
     }
 
     @Test
-    public void test_last_turn_from_coordinate(){
+    public void test_get_when_monster_was_here_for_last_time(){
         assertEquals((Integer)1, this.hunter.getLastTurnFromCoordinate(new Coordinate(0, 0)));
         assertNotEquals((Integer)2, this.hunter.getLastTurnFromCoordinate(new Coordinate(0, 0)));
         assertNotEquals((Integer)2, this.hunter.getLastTurnFromCoordinate(new Coordinate(1, 0)));//false car il ne connait pas cette position du monstre
