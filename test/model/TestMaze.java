@@ -251,4 +251,11 @@ public class TestMaze {
         assertEquals(fictive_sorted_hunter_history.get(2).getRow(), real_sorted_hunter_history.get(2).getRow());
     }
 
+    @Test
+    public void test_maze_constructor_with_only_heigth_and_width(){
+        Maze mazetest = new Maze(5,6);
+        assertEquals(mazetest.getWall().length,5);
+        assertEquals(mazetest.getWall()[0].length,6);
+    }
+
 }
