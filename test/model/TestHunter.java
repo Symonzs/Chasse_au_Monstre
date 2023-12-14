@@ -49,4 +49,12 @@ public class TestHunter {
         assertTrue(hunter.getKnowWall()[2][1]);
         assertFalse(hunter.getKnowWall()[1][2]);
     }
+
+    @Test
+    public void test_get_know_empty_cases(){
+        assertTrue(hunter.getKnowEmpty()[0][3]);
+        assertFalse(hunter.getKnowEmpty()[0][0]);
+        assertFalse(hunter.getKnowEmpty()[2][1]);
+        assertFalse(hunter.getKnowEmpty()[1][3]);
+    }
 }
