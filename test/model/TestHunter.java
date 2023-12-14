@@ -1,6 +1,9 @@
 package model;
 
 import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -64,5 +67,15 @@ public class TestHunter {
     public void test_get_hunter_cord(){
         assertEquals(new Coordinate(2, 1), hunter.getHunterCoord());
         assertNotEquals(new Coordinate(0, 0), hunter.getHunterCoord());
+    }
+
+    @Test
+    public void test_know_monster_coord(){
+        ArrayList<Coordinate> fictive_sorted_monster_history = new ArrayList<>();
+        fictive_sorted_monster_history.add(new Coordinate(0, 0));
+        ArrayList<Coordinate> real_sorted_monster_history = new ArrayList<>();
+        real_sorted_monster_history.add((Coordinate)this.hunter.getKnowMonsterCoords().get(1));//premier tour du monstre
+        assertEquals(fictive_sorted_monster_history.get(0).getCol(), real_sorted_monster_history.get(0).getCol());
+        assertEquals(fictive_sorted_monster_history.get(0).getRow(), real_sorted_monster_history.get(0).getRow());
     }
 }
