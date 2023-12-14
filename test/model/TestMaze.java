@@ -225,5 +225,24 @@ public class TestMaze {
         assertEquals(fictive_sorted_monster_history.get(1).getRow(), real_sorted_monster_history.get(1).getRow());
     }
 
+    @Test
+    public void test_get_hunter_history(){
+        ArrayList<Coordinate> fictive_sorted_hunter_history = new ArrayList<>();
+        fictive_sorted_hunter_history.add(new Coordinate(0, 3));
+        fictive_sorted_hunter_history.add(new Coordinate(0, 0));
+        fictive_sorted_hunter_history.add(new Coordinate(0, 1));
+        ArrayList<Coordinate> real_sorted_hunter_history = new ArrayList<>();
+        real_sorted_hunter_history.add((Coordinate)this.maze.getHunter().get(1));//premier tour du chasseur
+        real_sorted_hunter_history.add((Coordinate)this.maze.getHunter().get(2));//deuxieme tour du chasseur
+        real_sorted_hunter_history.add((Coordinate)this.maze.getHunter().get(3));//troisieme tour du chasseur
+        assertEquals(fictive_sorted_hunter_history.get(0).getCol(), real_sorted_hunter_history.get(0).getCol());
+        assertEquals(fictive_sorted_hunter_history.get(0).getRow(), real_sorted_hunter_history.get(0).getRow());
+        assertNotEquals(fictive_sorted_hunter_history.get(0).getCol(), real_sorted_hunter_history.get(1).getCol());
+        assertEquals(fictive_sorted_hunter_history.get(1).getCol(), real_sorted_hunter_history.get(1).getCol());
+        assertEquals(fictive_sorted_hunter_history.get(1).getRow(), real_sorted_hunter_history.get(1).getRow());
+        assertNotEquals(fictive_sorted_hunter_history.get(1).getCol(), real_sorted_hunter_history.get(2).getCol());
+        assertEquals(fictive_sorted_hunter_history.get(2).getCol(), real_sorted_hunter_history.get(2).getCol());
+        assertEquals(fictive_sorted_hunter_history.get(2).getRow(), real_sorted_hunter_history.get(2).getRow());
+    }
 
 }
