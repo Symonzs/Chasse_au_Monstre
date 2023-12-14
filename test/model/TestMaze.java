@@ -258,4 +258,12 @@ public class TestMaze {
         assertEquals(mazetest.getWall()[0].length,6);
     }
 
+    @Test
+    public void test_maze_constructor_with_wall_percentage(){
+        Maze mazetest = new Maze(5,6,50);
+        assertEquals(mazetest.getWall().length,5);
+        assertEquals(mazetest.getWall()[0].length,6);
+        assertTrue(count_wall(mazetest)<12 && count_wall(mazetest) > 18 );
+    }
+
 }
