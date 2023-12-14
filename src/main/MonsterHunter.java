@@ -27,33 +27,59 @@ public class MonsterHunter extends Application {
     public void start(Stage primaryStage) throws InterruptedException {
 
         initgame();
-        while (mainView.getMaze().getWinner() == null || !mainView.getMaze().gameIsExited()) {
+        do {
+            System.out.println("hunter " + hunterController.isGameIsExited());
+            System.out.println("monster " + monsterController.isGameIsExited());
             play();
-        }
+
+        } while (!gameIsFinished());
+        System.out.println("sortie de la boucle");
         exitedGame();
     }
 
-    public static void initgame() {
+    public void initgame() {
         mainView = new MainView(INIT_FILE);
         mainView.showAndWait();
 
         gameView = new GameView();
-        monsterController = new MonsterController(mainView.getMaze(), gameView, PROPERTIES);
-        hunterController = new HunterController(mainView.getMaze(), gameView, PROPERTIES);
 
-        gameView.display(hunterController.getHunterView().getPlayScene(), true);
-        gameView.showAndWait();
+        monsterController = new MonsterController(mainView.getMaze(), PROPERTIES);
+        hunterController = new HunterController(mainView.getMaze(), PROPERTIES);
 
     }
 
-    public static void play() {
+    public boolean gameIsFinished() {
+        return mainView.getMaze().getWinner() != null || monsterController.isGameIsExited()
+                || hunterController.isGameIsExited();
+    }
 
+    public void play() {
+        gameView.close();
+        System.out.println("on rentre dans play");
+        if (!gameIsFinished()) {
+            if (!hunterController.hasPlayed()) {
+                gameView.setSceneInFullScreen(hunterController.getView().getPlayScene());
+            }
+            if (hunterController.hasPlayed() && !hunterController.isReadyToNext()) {
+                gameView.setSceneInFullScreen(hunterController.getHunterView().getWaitScene());
+            }
+            if (!monsterController.hasPlayed()) {
+                gameView.setSceneInFullScreen(monsterController.getMonsterView().getPlayScene());
+            }
+            if (monsterController.hasPlayed() && !monsterController.isReadyToNext()) {
+                gameView.setSceneInFullScreen(monsterController.getMonsterView().getPlayScene());
+            }
+        }
     }
 
     public static void exitedGame() {
+        gameView.close();
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Fin de la partie");
         alert.setHeaderText("La partie est terminée.");
+        if (mainView.getMaze().gameIsExited()) {
+            alert.setHeaderText(alert.getHeaderText() + " La partie à été intérompue.");
+        }
         if (mainView.getMaze().getWinner() != null) {
             alert.setHeaderText(alert.getHeaderText() + " Le gagnant est " + mainView.getMaze().getWinner());
         }
