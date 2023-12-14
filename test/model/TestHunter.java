@@ -78,4 +78,11 @@ public class TestHunter {
         assertEquals(fictive_sorted_monster_history.get(0).getCol(), real_sorted_monster_history.get(0).getCol());
         assertEquals(fictive_sorted_monster_history.get(0).getRow(), real_sorted_monster_history.get(0).getRow());
     }
+
+    @Test
+    public void test_last_turn_from_coordinate(){
+        assertEquals((Integer)1, this.hunter.getLastTurnFromCoordinate(new Coordinate(0, 0)));
+        assertNotEquals((Integer)2, this.hunter.getLastTurnFromCoordinate(new Coordinate(0, 0)));
+        assertNotEquals((Integer)2, this.hunter.getLastTurnFromCoordinate(new Coordinate(1, 0)));//false car il ne connait pas cette position du monstre
+    }
 }
