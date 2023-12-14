@@ -36,7 +36,12 @@ public class Maze extends Subject {
     public static Integer turn = 1;
     // Vainqueur
     private CellInfo winner;
-    private boolean exitedGame = false;
+
+    private boolean gameIsClosed = false;
+    private boolean isReadyToNext = false;
+
+    private boolean hunterHasPlayed = false;
+    private boolean monsterHasPlayed = false;
 
     /**
      * Constructeur de la classe Maze
@@ -158,11 +163,14 @@ public class Maze extends Subject {
      * @param eventTurn  Tour du déplacement du monstre
      */
     private void cellUpdateMonster(ICoordinate eventCoord, Integer eventTurn) {
+        CellEvent[] events = new CellEvent[2];
         this.monster.put(eventTurn, eventCoord);
         if (this.monsterAtExit()) {
             this.end(CellInfo.MONSTER);
         } else {
-            this.notifyObserver(null, new CellEvent(eventCoord, eventTurn, CellInfo.MONSTER));
+            events[0] = null;
+            events[1] = new CellEvent(eventCoord, CellInfo.MONSTER);
+            this.notifyObservers(events);
         }
     }
 
@@ -192,27 +200,28 @@ public class Maze extends Subject {
      * @param eventTurn  Tour du déplacement du chasseur
      */
     private void cellUpdateHunter(ICoordinate eventCoord, Integer eventTurn) {
-        CellEvent eventHunter = null;
-        CellEvent eventMonster = null;
+        CellEvent[] events = new CellEvent[2];
         this.hunter.put(eventTurn, eventCoord);
         if (this.monsterWasHere(eventCoord)) {
             if (this.monsterIsHere(eventCoord)) {
                 this.end(CellInfo.HUNTER);
 
             } else {
-                eventHunter = new CellEvent(eventCoord, this.getLastTurnFromCoordinate(eventCoord),
+                events[0] = new CellEvent(eventCoord, this.getLastTurnFromCoordinate(eventCoord),
                         CellInfo.MONSTER);
             }
         } else {
             if (this.cellIsWall(eventCoord)) {
-                eventHunter = new CellEvent(eventCoord, CellInfo.WALL);
+                events[0] = new CellEvent(eventCoord, CellInfo.WALL);
             } else {
-                eventHunter = new CellEvent(eventCoord, CellInfo.EMPTY);
+                events[0] = new CellEvent(eventCoord, CellInfo.EMPTY);
             }
         }
-        eventMonster = new CellEvent(eventCoord, CellInfo.HUNTER);
+        events[1] = new CellEvent(eventCoord, CellInfo.HUNTER);
+        System.out.println(events[0]);
+        System.out.println(events[1]);
         Maze.incrementTurn();
-        this.notifyObserver(eventHunter, eventMonster);
+        notifyObservers(events);
     }
 
     /**
@@ -262,7 +271,7 @@ public class Maze extends Subject {
      */
     public void end(CellInfo victoryInfo) {
         this.winner = victoryInfo;
-        this.exitedGame = true;
+        this.setGameIsClosed(true);
     }
 
     /**
@@ -374,16 +383,42 @@ public class Maze extends Subject {
         }
     }
 
-    public boolean gameIsExited() {
-        return exitedGame;
+    public boolean isGameClosed() {
+        return this.gameIsClosed;
     }
 
-    public void SetgameIsExited(boolean gameIsExited) {
-        this.exitedGame = gameIsExited;
+    public void setGameIsClosed(boolean gameIsClosed) {
+        this.gameIsClosed = gameIsClosed;
+        notifyObservers(gameIsClosed);
     }
 
     public CellInfo getWinner() {
         return this.winner;
+    }
+
+    public void setIsReadyToNext(boolean b) {
+        this.isReadyToNext = b;
+        notifyObservers(isReadyToNext);
+    }
+
+    public boolean getIsReadyToNext() {
+        return this.isReadyToNext;
+    }
+
+    public void setHunterHasPlayed(boolean b) {
+        this.hunterHasPlayed = b;
+    }
+
+    public boolean getHunterHasPlayed() {
+        return this.hunterHasPlayed;
+    }
+
+    public void setMonsterHasPlayed(boolean b) {
+        this.monsterHasPlayed = b;
+    }
+
+    public boolean getMonsterHasPlayed() {
+        return this.monsterHasPlayed;
     }
 
 }

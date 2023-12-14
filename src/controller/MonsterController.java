@@ -30,22 +30,17 @@ public class MonsterController {
     private boolean hasPlayed = false;
     private boolean isReadyToNext = false;
 
-    private boolean gameIsExited = false;
-
     public MonsterController(Maze maze, Properties properties) {
         this.maze = maze;
-        Monster monster = new Monster(maze);
-        maze.attach(monster);
-        this.view = new MonsterView(monster, properties);
+        this.view = new MonsterView(maze, properties);
+        maze.attach(view);
         this.makeGameBoard(view.getMonster().getWall());
         view.getExitButton().setOnAction(e -> {
-            maze.SetgameIsExited(true);
-            gameIsExited = true;
+            maze.setGameIsClosed(true);
         });
         view.getPlayMoveButton().setOnAction(new ActionHandler());
         view.getWaitButton().setOnAction(e -> {
-            isReadyToNext = true;
-            hasPlayed = false;
+            maze.setIsReadyToNext(true);
         });
 
     }
@@ -117,7 +112,7 @@ public class MonsterController {
 
         @Override
         public void handle(ActionEvent event) {
-            if (event.getSource() == move && selectedStack != null) {
+            if (selectedStack != null) {
                 resetStackStroke(selectedStack);
                 ICoordinate coord = new Coordinate(GridPane.getRowIndex(selectedStack) - 1,
                         GridPane.getColumnIndex(selectedStack) - 1);
@@ -134,8 +129,8 @@ public class MonsterController {
                 makeGameBoard(view.getMonster().getWall());
                 view.getRoot().getChildren().set(0, view.getGameBoard());
                 selectedStack = null;
-                isReadyToNext = false;
-                hasPlayed = true;
+                maze.setIsReadyToNext(false);
+                maze.setMonsterHasPlayed(true);
             }
         }
 
@@ -166,11 +161,7 @@ public class MonsterController {
 
     }
 
-    public boolean isGameIsExited() {
-        return gameIsExited;
-    }
-
-    public MonsterView getMonsterView() {
+    public MonsterView getView() {
         return this.view;
     }
 
@@ -181,5 +172,4 @@ public class MonsterController {
     public boolean isReadyToNext() {
         return isReadyToNext;
     }
-
 }

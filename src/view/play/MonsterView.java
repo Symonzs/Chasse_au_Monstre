@@ -3,6 +3,8 @@ package view.play;
 import java.util.Properties;
 
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
+import fr.univlille.iutinfo.r304.utils.Observer;
+import fr.univlille.iutinfo.r304.utils.Subject;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -20,12 +22,15 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import model.CellEvent;
+import model.Maze;
 import model.Monster;
 
-public class MonsterView extends PlayView {
+public class MonsterView extends PlayView implements Observer {
 
     private static final int RECT_COL = 75;
     private static final int RECT_ROW = 75;
+
     private Monster monster;
 
     private Font font;
@@ -45,8 +50,8 @@ public class MonsterView extends PlayView {
 
     private Properties properties;
 
-    public MonsterView(Monster monster, Properties properties) {
-        this.monster = monster;
+    public MonsterView(Maze maze, Properties properties) {
+        this.monster = new Monster(maze);
         this.properties = properties;
 
         this.font = new Font("Arial", 24);
@@ -54,19 +59,6 @@ public class MonsterView extends PlayView {
         initWaitingScene();
         initPlayScene();
         showPlayScene();
-    }
-
-    public void initWaitingScene() {
-        waitRoot = new VBox();
-        waitRoot.setAlignment(Pos.CENTER);
-        waitLabel = new Label("Vous avez joué. C'est au tour du Chasseur de jouer.");
-        waitLabel.setFont(font);
-        waitButton = new Button("Passez au tour suivant");
-        waitLabel.setFont(font);
-
-        waitRoot.getChildren().addAll(waitLabel, waitButton);
-
-        super.setWaitScene(new Scene(waitRoot));
     }
 
     public void initPlayScene() {
@@ -85,6 +77,20 @@ public class MonsterView extends PlayView {
         playRoot.getChildren().addAll(playGameBoard, playButtonBox);
 
         super.setPlayScene(new Scene(playRoot));
+    }
+
+    public void initWaitingScene() {
+        waitRoot = new VBox();
+        waitRoot.setAlignment(Pos.CENTER);
+        waitLabel = new Label("Vous avez joué. C'est au tour du Chasseur de jouer.");
+        waitLabel.setFont(font);
+        waitButton = new Button("Passez au tour suivant");
+        waitLabel.setFont(font);
+        waitButton.setPadding(new Insets(10));
+
+        waitRoot.getChildren().addAll(waitLabel, waitButton);
+
+        super.setWaitScene(new Scene(waitRoot));
     }
 
     public void makeGameBoard(boolean[][] board) {
@@ -169,5 +175,21 @@ public class MonsterView extends PlayView {
 
     public Button getWaitButton() {
         return waitButton;
+    }
+
+    @Override
+    public void update(Subject arg0) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'update'");
+    }
+
+    @Override
+    public void update(Subject arg0, Object arg1) {
+        if (CellEvent[].class == arg1.getClass()) {
+            CellEvent[] events = (CellEvent[]) arg1;
+            System.out.println("Update de la vue de jeu");
+            System.out.println("Events : " + events);
+            monster.update(events);
+        }
     }
 }

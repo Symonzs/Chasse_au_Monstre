@@ -45,7 +45,14 @@ public class MainView extends Stage {
 
         mazeList.setItems(mazeListItems);
         root.getChildren().addAll(mazeList, play);
-        play.setOnAction(e -> new ActionHandler().handle());
+        play.setOnAction(e -> {
+            if (mazeList.getSelectionModel().getSelectedItem() != null) {
+                Maze.resetTurn();
+                maze = new Maze(MonsterHunter.PROPERTIES.getProperty("MapFindFolder")
+                        + mazeList.getSelectionModel().getSelectedItem() + ".csv");
+                MainView.this.close();
+            }
+        });
 
         this.setTitle("Monster Hunter");
         this.setScene(new Scene(root, 300, 300));
@@ -54,17 +61,4 @@ public class MainView extends Stage {
     public Maze getMaze() {
         return this.maze;
     }
-
-    private class ActionHandler {
-
-        private void handle() {
-            if (mazeList.getSelectionModel().getSelectedItem() != null) {
-                Maze.resetTurn();
-                maze = new Maze(MonsterHunter.PROPERTIES.getProperty("MapFindFolder")
-                        + mazeList.getSelectionModel().getSelectedItem() + ".csv");
-                MainView.this.close();
-            }
-        }
-    }
-
 }

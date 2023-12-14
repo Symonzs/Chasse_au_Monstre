@@ -2,7 +2,6 @@ package model;
 
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
-import fr.univlille.iutinfo.r304.utils.Observer;
 import fr.univlille.iutinfo.r304.utils.Subject;
 
 /**
@@ -11,7 +10,7 @@ import fr.univlille.iutinfo.r304.utils.Subject;
  * @see CellEvent
  * @see Coordinate
  */
-public class Monster implements Observer {
+public class Monster {
 
     // Tableau de booléens représentant les murs du labyrinte
     private final boolean[][] WALL;
@@ -120,14 +119,23 @@ public class Monster implements Observer {
         return sb.toString();
     }
 
-    @Override
-    public void update(Subject arg0) {
-        // Methode non utilisée
-    }
-
-    @Override
-    public void update(Subject arg0, Object arg1) {
-        // Methode non utilisée
+    public void update(CellEvent[] events) {
+        for (CellEvent event : events) {
+            try {
+                if (event.getState() == CellInfo.MONSTER) {
+                    this.setMonsterCoord(event.getCoord());
+                }
+            } catch (NullPointerException e) {
+                System.out.println("CellEvent null");
+            }
+            try {
+                if (event.getState() == CellInfo.HUNTER) {
+                    this.setHunterCoord(event.getCoord());
+                }
+            } catch (NullPointerException e) {
+                System.out.println("CellEvent null");
+            }
+        }
     }
 
     /**

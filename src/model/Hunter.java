@@ -131,6 +131,22 @@ public class Hunter implements Observer {
         }
     }
 
+    public void update(CellEvent event) {
+        try {
+            this.hunterCoord = event.getCoord();
+            if (event.getState() == CellInfo.MONSTER) {
+                this.addKnowMonsterCoords(event.getTurn(), event.getCoord());
+            } else if (event.getState() == CellInfo.WALL) {
+                this.knowWall[event.getCoord().getRow()][event.getCoord().getCol()] = true;
+            } else {
+                this.knowEmpty[event.getCoord().getRow()][event.getCoord().getCol()] = true;
+            }
+        } catch (NullPointerException e) {
+            System.out.println("CellEvent null");
+        }
+
+    }
+
     public ICoordinate getHunterCoord() {
         return this.hunterCoord;
     }
