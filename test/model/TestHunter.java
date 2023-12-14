@@ -1,7 +1,9 @@
 package model;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -56,5 +58,11 @@ public class TestHunter {
         assertFalse(hunter.getKnowEmpty()[0][0]);
         assertFalse(hunter.getKnowEmpty()[2][1]);
         assertFalse(hunter.getKnowEmpty()[1][3]);
+    }
+
+    @Test
+    public void test_get_hunter_cord(){
+        assertEquals(new Coordinate(2, 1), hunter.getHunterCoord());
+        assertNotEquals(new Coordinate(0, 0), hunter.getHunterCoord());
     }
 }
