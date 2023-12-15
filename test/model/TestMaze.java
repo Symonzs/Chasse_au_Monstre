@@ -35,16 +35,6 @@ public class TestMaze {
         maze.cellUpdate(new CellEvent(new Coordinate(2, 0), Maze.turn, CellInfo.MONSTER));
         maze.cellUpdate(new CellEvent(new Coordinate(0, 1), CellInfo.HUNTER));
 
-        // to do faire une simulation de partie sur une grille 3x3
-
-        /*
-         * le monstre commence en 0,0 le chasseur tire jsp ou
-         * la sortie est en 2,2
-         * le monstre se deplace en 1,0 au premier tour le chasseur tire jsp ou
-         * le monstre de deplace en 1,1 au deuxieme tour le chasseur tire jsp ou
-         * le monstre se deplace en 1,2 au troisieme tour le chasseur ne tire pas !!
-         */
-
     }
 
     @Test
@@ -70,17 +60,18 @@ public class TestMaze {
     }*/
 
     @Test
-    public void test_creation_maze_taille() {
+    public void test_right_maze_size_at_creation() {
         assertEquals(maze.getWall().length, maze.getWall()[0].length);// test si la longueur est égale a la hauteur du
                                                                       // // maze
     }
 
     @Test
-    public void test_creation_maze_mur() {
+    public void test_right_wall_initiation_from_maze() {
         assertEquals(2, count_wall(maze));
         assertNotEquals(3, count_wall(maze));
     }
 
+    //methode pour compter les mur uniquement utile aux tests
     private static int count_wall(Maze maze) {
         int nb = 0;
         for (boolean[] bs : maze.getWall()) {
@@ -94,7 +85,6 @@ public class TestMaze {
     }
 
     @Test
-
     public void is_this_cell_a_wall() {
         assertTrue(this.maze.getWall()[1][2]);
         assertTrue(this.maze.getWall()[2][1]);
@@ -133,7 +123,7 @@ public class TestMaze {
     }
 
     @Test
-    public void test_monster_is_here() {
+    public void test_is_monster_here() {
         // valide
         assertTrue(maze.monsterIsHere(new Coordinate(2, 0)));// test si le monstre est en 2,0
         // valide
@@ -151,24 +141,6 @@ public class TestMaze {
 
     }
 
-    @Test
-    public void test_end() {
-        // pas fait jsais pas comment le tester
-
-        // valide le chasseur tire sur la pose du monstre
-
-        // valide le chasseur tire sur la pose du monstre
-
-        // valide le monstre arrive a la fin du maze
-
-        // valide le monstre arrive a la fin du maze
-
-        // pas valide le chasseur n'a pas tiré sur le monstre et le monstre n'est pas a
-        // la sortie
-
-        // pas valide le chasseur n'a pas tiré sur le monstre et le monstre n'est pas a
-        // la sortie
-    }
 
     @Test
     public void test_increment_turn() {
