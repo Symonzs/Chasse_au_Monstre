@@ -3,8 +3,6 @@ package main;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.Properties;
-import javax.sound.sampled.*;
-import java.io.IOException;
 
 import controller.HunterController;
 import controller.MonsterController;
