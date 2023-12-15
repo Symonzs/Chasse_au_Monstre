@@ -1,7 +1,7 @@
 package model;
 
 public enum Cardinals {
-    NORTH, SOUTH, EAST, WEST;
+    NORTH, WEST, EAST, SOUTH;
 
     public static Cardinals getOpposite(Cardinals cardinals) {
         switch (cardinals) {

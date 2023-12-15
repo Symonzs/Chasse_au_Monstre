@@ -23,7 +23,7 @@ public class Maze extends Subject {
 
     private static final int ROWS = 11;
     private static final int COLS = 11;
-    private static final int WALL_PERCENT = 30;
+    private static final int WALL_PERCENT = 50;
 
     // Tableau de booleens representant les murs du labyrinte
     private boolean[][] wall;
