@@ -3,25 +3,38 @@ package main;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.Properties;
+import javax.sound.sampled.*;
+import java.io.IOException;
 
 import controller.HunterController;
 import controller.MonsterController;
-import data.DataProp;
 import javafx.application.Application;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
+import util.data.DataProp;
+import util.music.BackgroundMusicPlayer;
 import view.game.GameView;
 import view.main.MainView;
 
 public class MonsterHunter extends Application {
     public static final File INIT_FILE = Paths.get("./resources/config/init.conf").toFile();
     public static final Properties PROPERTIES = DataProp.read(INIT_FILE);
-
+    public static final Properties PLAY_LANGUAGE_FILE = setUpLanguageFile("play");
+    public static final Properties MENU_LANGUAGE_FILE = setUpLanguageFile("menu");
+    public static final Properties EXCEPTION_LANGUAGE_FILE = setUpLanguageFile("exception");
     private static MainView mainView;
     private static GameView gameView;
 
     private static MonsterController monsterController;
     private static HunterController hunterController;
+
+    private static Properties setUpLanguageFile(String value) {
+        String key = PROPERTIES.getProperty("LanguageValue");
+
+        Properties languageSrcProperties = DataProp.read(Paths.get(PROPERTIES.getProperty("LanguageSetting")).toFile());
+
+        return DataProp.read(Paths.get(languageSrcProperties.getProperty(key) + value + ".conf").toFile());
+    }
 
     @Override
     public void start(Stage primaryStage) throws InterruptedException {
@@ -36,6 +49,7 @@ public class MonsterHunter extends Application {
 
     public void initgame() {
         mainView = new MainView(INIT_FILE);
+        initMusic();
         mainView.showAndWait();
 
         gameView = new GameView();
@@ -86,6 +100,12 @@ public class MonsterHunter extends Application {
         }
         alert.showAndWait();
         System.exit(0);
+    }
+
+    private void initMusic() {
+        String audioFilePath = PROPERTIES.getProperty("MainMusic");
+        BackgroundMusicPlayer musicPlayer = new BackgroundMusicPlayer();
+        musicPlayer.playAudio(audioFilePath);
     }
 
     public static void main(String[] args) {

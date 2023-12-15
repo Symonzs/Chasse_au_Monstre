@@ -24,7 +24,7 @@ public class TestMaze {
         maze = new Maze("D:\\Document\\IUT\\J1_SAE3A\\resources\\4x4.csv");
         monster = new Monster(maze);
         hunter = new Hunter(maze.getWall().length, maze.getWall()[0].length);
-        maze.attach(monster);
+        // maze.attach(monster);
         maze.attach(hunter);
         maze.cellUpdate(new CellEvent(new Coordinate(0, 3), CellInfo.HUNTER));
 
