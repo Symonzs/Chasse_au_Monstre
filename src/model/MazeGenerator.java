@@ -1,7 +1,5 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Stack;
@@ -22,7 +20,7 @@ public class MazeGenerator {
         wall = new boolean[nbRows][nbCols];
         monster = new TreeMap<>();
         hunter = new TreeMap<>();
-        initCells();
+        initMazeWall();
         generatePaths(wallPercent);
     }
 
@@ -145,7 +143,7 @@ public class MazeGenerator {
      * }
      */
 
-    public void initCells() {
+    public void initMazeWall() {
         for (int i = 0; i < this.wall.length; i++) {
             for (int j = 0; j < this.wall[0].length; j++) {
                 this.wall[i][j] = true;
@@ -173,77 +171,131 @@ public class MazeGenerator {
      */
 
     public void generatePaths(Integer wallPercent) {
-        initCells();
-        ICoordinate center = new Coordinate(this.wall.length / 2, this.wall[0].length / 2);
-        this.wall[center.getRow()][center.getCol()] = false;
-        int nbEmpty = (this.wall.length * this.wall[0].length * (100 - wallPercent)) / 100;
-        System.out.println(nbEmpty);
-        int nbEmptyByPath = nbEmpty / 4;
-        Stack<ICoordinate> northPath = new Stack<>();
-        northPath.push(center);
-        creuseNord(northPath, nbEmptyByPath);
-        System.out.println(this);
+        this.initMazeWall();
+        Integer cellsNumber = this.wall.length * this.wall[0].length;
+        if (cellsNumber % 2 != 0) {
+            generatePathsOdd(wallPercent);
+        } else {
+            generatePathsEven(wallPercent);
+        }
     }
 
-    private void creuseNord(Stack<ICoordinate> northPath, int nbWallByPath) {
-        Integer firstLineLength = random.nextInt(this.wall.length / 5, this.wall.length / 2);
-        Integer previousDirection = 0;
-        System.out.println(nbWallByPath);
-        System.out.println(firstLineLength);
-        for (int i = 0; i < firstLineLength; i++) {
-            ICoordinate current = northPath.peek();
+    private static void sleep(int i) {
+        try {
+            Thread.sleep(i);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void generatePathsOdd(Integer wallPercent) {
+        Integer cellsNumber = this.wall.length * this.wall[0].length;
+        Integer emptyCells = (cellsNumber) * (100 - wallPercent) / 100;
+        Integer emptyCellsNorth = emptyCells / 4;
+        if (emptyCells % 4 != 0) {
+            emptyCellsNorth += emptyCells % 4;
+        }
+        Integer emptyCellsWest = emptyCells / 4;
+        Integer emptyCellsEast = emptyCells / 4;
+        Integer emptyCellsSouth = emptyCells / 4;
+        Stack<ICoordinate> path = new Stack<>();
+
+        path.push(new Coordinate(this.wall.length / 2, this.wall[0].length / 2));
+        emptyCellsWest += this.makePath(path, emptyCellsNorth, Cardinals.NORTH, 1);
+
+        path.push(new Coordinate(this.wall.length / 2, this.wall[0].length / 2));
+        emptyCellsEast += this.makePath(path, emptyCellsWest, Cardinals.WEST, 1);
+
+        path.push(new Coordinate(this.wall.length / 2, this.wall[0].length / 2));
+        emptyCellsSouth += this.makePath(path, emptyCellsEast, Cardinals.EAST, 1);
+
+        path.push(new Coordinate(this.wall.length / 2, this.wall[0].length / 2));
+        this.makePath(path, emptyCellsSouth, Cardinals.SOUTH, 1);
+    }
+
+    private void generatePathsEven(Integer wallPercent) {
+    }
+
+    private Integer makePath(Stack<ICoordinate> path, Integer emptyCellsByPath, Cardinals direction,
+            Integer iteration) {
+        if (emptyCellsByPath <= 0) {
+            path.clear();
+            return emptyCellsByPath;
+        }
+        Integer lineLength = random.nextInt(this.wall.length / 5, (this.wall.length / 5) * 2);
+        if (iteration == 1) {
+            lineLength = random.nextInt(this.wall.length / 5, this.wall.length / 2);
+        }
+        emptyCellsByPath -= this.breakLine(path, lineLength, direction);
+        Cardinals nextDirection;
+        do {
+            nextDirection = Cardinals.values()[random.nextInt(0, 4)];
+        } while (nextDirection == Cardinals.getOpposite(direction) || directionLeadToBorder(path, nextDirection));
+        return this.makePath(path, emptyCellsByPath, nextDirection, iteration + 1);
+    }
+
+    private boolean directionLeadToBorder(Stack<ICoordinate> path, Cardinals nextDirection) {
+        ICoordinate current = path.peek();
+        switch (nextDirection) {
+            case NORTH -> {
+                if (current.getRow() == 0) {
+                    return true;
+                }
+            }
+            case WEST -> {
+                if (current.getCol() == 0) {
+                    return true;
+                }
+            }
+            case EAST -> {
+                if (current.getCol() == this.wall[0].length - 1) {
+                    return true;
+                }
+            }
+            case SOUTH -> {
+                if (current.getRow() == this.wall.length - 1) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private Integer breakLine(Stack<ICoordinate> path, Integer lineLength, Cardinals direction) {
+        Integer emptyCellsByLine = 0;
+        for (int i = 0; i < lineLength; i++) {
+            ICoordinate current = path.pop();
+            ICoordinate next = new Coordinate(0, 0);
+            switch (direction) {
+                case NORTH -> next = new Coordinate(current.getRow() - 1, current.getCol());
+                case WEST -> next = new Coordinate(current.getRow(), current.getCol() - 1);
+                case EAST -> next = new Coordinate(current.getRow(), current.getCol() + 1);
+                case SOUTH -> next = new Coordinate(current.getRow() + 1, current.getCol());
+            }
             try {
-                ICoordinate next = new Coordinate(current.getRow() - 1, current.getCol());
-                this.wall[next.getRow()][next.getCol()] = false;
-                northPath.push(next);
+                if (this.breakWall(next)) {
+                    emptyCellsByLine++;
+                }
+                path.push(next);
             } catch (ArrayIndexOutOfBoundsException e) {
+                path.push(current);
                 break;
             }
         }
-        nbWallByPath -= firstLineLength;
-        while (nbWallByPath > 0) {
-            System.out.println(nbWallByPath);
-            ICoordinate current = northPath.peek();
-            Integer direction = random.nextInt(0, 4);
-            if (direction == previousDirection) {
-                direction = (direction + 1) % 4;
-            }
-            try {
-                Integer lineLength = random.nextInt(this.wall.length / 5, (this.wall.length / 5) * 2);
-                System.out.println(lineLength);
-                for (int i = 0; i < lineLength; i++) {
-                    ICoordinate next = null;
-                    switch (direction) {
-                        case 0:
-                            next = new Coordinate(current.getRow() - 1, current.getCol());
-                            break;
-                        case 1:
-                            next = new Coordinate(current.getRow(), current.getCol() - 1);
-                            break;
-                        case 2:
-                            next = new Coordinate(current.getRow(), current.getCol() + 1);
-                            break;
-                        case 3:
-                            next = new Coordinate(current.getRow() + 1, current.getCol());
-                            break;
-                    }
-                    if (this.wall[next.getRow()][next.getCol()]) {
-                        this.wall[next.getRow()][next.getCol()] = false;
-                        northPath.push(next);
-                        current = next;
-                        previousDirection = direction;
-                        nbWallByPath--;
-                    }
-                }
-            } catch (ArrayIndexOutOfBoundsException e) {
-            }
-            System.out.println(this);
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        return emptyCellsByLine;
+    }
+
+    public boolean breakWall(ICoordinate coord) {
+        if (cellIsWall(coord)) {
+            this.wall[coord.getRow()][coord.getCol()] = false;
+            return true;
         }
+        return false;
+
+    }
+
+    public boolean cellIsWall(ICoordinate coord) {
+        return this.wall[coord.getRow()][coord.getCol()];
     }
 
     public String toString() {
@@ -278,6 +330,11 @@ public class MazeGenerator {
     }
 
     public static void main(String[] args) {
-        MazeGenerator maze = new MazeGenerator(11, 11, 30);
+        for (int i = 0; i <= 100; i++) {
+            MazeGenerator maze = new MazeGenerator(11, 11, i);
+            System.out.println("Pourcentage de mur : " + i + "%");
+            System.out.println(maze);
+            MazeGenerator.sleep(1000);
+        }
     }
 }
