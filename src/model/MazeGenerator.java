@@ -330,7 +330,8 @@ public class MazeGenerator {
     }
 
     public static void main(String[] args) {
-        for (int i = 0; i <= 100; i++) {
+        int i = 50;
+        for (int j = 0; j <= 10; j++) {
             MazeGenerator maze = new MazeGenerator(11, 11, i);
             System.out.println("Pourcentage de mur : " + i + "%");
             System.out.println(maze);
