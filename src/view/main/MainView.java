@@ -40,6 +40,7 @@ public class MainView extends Stage {
 
     private Font customFont;
     private Font mainFont;
+    private Font litleFont;
 
     /* Main Menu */
     private Pane rootMenu;
@@ -120,13 +121,14 @@ public class MainView extends Stage {
         paneMenu = new VBox();
         titleMenu = new Text(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("titleMenu"));
         titleMenu.setFont(customFont);
-        titleMenu.setFill(Color.rgb(88, 41, 0));
+        titleMenu.setFill(Color.rgb(100, 41, 0));
 
         DropShadow dropShadow = new DropShadow();
         dropShadow.setOffsetX(3.0);
         dropShadow.setOffsetY(3.0);
         dropShadow.setColor(Color.rgb(128, 0, 0));
         titleMenu.setEffect(dropShadow);
+        titleMenu.setStyle("-fx-padding: 0;");
 
         paneMenu.setAlignment(javafx.geometry.Pos.CENTER);
 
@@ -138,17 +140,29 @@ public class MainView extends Stage {
         paneMenu.setMaxWidth(Screen.getPrimary().getVisualBounds().getWidth());
         paneMenu.setPrefWidth(Screen.getPrimary().getVisualBounds().getWidth());
 
-        Image backgroundImage = new Image(
+        Image panebackgroundImage = new Image(
                 Paths.get(MonsterHunter.PROPERTIES.getProperty("MenuBckgImage")).toUri().toString());
-        BackgroundImage background = new BackgroundImage(
-                backgroundImage,
-                BackgroundRepeat.NO_REPEAT, // Pas de répétition de l'image
-                BackgroundRepeat.NO_REPEAT,
-                BackgroundPosition.DEFAULT,
+        BackgroundImage panebackground = new BackgroundImage(
+                panebackgroundImage,
+                BackgroundRepeat.SPACE,
+                BackgroundRepeat.SPACE,
+                BackgroundPosition.CENTER,
                 BackgroundSize.DEFAULT);
 
-        paneMenu.setBackground(new Background(background));
+        Image buttonbackgroundImage = new Image(
+                Paths.get(MonsterHunter.PROPERTIES.getProperty("ButtonTexture")).toUri().toString());
+        BackgroundImage buttonbackground = new BackgroundImage(
+                buttonbackgroundImage,
+                BackgroundRepeat.SPACE,
+                BackgroundRepeat.SPACE,
+                BackgroundPosition.CENTER,
+                BackgroundSize.DEFAULT);
+
+        paneMenu.setBackground(new Background(panebackground));
+
         playButtonMenu = new Button(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("playButtonMenu"));
+
+        playButtonMenu.setBackground(null);
 
         playButtonMenu.setFont(mainFont);
         playButtonMenu.setStyle("-fx-padding: 0;");
@@ -158,12 +172,18 @@ public class MainView extends Stage {
         parameterButtonMenu.setFont(new Font(20));
         parameterButtonMenu.setStyle("-fx-padding: 0;");
 
+        playButtonMenu.setBackground(new Background(buttonbackground));
+        parameterButtonMenu.setBackground(new Background(buttonbackground));
+        parameterButtonMenu.setFont(litleFont);
+        parameterButtonMenu.setLayoutX(1650);
+
         paneMenu.getChildren().addAll(titleMenu, playButtonMenu);
 
         rootMenu.getChildren().addAll(paneMenu, parameterButtonMenu);
 
         sceneMenu = new Scene(rootMenu);
-        // paneMenu.prefWidthProperty().bind(sceneMenu.widthProperty());
+        // playButtonMenu.setLayoutX(sceneMenu.widthProperty().doubleValue() / 2);
+
     }
 
     private void initParameter() {
@@ -214,6 +234,7 @@ public class MainView extends Stage {
         String absoluteFontPath = absolutePath.toUri().toString();
         customFont = Font.loadFont(absoluteFontPath, 200);
         mainFont = Font.loadFont(absoluteFontPath, 75);
+        litleFont = Font.loadFont(absoluteFontPath, 20);
 
     }
 
