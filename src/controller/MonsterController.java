@@ -133,7 +133,7 @@ public class MonsterController {
                     alert.showAndWait();
                     return;
                 }
-                maze.cellUpdate(new CellEvent(coord, Maze.turn, CellInfo.MONSTER));
+                maze.cellUpdate(new CellEvent(coord, Maze.currentTurn, CellInfo.MONSTER));
                 makeGameBoard(view.getMonster().getWall());
                 view.getRoot().getChildren().set(0, view.getGameBoard());
                 selectedStack = null;

@@ -1,6 +1,7 @@
 package model;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
 public class FileFinder {
 
@@ -10,28 +11,32 @@ public class FileFinder {
         super();
     }
 
-    public static File find(String path, String fileName) {
-        path += File.separator;
+    public static File find(String path, String fileName) throws FileNotFoundException {
         File folder = new File(path);
         File file = null;
 
-        if (!folder.exists())
-            return null;
-        if (folder.isDirectory()) {
-            for (File f : folder.listFiles()) {
-                if (f.isFile() && f.getName().equals(fileName))
-                    file = f;
-                if (f.isDirectory())
-                    file = find(path + f.getName(), fileName);
-                if (file != null)
-                    return file;
-            }
+        if (!folder.exists() || !folder.isDirectory()) {
+            throw new FileNotFoundException("Le dossier " + path + " n'existe pas");
         }
 
-        return file;
+        File[] files = folder.listFiles();
+        if (files != null) {
+            for (File f : files) {
+                if (f.isFile() && f.getName().equals(fileName)) {
+                    return f;
+                }
+                if (f.isDirectory()) {
+                    file = find(f.getAbsolutePath(), fileName);
+                    if (file != null) {
+                        return file;
+                    }
+                }
+            }
+        }
+        throw new FileNotFoundException("Le fichier " + fileName + " n'existe pas");
     }
 
-    public static File find(String fileName) {
+    public static File find(String fileName) throws FileNotFoundException {
         return find(FileFinder.PATH, fileName);
     }
 }

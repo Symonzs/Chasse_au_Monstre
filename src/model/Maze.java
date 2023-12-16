@@ -21,127 +21,140 @@ import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
  */
 public class Maze extends Subject {
 
-    private static final int ROWS = 11;
-    private static final int COLS = 11;
+    private static final int ROWS = 8;
+    private static final int COLS = 8;
     private static final int WALL_PERCENT = 50;
 
-    // Tableau de booleens representant les murs du labyrinte
+    public static Integer currentTurn = 1;
+
     private boolean[][] wall;
-    // Map representant les coordonnees des monstres
     private Map<Integer, ICoordinate> monster;
-    // Map representant les coordonnees du chasseur
     private Map<Integer, ICoordinate> hunter;
-    // Coordonnees de la sortie
     private ICoordinate exit;
-    // Tour actuel
-    public static Integer turn = 1;
-    // Vainqueur
+
     private CellInfo winner;
 
     /**
      * Constructeur de la classe Maze
+     * Charge un labyrinthe
      * 
-     * @param fileName Nom du fichier contenant le labyrinthe
+     * @param path     Chemin d'acces du fichier contenant le labyrinthe à charger
+     * @param fileName Nom du fichier contenant le labyrinthe à charger
+     * @throws IOException            Si le fichier n'existe pas
+     * @throws InputMismatchException Si le fichier contient des caracteres
+     *                                invalides
      */
-    public Maze(String fileName) {
-        loadMaze(fileName);
+    public Maze(String path, String fileName) throws IOException, InputMismatchException {
+        this.loadMaze(this.importFile(path, fileName));
     }
 
     /**
      * Constructeur de la classe Maze
-     * Génére un labyrinthe aléatoire de taille ROWS x COLS avec WALL_PERCENT de
-     * murs
-     *
-     * @param nbRows Nombre de lignes du labyrinthe
-     * @param nbCols Nombre de colonnes du labyrinthe
+     * Charge un labyrinthe
+     * 
+     * @param fileName Nom du fichier contenant le labyrinthe à charger
+     * @throws IOException            Si le fichier n'existe pas
+     * @throws InputMismatchException Si le fichier contient des caracteres
+     *                                invalides
      */
-    public Maze(Integer nbRows, Integer nbCols, Integer wallPercent) {
-        generateMaze(nbRows, nbCols, wallPercent);
-    }
-
-    public Maze(Integer nbRows, Integer nbCols) {
-        generateMaze(nbRows, nbCols, WALL_PERCENT);
+    public Maze(String fileName) throws IOException, InputMismatchException {
+        this.loadMaze(this.importFile(fileName));
     }
 
     /**
-     * Charge le labyrinthe à partir d'un fichier
-     * Instancie les attributs de la classe (wall, monster, hunter, exit)
-     * Selon le caractère lu dans le fichier :
-     * - Rempli le tableau de booleens representant les murs du labyrinthe
-     * - Ajoute les coordonnees des monstres dans la map
-     * - Met à jour les coordonnees de la sortie
+     * Constructeur de la classe Maze
+     * Genere un labyrinthe
      * 
-     * Le fichier doit être au format CSV
-     * 
-     * Si un caractère non reconnu est lu, une exception est levee
-     * 
-     * @param fileName Nom du fichier contenant le labyrinthe
+     * @param nbRows      Nombre de lignes du labyrinthe
+     * @param nbCols      Nombre de colonnes du labyrinthe
+     * @param wallPercent Pourcentage de murs souhaites dans le labyrinthe
      */
-    public void loadMaze(String fileName) {
-        try {
-            List<String> lines = Files.readAllLines(importFileWithPath(fileName).toPath(), StandardCharsets.UTF_8);
-            Integer nbRows = lines.size();
-            Integer nbCols = lines.get(0).split(",").length;
-            this.wall = new boolean[nbRows][nbCols];
-            this.monster = new TreeMap<>();
-            this.hunter = new TreeMap<>();
-            this.winner = null;
-            for (int i = 0; i < lines.size(); i++) {
-                String line = lines.get(i);
-                String[] cols = line.split(",");
-                for (int j = 0; j < cols.length; j++) {
-                    switch (cols[j]) {
-                        case "E" -> this.wall[i][j] = false;
-                        case "W" -> this.wall[i][j] = true;
-                        case "X" -> {
-                            this.exit = new Coordinate(i, j);
-                            this.wall[i][j] = false;
-                        }
-                        case "M" -> {
-                            this.monster.put(turn, new Coordinate(i, j));
-                            this.wall[i][j] = false;
-                        }
-                        default -> throw new InputMismatchException("Caractère non reconnu");
-                    }
-                }
-            }
-        } catch (IOException | InputMismatchException | NullPointerException e) {
-            System.err.println(e.getMessage());
-        }
-    }
-
-    public void generateMaze(Integer nbRows, Integer nbCols, Integer wallPercentage) {
+    public Maze(Integer nbRows, Integer nbCols, Integer wallPercentage) {
         MazeGenerator mazeGen = new MazeGenerator(nbRows, nbCols, wallPercentage);
         this.wall = mazeGen.getWall();
         this.monster = mazeGen.getMonster();
         this.hunter = mazeGen.getHunter();
         this.exit = mazeGen.getExit();
+        this.winner = null;
+    }
+
+    /**
+     * Constructeur de la classe Maze
+     * Genere un labyrinthe
+     * 
+     * @param nbRows Nombre de lignes du labyrinthe
+     * @param nbCols Nombre de colonnes du labyrinthe
+     */
+    public Maze(Integer nbRows, Integer nbCols) {
+        this(nbRows, nbCols, WALL_PERCENT);
+    }
+
+    /**
+     * Constructeur de la classe Maze
+     * Genere un labyrinthe
+     */
+    public Maze() {
+        this(ROWS, COLS, WALL_PERCENT);
+    }
+
+    /**
+     * Charge un labyrinthe à partir d'un fichier
+     * 
+     * @param file Fichier contenant le labyrinthe à charger
+     * @throws IOException            Si le fichier n'existe pas
+     * @throws InputMismatchException Si le fichier contient des caracteres
+     *                                invalides
+     */
+    public void loadMaze(File file) throws IOException, InputMismatchException {
+        List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
+        Integer nbRows = lines.size();
+        Integer nbCols = lines.get(0).split(",").length;
+
+        this.wall = new boolean[nbRows][nbCols];
+        this.monster = new TreeMap<>();
+        this.hunter = new TreeMap<>();
+        for (int i = 0; i < lines.size(); i++) {
+            String line = lines.get(i);
+            String[] cols = line.split(",");
+            for (int j = 0; j < cols.length; j++) {
+                switch (cols[j]) {
+                    case "E" -> this.wall[i][j] = false;
+                    case "W" -> this.wall[i][j] = true;
+                    case "X" -> {
+                        this.exit = new Coordinate(i, j);
+                        this.wall[i][j] = false;
+                    }
+                    case "M" -> {
+                        this.monster.put(currentTurn, new Coordinate(i, j));
+                        this.wall[i][j] = false;
+                    }
+                    default -> throw new InputMismatchException("Le fichier contient des caracteres invalides. " +
+                            "Les caracteres valides sont : E(Empty), W(Wall), X(Exit), M(Monster)");
+                }
+            }
+        }
+        this.winner = null;
+    }
+
+    /**
+     * Importe un fichier à partir de son nom et du chemin d'acces
+     * 
+     * @param path     Chemin d'acces du fichier
+     * @param fileName Nom du fichier
+     * @return Fichier importe
+     */
+    public File importFile(String path, String fileName) throws FileNotFoundException {
+        return FileFinder.find(path, fileName);
     }
 
     /**
      * Importe un fichier à partir de son nom
      * 
-     * @param fileName Nom du fichier à importer
+     * @param fileName Nom du fichier
      * @return Fichier importe
-     * @throws FileNotFoundException Si le fichier n'est pas trouve
      */
     public File importFile(String fileName) throws FileNotFoundException {
-        File csv = FileFinder.find(fileName);
-        if (csv == null) {
-            throw new FileNotFoundException(String.format("Le fichier '%s' n'a pas ete trouve", fileName));
-        }
-        return csv;
-    }
-
-    /**
-     * Importe un fichier à partir de son chemin absolu
-     * 
-     * @param pathName Chemin du fichier à importer
-     * @return Fichier importe
-     * @throws NullPointerException Si le chemin est null
-     */
-    public File importFileWithPath(String fileName) throws NullPointerException {
-        return new File(fileName);
+        return FileFinder.find(fileName);
     }
 
     /**
@@ -153,7 +166,7 @@ public class Maze extends Subject {
      */
     public void cellUpdate(CellEvent eventRequest) {
         if (CellInfo.HUNTER.equals(eventRequest.getState())) {
-            cellUpdateHunter(eventRequest.getCoord(), Maze.turn);
+            cellUpdateHunter(eventRequest.getCoord(), Maze.currentTurn);
         } else if (CellInfo.MONSTER.equals(eventRequest.getState())) {
             cellUpdateMonster(eventRequest.getCoord(), eventRequest.getTurn());
         }
@@ -263,7 +276,7 @@ public class Maze extends Subject {
      * @return true si le monstre est sur la sortie, false sinon
      */
     public boolean monsterAtExit() {
-        return exit.equals(this.monster.get(Maze.turn));
+        return exit.equals(this.monster.get(Maze.currentTurn));
     }
 
     /**
@@ -280,14 +293,14 @@ public class Maze extends Subject {
      * Incremente le compteur de tour
      */
     public static void incrementTurn() {
-        Maze.turn++;
+        Maze.currentTurn++;
     }
 
     /**
      * Reinitialise le compteur de tour
      */
     public static void resetTurn() {
-        Maze.turn = 1;
+        Maze.currentTurn = 1;
     }
 
     /**
@@ -342,9 +355,9 @@ public class Maze extends Subject {
      * @return Coordonnees du monstre au tour actuel ou au tour precedent
      */
     public ICoordinate getLastMonsterCoordinate() {
-        ICoordinate lastMonsterCoord = this.monster.get(Maze.turn);
+        ICoordinate lastMonsterCoord = this.monster.get(Maze.currentTurn);
         if (lastMonsterCoord == null) {
-            lastMonsterCoord = this.monster.get(Maze.turn - 1);
+            lastMonsterCoord = this.monster.get(Maze.currentTurn - 1);
         }
         return lastMonsterCoord;
     }
@@ -356,10 +369,10 @@ public class Maze extends Subject {
      * @return Coordonnees du chasseur au tour actuel ou au tour precedent
      */
     public ICoordinate getLastHunterCoordinate() {
-        ICoordinate lastHunterCoord = this.hunter.get(Maze.turn);
+        ICoordinate lastHunterCoord = this.hunter.get(Maze.currentTurn);
         System.out.println(lastHunterCoord);
         if (lastHunterCoord == null) {
-            lastHunterCoord = this.hunter.get(Maze.turn - 1);
+            lastHunterCoord = this.hunter.get(Maze.currentTurn - 1);
         }
         return lastHunterCoord;
     }

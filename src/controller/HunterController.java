@@ -13,7 +13,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
-import javafx.util.Duration;
 import main.MonsterHunter;
 import model.CellEvent;
 import model.Coordinate;
@@ -89,7 +88,7 @@ public class HunterController {
                 resetStackStroke(selectedStack);
                 ICoordinate coord = new Coordinate(GridPane.getRowIndex(selectedStack) - 1,
                         GridPane.getColumnIndex(selectedStack) - 1);
-                maze.cellUpdate(new CellEvent(coord, Maze.turn, CellInfo.HUNTER));
+                maze.cellUpdate(new CellEvent(coord, Maze.currentTurn, CellInfo.HUNTER));
                 makeGameBoard(view.getHunter().getKnowWall(), view.getHunter().getKnowEmpty());
                 view.getPlayRoot().getChildren().set(0, view.getPlayGameBoard());
                 selectedStack = null;
@@ -98,7 +97,6 @@ public class HunterController {
                 try {
                     Thread.sleep(5000);
                 } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
                 view.showWaitScene();

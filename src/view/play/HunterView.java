@@ -112,7 +112,7 @@ public class HunterView extends PlayView {
         ImagePattern exitTexture = new ImagePattern(new Image("file:" + properties.getProperty("ExitViewAsset")));
         ImagePattern unkwonTexture = new ImagePattern(new Image("file:" + properties.getProperty("UnknowTexture")));
 
-        this.setTitle("Hunter View | Tour : " + Maze.turn);
+        this.setTitle("Hunter View | Tour : " + Maze.currentTurn);
         this.playGameBoard.setHgap(3);
         this.playGameBoard.setVgap(3);
         this.playGameBoard.setBackground(new Background(
@@ -141,7 +141,7 @@ public class HunterView extends PlayView {
                 } else {
                     ICoordinate cellCoord = new Coordinate(i, j);
                     Integer turn = hunter.getLastTurnFromCoordinate(cellCoord);
-                    if (Maze.turn.equals(turn)) {
+                    if (Maze.currentTurn.equals(turn)) {
                         cell.setFill(monsterTexture);
                     } else if (turn != null) {
                         text = new Text(turn.toString());
