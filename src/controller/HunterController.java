@@ -1,6 +1,9 @@
 package controller;
 
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
+
+import java.util.Properties;
+
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -10,12 +13,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
-import main.MonsterHunter;
 import model.CellEvent;
 import model.Coordinate;
-import model.Hunter;
 import model.Maze;
-import view.HunterView;
+import view.play.HunterView;
 
 public class HunterController {
 
@@ -24,24 +25,26 @@ public class HunterController {
     private Button shot;
     private StackPane selectedStack;
 
-    private boolean hunterHasPlayed = false;
-
-    public HunterController(Maze maze) {
+    public HunterController(Maze maze, Properties properties) {
         this.maze = maze;
-        Hunter hunter = new Hunter(maze.getWall().length, maze.getWall()[0].length);
-        maze.attach(hunter);
-        this.view = new HunterView(hunter);
-        this.shot = view.getShotButton();
-        this.shot.setOnAction(new ActionHandler());
-        view.getExitButton().setOnAction(e -> {
-            view.close();
-            MonsterHunter.exitedGame();
+        this.view = new HunterView(maze.getWall().length, maze.getWall()[0].length, properties);
+        maze.attach(view);
+        this.makeGameBoard(view.getHunter().getKnowWall(), view.getHunter().getKnowEmpty());
+        view.getPlayShotButton().setOnAction(e -> {
+            shot(e);
         });
+        view.getPlayExitButton().setOnAction(e -> {
+            maze.setGameIsClosed(true);
+        });
+        view.getWaitButton().setOnAction(e -> {
+            maze.setIsReadyToNext(true);
+        });
+
     }
 
-    public void makeGameBoard(boolean[][] board) {
-        view.makeGameBoard(board);
-        for (Node node : view.getGameBoard().getChildren()) {
+    public void makeGameBoard(boolean[][] wall, boolean[][] empty) {
+        view.makeGameBoard(wall, empty);
+        for (Node node : view.getPlayGameBoard().getChildren()) {
             if (StackPane.class == node.getClass()) {
                 StackPane stack = (StackPane) node;
                 stack.setOnMouseClicked(new MouseHandler());
@@ -65,34 +68,18 @@ public class HunterController {
         }
     }
 
-    public boolean play() {
-        hunterHasPlayed = false;
-        makeGameBoard(view.getHunter().getKnowWall());
-        view.showAndWait();
-        return hunterHasPlayed;
-    }
-
-    public HunterView getHunterView() {
-        return this.view;
-    }
-
-    private class ActionHandler implements EventHandler<ActionEvent> {
-
-        @Override
-        public void handle(ActionEvent event) {
-            if (event.getSource() == shot && selectedStack != null) {
-                resetStackStroke(selectedStack);
-                ICoordinate coord = new Coordinate(GridPane.getRowIndex(selectedStack) - 1,
-                        GridPane.getColumnIndex(selectedStack) - 1);
-                maze.cellUpdate(new CellEvent(coord, Maze.turn, CellInfo.HUNTER));
-                makeGameBoard(view.getHunter().getKnowWall());
-                view.getRoot().getChildren().set(0, view.getGameBoard());
-                selectedStack = null;
-                hunterHasPlayed = true;
-                view.close();
-            }
+    public void shot(ActionEvent e) {
+        if (selectedStack != null) {
+            resetStackStroke(selectedStack);
+            ICoordinate coord = new Coordinate(GridPane.getRowIndex(selectedStack) - 1,
+                    GridPane.getColumnIndex(selectedStack) - 1);
+            maze.cellUpdate(new CellEvent(coord, Maze.currentTurn, CellInfo.HUNTER));
+            makeGameBoard(view.getHunter().getKnowWall(), view.getHunter().getKnowEmpty());
+            view.getPlayRoot().getChildren().set(0, view.getPlayGameBoard());
+            selectedStack = null;
+            maze.setIsReadyToNext(false);
+            maze.setHunterHasPlayed(true);
         }
-
     }
 
     private class MouseHandler implements EventHandler<MouseEvent> {
@@ -115,9 +102,13 @@ public class HunterController {
                     selectedStack = stack;
                     amplifyStackStroke(selectedStack);
                 }
+
             }
         }
 
     }
 
+    public HunterView getView() {
+        return view;
+    }
 }
