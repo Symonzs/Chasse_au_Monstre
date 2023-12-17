@@ -58,13 +58,17 @@ public class MazeSolver implements IMonsterStrategy {
     }
 
     public static void main(String[] args) {
-        MazeSolver ms = new MazeSolver(new Maze("E:\\iutinfo\\S3Custom\\J1_SAE3A\\resources\\11x11.csv"));
-
-        ICoordinate cell = null;
-        do {
-            cell = ms.play();
-            System.out.println(cell);
-        } while (cell != null);
+        try {
+            Maze maze = new Maze(11, 11, 50);
+            MazeSolver solver = new MazeSolver(maze);
+            ICoordinate cell;
+            do {
+                cell = solver.play();
+                System.out.println(cell);
+            } while (cell != null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**

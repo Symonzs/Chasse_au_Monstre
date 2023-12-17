@@ -5,8 +5,6 @@ import java.io.FileNotFoundException;
 
 public class FileFinder {
 
-    public static final String PATH = System.getProperty("user.dir");
-
     private FileFinder() {
         super();
     }
@@ -37,6 +35,10 @@ public class FileFinder {
     }
 
     public static File find(String fileName) throws FileNotFoundException {
-        return find(FileFinder.PATH, fileName);
+        String path = System.getProperty("user.dir") +
+                File.separator + "resources" +
+                File.separator + "map"
+                + File.separator;
+        return find(path, fileName);
     }
 }
