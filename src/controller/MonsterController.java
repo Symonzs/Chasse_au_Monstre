@@ -14,41 +14,33 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
-import main.MonsterHunter;
 import model.CellEvent;
 import model.Coordinate;
 import model.Maze;
 import model.Monster;
-import view.game.GameView;
 import view.play.MonsterView;
 
 public class MonsterController {
 
     private Maze maze;
     private MonsterView view;
-    private GameView gameView;
     private Button move;
     private StackPane selectedStack;
 
-    private boolean monsterHasPlayed = false;
+    private boolean hasPlayed = false;
+    private boolean isReadyToNext = false;
 
-    public MonsterController(Maze maze, GameView gameView, Properties properties) {
+    public MonsterController(Maze maze, Properties properties) {
         this.maze = maze;
-        this.gameView = gameView;
-        Monster monster = new Monster(maze);
-        maze.attach(monster);
-        this.view = new MonsterView(monster, properties);
+        this.view = new MonsterView(maze, properties);
+        maze.attach(view);
         this.makeGameBoard(view.getMonster().getWall());
-        this.gameView.addPlayScene(view.getPlayScene());
-        this.move = view.getPlayMoveButton();
-        this.move.setOnAction(new ActionHandler());
         view.getExitButton().setOnAction(e -> {
-            gameView.close();
-            MonsterHunter.exitedGame();
+            maze.setGameIsClosed(true);
         });
+        view.getPlayMoveButton().setOnAction(new ActionHandler());
         view.getWaitButton().setOnAction(e -> {
-            // view.showPlayScene();
-            gameView.nextPlayScenes();
+            maze.setIsReadyToNext(true);
         });
 
     }
@@ -120,7 +112,7 @@ public class MonsterController {
 
         @Override
         public void handle(ActionEvent event) {
-            if (event.getSource() == move && selectedStack != null) {
+            if (selectedStack != null) {
                 resetStackStroke(selectedStack);
                 ICoordinate coord = new Coordinate(GridPane.getRowIndex(selectedStack) - 1,
                         GridPane.getColumnIndex(selectedStack) - 1);
@@ -137,9 +129,8 @@ public class MonsterController {
                 makeGameBoard(view.getMonster().getWall());
                 view.getRoot().getChildren().set(0, view.getGameBoard());
                 selectedStack = null;
-                monsterHasPlayed = true;
-                view.showWaitScene();
-                gameView.display(view.getWaitScene(), false);
+                maze.setIsReadyToNext(false);
+                maze.setMonsterHasPlayed(true);
             }
         }
 
@@ -170,8 +161,15 @@ public class MonsterController {
 
     }
 
-    public MonsterView getMonsterView() {
+    public MonsterView getView() {
         return this.view;
     }
 
+    public boolean hasPlayed() {
+        return hasPlayed;
+    }
+
+    public boolean isReadyToNext() {
+        return isReadyToNext;
+    }
 }

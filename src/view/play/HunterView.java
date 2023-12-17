@@ -3,6 +3,8 @@ package view.play;
 import java.util.Properties;
 
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
+import fr.univlille.iutinfo.r304.utils.Observer;
+import fr.univlille.iutinfo.r304.utils.Subject;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -20,14 +22,16 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import model.CellEvent;
 import model.Coordinate;
 import model.Hunter;
 import model.Maze;
 
-public class HunterView extends PlayView {
+public class HunterView extends PlayView implements Observer {
 
     private static final int RECT_COL = 75;
-    private static final int RECT_ROW = 60;
+    private static final int RECT_ROW = 75;
+
     private Hunter hunter;
 
     private Font font;
@@ -51,11 +55,11 @@ public class HunterView extends PlayView {
 
     private Properties properties;
 
-    public HunterView(Hunter hunter, Properties properties) {
-        this.hunter = hunter;
+    public HunterView(Integer rows, Integer cols, Properties properties) {
+        this.hunter = new Hunter(rows, cols);
         this.properties = properties;
 
-        this.font = new Font("Arial", 30);
+        this.font = new Font("Arial", 24);
 
         initPlayView();
         initWaitView();
@@ -70,11 +74,9 @@ public class HunterView extends PlayView {
         playShotButton = new Button("Confirmer le tir");
         playShotButton.setPadding(new Insets(10));
         playShotButton.setFont(font);
-        playShotButton.setPadding(new Insets(10));
         playExitButton = new Button("Quitter le jeux");
         playExitButton.setPadding(new Insets(10));
         playExitButton.setFont(font);
-        playExitButton.setPadding(new Insets(10));
         playVBoxNav = new HBox(playShotButton, playExitButton);
 
         playRoot.getChildren().addAll(playGameBoard, playVBoxNav);
@@ -93,6 +95,7 @@ public class HunterView extends PlayView {
         waitButton = new Button("Passez au tour suivant");
         waitButton.setFont(font);
         waitButton.setPadding(new Insets(10));
+
         waitRoot.getChildren().addAll(waitLabel, waitButton);
 
         super.setWaitScene(new Scene(waitRoot));
@@ -109,7 +112,8 @@ public class HunterView extends PlayView {
                 new Image("file:" + properties.getProperty("MonsterViewApparence")));
         ImagePattern wallTexture = new ImagePattern(new Image("file:" + properties.getProperty("WallViewAsset")));
         ImagePattern groundTexture = new ImagePattern(new Image("file:" + properties.getProperty("GroundViewAsset")));
-        ImagePattern exitTexture = new ImagePattern(new Image("file:" + properties.getProperty("ExitViewAsset")));
+        // ImagePattern exitTexture = new ImagePattern(new Image("file:" +
+        // properties.getProperty("ExitViewAsset")));
         ImagePattern unkwonTexture = new ImagePattern(new Image("file:" + properties.getProperty("UnknowTexture")));
 
         this.setTitle("Hunter View | Tour : " + Maze.currentTurn);
@@ -193,4 +197,29 @@ public class HunterView extends PlayView {
         return waitButton;
     }
 
+    public Button getErrorButton() {
+        return errorButton;
+    }
+
+    public VBox getErrorRoot() {
+        return errorRoot;
+    }
+
+    public Label getErrorLabel() {
+        return errorLabel;
+    }
+
+    @Override
+    public void update(Subject arg0) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'update'");
+    }
+
+    @Override
+    public void update(Subject arg0, Object arg1) {
+        if (CellEvent[].class == arg1.getClass()) {
+            CellEvent[] events = (CellEvent[]) arg1;
+            hunter.update(events[0]);
+        }
+    }
 }

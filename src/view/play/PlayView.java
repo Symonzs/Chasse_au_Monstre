@@ -8,10 +8,14 @@ public class PlayView extends Stage {
     private Scene waitScene;
 
     public void setPlayScene(Scene scene) {
+        setFullScreen(true);
+        setFullScreenExitHint("");
         playScene = scene;
     }
 
     public void setWaitScene(Scene scene) {
+        setFullScreen(true);
+        setFullScreenExitHint("");
         waitScene = scene;
     }
 

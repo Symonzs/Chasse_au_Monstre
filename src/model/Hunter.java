@@ -12,7 +12,7 @@ import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
  * @see CellEvent
  * @see Coordinate
  */
-public class Hunter implements Observer {
+public class Hunter {
 
     // Tableau de booleens representant les murs connus par le chasseur
     private boolean[][] knowWall;
@@ -101,31 +101,8 @@ public class Hunter implements Observer {
         return lastTurn;
     }
 
-    @Override
-    public void update(Subject arg0) {
-        // Methode non utilisee
-    }
-
-    /**
-     * Methode permettant de mettre à jour les coordonnees connus par le
-     * chasseur<br>
-     * Verifie si l'objet passe en parametre est une instance de CellEvent<br>
-     * Si c'est le cas, verifie l'etat de la case et met à jour les coordonnees
-     * connus par le chasseur<br>
-     * Si l'etat de la case est MONSTER, ajoute les coordonnees du monstre dans la
-     * liste des coordonnees connus par le chasseur<br>
-     * Si l'etat de la case est WALL, met à jour la case dans le tableau de booleens
-     * avec la valeur true<br>
-     * Sinon met à jour la case dans le tableau de booleens avec la valeur false<br>
-     * 
-     * @param arg0 Le labyrinth
-     * @param arg1 Le CellEvent contenant les informations sur la case touchee
-     * 
-     */
-    @Override
-    public void update(Subject arg0, Object arg1) {
-        if (CellEvent.class == arg1.getClass()) {
-            CellEvent event = (CellEvent) arg1;
+    public void update(CellEvent event) {
+        try {
             this.hunterCoord = event.getCoord();
             if (event.getState() == CellInfo.MONSTER) {
                 this.addKnowMonsterCoords(event.getTurn(), event.getCoord());
@@ -134,7 +111,8 @@ public class Hunter implements Observer {
             } else {
                 this.knowEmpty[event.getCoord().getRow()][event.getCoord().getCol()] = true;
             }
+        } catch (NullPointerException e) {
+            System.out.println("CellEvent null");
         }
     }
-
 }

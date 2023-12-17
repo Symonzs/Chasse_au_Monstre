@@ -1,59 +1,29 @@
 package view.game;
 
-import java.util.ArrayList;
-
+import fr.univlille.iutinfo.r304.utils.Observer;
+import fr.univlille.iutinfo.r304.utils.Subject;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class GameView extends Stage {
-    private ArrayList<Scene> playScenes;
-    private Scene lastPlayedScene;
-    // private Scene nextPlayScene;
+public class GameView extends Stage implements Observer {
 
-    public GameView(Scene scene1, Scene scene2) {
-        this.playScenes = new ArrayList<Scene>();
-        if (scene1 != null && scene2 != null) {
-            playScenes.add(scene1);
-            playScenes.add(scene2);
-            // nextPlayScene = scene2;
-            setScene(scene1);
-        }
+    public void setSceneInFullScreen(Scene scene) {
+        this.setScene(scene);
+        this.setFullScreen(true);
+        this.setFullScreenExitHint("");
+        System.out.println("La scnène " + scene + "est maintenant afficher.");
+        this.showAndWait();
     }
 
-    public GameView() {
-        this(null, null);
+    @Override
+    public void update(Subject arg0) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'update'");
     }
 
-    public ArrayList<Scene> getPlayScenes() {
-        return playScenes;
+    @Override
+    public void update(Subject arg0, Object arg1) {
+        System.out.println("Update de la vue de jeu");
+        this.close();
     }
-
-    public void addPlayScene(Scene scene) {
-        if (!playScenes.contains(scene)) {
-            playScenes.add(scene);
-            System.out.println("added to playscenes : " + scene);
-        } else {
-            System.out.println("not added to playscenes :" + scene + " is already in the list.");
-        }
-    }
-
-    public void display(Scene scene, boolean isPlayScene) {
-        setScene(scene);
-        setFullScreenExitHint("");
-        setFullScreen(true);
-        if (isPlayScene) {
-            lastPlayedScene = scene;
-            addPlayScene(scene);
-        }
-
-    }
-
-    public void nextPlayScenes() {
-        setScene(playScenes.get((playScenes.indexOf(lastPlayedScene) + 1) % (playScenes.size())));
-        lastPlayedScene = getScene();
-        setFullScreenExitHint("");
-        setFullScreen(true);
-
-    }
-
 }

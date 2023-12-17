@@ -34,6 +34,12 @@ public class Maze extends Subject {
 
     private CellInfo winner;
 
+    private boolean gameIsClosed = false;
+    private boolean isReadyToNext = false;
+
+    private boolean hunterHasPlayed = false;
+    private boolean monsterHasPlayed = false;
+
     /**
      * Constructeur de la classe Maze
      * Charge un labyrinthe
@@ -183,11 +189,14 @@ public class Maze extends Subject {
      * @param eventTurn  Tour du deplacement du monstre
      */
     private void cellUpdateMonster(ICoordinate eventCoord, Integer eventTurn) {
+        CellEvent[] events = new CellEvent[2];
         this.monster.put(eventTurn, eventCoord);
         if (this.monsterAtExit()) {
             this.end(CellInfo.MONSTER);
         } else {
-            this.notifyObserver(null, new CellEvent(eventCoord, eventTurn, CellInfo.MONSTER));
+            events[0] = null;
+            events[1] = new CellEvent(eventCoord, CellInfo.MONSTER);
+            this.notifyObservers(events);
         }
     }
 
@@ -217,27 +226,28 @@ public class Maze extends Subject {
      * @param eventTurn  Tour du deplacement du chasseur
      */
     private void cellUpdateHunter(ICoordinate eventCoord, Integer eventTurn) {
-        CellEvent eventHunter = null;
-        CellEvent eventMonster = null;
+        CellEvent[] events = new CellEvent[2];
         this.hunter.put(eventTurn, eventCoord);
-        System.out.println(hunter);
         if (this.monsterWasHere(eventCoord)) {
             if (this.monsterIsHere(eventCoord)) {
                 this.end(CellInfo.HUNTER);
+
             } else {
-                eventHunter = new CellEvent(eventCoord, this.getLastTurnFromCoordinate(eventCoord),
+                events[0] = new CellEvent(eventCoord, this.getLastTurnFromCoordinate(eventCoord),
                         CellInfo.MONSTER);
             }
         } else {
             if (this.cellIsWall(eventCoord)) {
-                eventHunter = new CellEvent(eventCoord, CellInfo.WALL);
+                events[0] = new CellEvent(eventCoord, CellInfo.WALL);
             } else {
-                eventHunter = new CellEvent(eventCoord, CellInfo.EMPTY);
+                events[0] = new CellEvent(eventCoord, CellInfo.EMPTY);
             }
         }
-        eventMonster = new CellEvent(eventCoord, CellInfo.HUNTER);
+        events[1] = new CellEvent(eventCoord, CellInfo.HUNTER);
+        System.out.println(events[0]);
+        System.out.println(events[1]);
         Maze.incrementTurn();
-        this.notifyObserver(eventHunter, eventMonster);
+        notifyObservers(events);
     }
 
     /**
@@ -387,25 +397,29 @@ public class Maze extends Subject {
         return lastTurn;
     }
 
-    /**
-     * Notifie les observateurs de la classe
-     * Si l'observateur est un chasseur et que ses donnees ne sont pas null,
-     * appel la methode update de la classe Hunter
-     * Si l'observateur est un monstre, appel la methode update de la classe Monster
-     */
-    public void notifyObserver(Object hunterData, Object monsterData) {
-        for (Observer observer : this.observers) {
-            if (Hunter.class == observer.getClass()) {
-                Hunter hunterTemp = (Hunter) observer;
-                if (hunterData != null) {
-                    hunterTemp.update(this, hunterData);
-                }
-            }
-            if (Monster.class == observer.getClass()) {
-                Monster monsterTemp = (Monster) observer;
-                monsterTemp.update(this, hunterData, monsterData);
-            }
-        }
+    public void setIsReadyToNext(boolean b) {
+        this.isReadyToNext = b;
+        notifyObservers(isReadyToNext);
+    }
+
+    public boolean getIsReadyToNext() {
+        return this.isReadyToNext;
+    }
+
+    public void setHunterHasPlayed(boolean b) {
+        this.hunterHasPlayed = b;
+    }
+
+    public boolean getHunterHasPlayed() {
+        return this.hunterHasPlayed;
+    }
+
+    public void setMonsterHasPlayed(boolean b) {
+        this.monsterHasPlayed = b;
+    }
+
+    public boolean getMonsterHasPlayed() {
+        return this.monsterHasPlayed;
     }
 
 }
