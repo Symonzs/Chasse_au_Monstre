@@ -36,4 +36,14 @@ public class CursiveCoordinate extends Coordinate {
         return getRow() + ":" + getCol();
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
 }
