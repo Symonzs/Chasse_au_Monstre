@@ -317,6 +317,8 @@ public class MainView extends Stage {
         } else {
             // TODO faire un labyrinth générer. @author raph
         }
+
+        this.close();
     }
 
     private void initFont() {
