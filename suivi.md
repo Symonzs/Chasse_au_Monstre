@@ -34,18 +34,64 @@
 
 ### Semaine du 06-11 :
 
-- Raphaël :
+- Raphaël et Simon :
 
-  - Génération aléatoire du labyrinthe, placement aléatoire du monstre et de la sortie
+  - Début de la génération aléatoire du labyrinthe et réflexion sur l'algorithme à utiliser
 
 - Charles :
 
   - Rework des views et ajout des textures
 
-- Simon :
+- Hugo :
 
-  - Génération aléatoire du labyrinthe, placement aléatoire du monstre et de la sortie
+  - Algorithme IA pour le monstre en utilisant les piles
+
+### Semaine du 13-11 :
+
+- Raphaël et Simon :
+
+  - Suite de la génération aléatoire du labyrinthe, utilisation d'un algorithme standard de génération de labyrinthe
 
 - Hugo :
 
-  - Algorithme IA pour le monstre en utilisant les pile
+  - Changement de l'IA du monstre en utilisant l'algorithme A étoile
+
+### Semaine du 20-11 :
+
+- Hugo :
+
+  - Fin IA du monstre
+  - IA chasseur en utilisant l'aléatoire
+
+### Semaine du 04-12 :
+
+- Hugo :
+
+  - Refactoring du code de l'IA du monstre
+
+- Charles :
+
+  - Modification du main et fix du problème pour quitter le jeu
+
+### Semaine du 11-12 :
+
+- Raphaël :
+
+  - Implémentations d'un nouvel algorithme de génération de labyrinthe
+  - Modification du système d'importation de labyrinthe
+
+- Charles :
+
+  - Refactoring des vues
+  - Ajout de la musique
+  - Changement d'écran d'intro
+  - AJout de l'écran de paramètre
+
+- Hugo :
+
+  - Débug sur la partie IA du monstre
+
+- Simon :
+
+  - Création du nouvel algorithme de génération de labyrinthe
+  - Ajout de nombreux test sur le model
