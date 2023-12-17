@@ -3,8 +3,6 @@ package view.play;
 import java.util.Properties;
 
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
-import fr.univlille.iutinfo.r304.utils.Observer;
-import fr.univlille.iutinfo.r304.utils.Subject;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -25,6 +23,8 @@ import javafx.scene.text.Text;
 import model.CellEvent;
 import model.Maze;
 import model.Monster;
+import model.Observer;
+import model.Subject;
 
 public class MonsterView extends PlayView implements Observer {
 
@@ -179,16 +179,13 @@ public class MonsterView extends PlayView implements Observer {
 
     @Override
     public void update(Subject arg0) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+        // Ne fait rien
     }
 
     @Override
     public void update(Subject arg0, Object arg1) {
         if (CellEvent[].class == arg1.getClass()) {
             CellEvent[] events = (CellEvent[]) arg1;
-            System.out.println("Update de la vue de jeu");
-            System.out.println("Events : " + events);
             monster.update(events);
         }
     }

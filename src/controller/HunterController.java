@@ -70,11 +70,10 @@ public class HunterController {
 
     public void shot(ActionEvent e) {
         if (selectedStack != null) {
-            System.out.println("Chasseur a tiré");
             resetStackStroke(selectedStack);
             ICoordinate coord = new Coordinate(GridPane.getRowIndex(selectedStack) - 1,
                     GridPane.getColumnIndex(selectedStack) - 1);
-            maze.cellUpdate(new CellEvent(coord, Maze.turn, CellInfo.HUNTER));
+            maze.cellUpdate(new CellEvent(coord, Maze.currentTurn, CellInfo.HUNTER));
             makeGameBoard(view.getHunter().getKnowWall(), view.getHunter().getKnowEmpty());
             view.getPlayRoot().getChildren().set(0, view.getPlayGameBoard());
             selectedStack = null;

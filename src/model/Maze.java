@@ -82,6 +82,7 @@ public class Maze extends Subject {
         this.hunter = mazeGen.getHunter();
         this.exit = mazeGen.getExit();
         this.winner = null;
+        System.out.println("exit row : " + this.exit.getRow() + " exit col : " + this.exit.getCol());
     }
 
     /**
@@ -231,7 +232,6 @@ public class Maze extends Subject {
         if (this.monsterWasHere(eventCoord)) {
             if (this.monsterIsHere(eventCoord)) {
                 this.end(CellInfo.HUNTER);
-
             } else {
                 events[0] = new CellEvent(eventCoord, this.getLastTurnFromCoordinate(eventCoord),
                         CellInfo.MONSTER);
@@ -244,8 +244,6 @@ public class Maze extends Subject {
             }
         }
         events[1] = new CellEvent(eventCoord, CellInfo.HUNTER);
-        System.out.println(events[0]);
-        System.out.println(events[1]);
         Maze.incrementTurn();
         notifyObservers(events);
     }
@@ -297,6 +295,7 @@ public class Maze extends Subject {
      */
     public void end(CellInfo victoryInfo) {
         this.winner = victoryInfo;
+        notifyObservers(victoryInfo);
     }
 
     /**
@@ -380,7 +379,6 @@ public class Maze extends Subject {
      */
     public ICoordinate getLastHunterCoordinate() {
         ICoordinate lastHunterCoord = this.hunter.get(Maze.currentTurn);
-        System.out.println(lastHunterCoord);
         if (lastHunterCoord == null) {
             lastHunterCoord = this.hunter.get(Maze.currentTurn - 1);
         }
@@ -420,6 +418,15 @@ public class Maze extends Subject {
 
     public boolean getMonsterHasPlayed() {
         return this.monsterHasPlayed;
+    }
+
+    public boolean isGameClosed() {
+        return this.gameIsClosed;
+    }
+
+    public void setGameIsClosed(boolean b) {
+        this.gameIsClosed = b;
+        notifyObservers(gameIsClosed);
     }
 
 }

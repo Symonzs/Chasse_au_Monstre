@@ -3,8 +3,6 @@ package view.play;
 import java.util.Properties;
 
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
-import fr.univlille.iutinfo.r304.utils.Observer;
-import fr.univlille.iutinfo.r304.utils.Subject;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -26,6 +24,8 @@ import model.CellEvent;
 import model.Coordinate;
 import model.Hunter;
 import model.Maze;
+import model.Observer;
+import model.Subject;
 
 public class HunterView extends PlayView implements Observer {
 
@@ -112,8 +112,6 @@ public class HunterView extends PlayView implements Observer {
                 new Image("file:" + properties.getProperty("MonsterViewApparence")));
         ImagePattern wallTexture = new ImagePattern(new Image("file:" + properties.getProperty("WallViewAsset")));
         ImagePattern groundTexture = new ImagePattern(new Image("file:" + properties.getProperty("GroundViewAsset")));
-        // ImagePattern exitTexture = new ImagePattern(new Image("file:" +
-        // properties.getProperty("ExitViewAsset")));
         ImagePattern unkwonTexture = new ImagePattern(new Image("file:" + properties.getProperty("UnknowTexture")));
 
         this.setTitle("Hunter View | Tour : " + Maze.currentTurn);
@@ -211,8 +209,7 @@ public class HunterView extends PlayView implements Observer {
 
     @Override
     public void update(Subject arg0) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+        // Ne fait rien
     }
 
     @Override

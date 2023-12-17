@@ -112,7 +112,6 @@ public class Hunter {
                 this.knowEmpty[event.getCoord().getRow()][event.getCoord().getCol()] = true;
             }
         } catch (NullPointerException e) {
-            System.out.println("CellEvent null");
         }
     }
 }

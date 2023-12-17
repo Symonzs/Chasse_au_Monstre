@@ -51,7 +51,9 @@ public class MazeSolver implements IMonsterStrategy {
      */
     public ICoordinate play() {
         if (!movements.isEmpty()) {
-            return movements.remove(0);
+            ICoordinate nextMove = movements.get(0);
+            movements.remove(0);
+            return nextMove;
         } else {
             return null;
         }

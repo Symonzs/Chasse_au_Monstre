@@ -29,8 +29,6 @@ public class TestMaze {
         }
         monster = new Monster(maze);
         hunter = new Hunter(maze.getWall().length, maze.getWall()[0].length);
-        // maze.attach(monster);
-        maze.attach(hunter);
         maze.cellUpdate(new CellEvent(new Coordinate(0, 3), CellInfo.HUNTER));
 
         maze.cellUpdate(new CellEvent(new Coordinate(1, 0), Maze.currentTurn, CellInfo.MONSTER));
@@ -490,7 +488,6 @@ public class TestMaze {
         // valide
         assertEquals(mazetest.getWall().length, 5);// test si la largeur du labyrinthe est 5
         assertEquals(mazetest.getWall()[0].length, 6);// test si la largeur du labyrinthe est 6
-        System.out.println(count_wall(mazetest));
         assertTrue(count_wall(mazetest) > 12 && count_wall(mazetest) < 18);// test si le nombre de mur est en accord
                                                                            // avec le pourcentage demandé
         // valide

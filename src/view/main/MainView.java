@@ -7,17 +7,17 @@ import java.util.Properties;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.chart.PieChart.Data;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
@@ -105,12 +105,9 @@ public class MainView extends Stage {
     private CheckBox checkBoxShowBearingWall;
 
     public MainView(File file) {
-        System.out.println(MonsterHunter.PROPERTIES.getProperty("StylePolice"));
-        System.out.println(getClass().getResourceAsStream(MonsterHunter.PROPERTIES.getProperty("StylePolice")));
         this.setTitle(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("StageTitle"));
 
         initFont();
-        System.out.println(customFont);
         initMenu();
         initParameter();
 
@@ -241,14 +238,18 @@ public class MainView extends Stage {
         mapTitle = new Text(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("mapTitle"));
         mapTitle.setFont(normalFont);
         mapTitle.setStyle("-fx-text-fill: black;");
+
         checkBoxIsGeneratedMap = new CheckBox(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("checkBoxIsGeneratedMap"));
         checkBoxIsGeneratedMap.setOnAction(e -> {
             mapListView.setDisable(checkBoxIsGeneratedMap.isSelected());
         });
         checkBoxIsGeneratedMap.setFont(litleFont);
         checkBoxIsGeneratedMap.setStyle("-fx-text-fill: black;");
+        checkBoxIsGeneratedMap.setSelected(true);
+
         mapListView = initMapListView();
         mapListView.setDisable(checkBoxIsGeneratedMap.isSelected());
+
         checkBoxShowBearingWall = new CheckBox(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("ShowBearingWall"));
         checkBoxShowBearingWall.setFont(litleFont);
         checkBoxShowBearingWall.setStyle("-fx-text-fill: black;");
@@ -260,28 +261,37 @@ public class MainView extends Stage {
         textServerAddress = new TextField(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("textServerAddress"));
         textServerAddress.setDisable(checkBoxIsServer.isSelected());
 
-        checkBoxIsServer.setDisable(!checkBoxIsMultyGame.isSelected());
+        playerTitle.setFont(normalFont);
+
+        checkBoxIsMultyGame.setFont(litleFont);
+        checkBoxIsMultyGame.setStyle("-fx-text-fill: black;");
         checkBoxIsMultyGame.setOnAction(e -> {
             checkBoxIsServer.setDisable(!checkBoxIsMultyGame.isSelected());
         });
+
+        checkBoxIsServer.setFont(litleFont);
+        checkBoxIsServer.setStyle("-fx-text-fill: black;");
         checkBoxIsServer.setOnAction(e -> {
             textServerAddress.setDisable(checkBoxIsServer.isSelected());
         });
+        checkBoxIsServer.setDisable(!checkBoxIsMultyGame.isSelected());
 
-        playerTitle.setFont(normalFont);
-        checkBoxIsMultyGame.setFont(litleFont);
-        checkBoxIsMultyGame.setStyle("-fx-text-fill: black;");
-        checkBoxIsServer.setFont(litleFont);
-        checkBoxIsServer.setStyle("-fx-text-fill: black;");
         textServerAddress.setFont(litleFont);
         textServerAddress.setStyle("-fx-text-fill: black;");
 
         checkBoxMonsterIsAnAI = new CheckBox(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("checkBoxMonsterIsAnAI"));
         checkBoxMonsterIsAnAI.setFont(litleFont);
         checkBoxMonsterIsAnAI.setStyle("-fx-text-fill: black;");
+        checkBoxMonsterIsAnAI.setOnAction(e -> {
+            checkBoxHunterISAnAi.setDisable(checkBoxMonsterIsAnAI.isSelected());
+        });
+
         checkBoxHunterISAnAi = new CheckBox(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("checkBoxHunterISAnAi"));
         checkBoxHunterISAnAi.setFont(litleFont);
         checkBoxHunterISAnAi.setStyle("-fx-text-fill: black;");
+        checkBoxHunterISAnAi.setOnAction(e -> {
+            checkBoxMonsterIsAnAI.setDisable(checkBoxHunterISAnAi.isSelected());
+        });
 
         playerVBoxParameter.getChildren().addAll(playerTitle, checkBoxIsMultyGame, checkBoxIsServer, textServerAddress,
                 checkBoxMonsterIsAnAI, checkBoxHunterISAnAi);
@@ -312,10 +322,64 @@ public class MainView extends Stage {
 
     private void initMaze() {
         if (!isGeneratedMap()) {
-            this.maze = new Maze(MonsterHunter.PROPERTIES.getProperty("MapFindFolder")
-                    + mapListView.getSelectionModel().getSelectedItem() + ".csv");
+            try {
+                this.maze = new Maze(mapListView.getSelectionModel().getSelectedItem() + ".csv");
+            } catch (Exception e) {
+                Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
+                alert.showAndWait();
+                return;
+            }
         } else {
-            // TODO faire un labyrinth générer. @author raph
+            Stage stage = new Stage();
+            stage.setTitle("Génération de la map");
+
+            Label label1 = new Label("Choisissez la taille de la map");
+            Label label2 = new Label("Nombre de ligne");
+            Slider slider = new Slider();
+            slider.setMin(4);
+            slider.setMax(12);
+            slider.setValue(8);
+            slider.setShowTickLabels(true);
+            slider.setShowTickMarks(true);
+            slider.setMajorTickUnit(2);
+
+            Label label3 = new Label("Nombre de colonne");
+            Slider slider2 = new Slider();
+            slider2.setMin(4);
+            slider2.setMax(12);
+            slider2.setValue(8);
+            slider2.setShowTickLabels(true);
+            slider2.setShowTickMarks(true);
+            slider2.setMajorTickUnit(2);
+
+            Label label4 = new Label("Choisissez le pourcentage de mur");
+            Slider slider3 = new Slider();
+            slider3.setMin(0);
+            slider3.setMax(100);
+            slider3.setValue(50);
+            slider3.setShowTickLabels(true);
+            slider3.setShowTickMarks(true);
+            slider3.setMajorTickUnit(10);
+
+            Button button = new Button("Générer");
+
+            button.setOnAction(e -> {
+                this.maze = new Maze((int) slider.getValue(), (int) slider2.getValue(), (int) slider3.getValue());
+                stage.close();
+            });
+
+            HBox hBox = new HBox(label2, slider);
+            HBox hBox2 = new HBox(label3, slider2);
+            VBox vBox = new VBox(label1, hBox, hBox2, label4, slider3, button);
+
+            Scene scene = new Scene(vBox);
+            stage.setMinHeight(300);
+            stage.setMinWidth(300);
+            stage.setScene(scene);
+            stage.showAndWait();
+            stage.setOnCloseRequest(e -> {
+                initMenu();
+            });
         }
 
         this.close();
@@ -329,7 +393,6 @@ public class MainView extends Stage {
         mainFont = Font.loadFont(absoluteFontPath, 75);
         litleFont = Font.loadFont(absoluteFontPath, 20);
         normalFont = Font.loadFont(absoluteFontPath, 40);
-
     }
 
     private ListView<String> initMapListView() {
@@ -393,5 +456,13 @@ public class MainView extends Stage {
         this.setScene(sceneParameter);
         this.setFullScreen(true);
         this.setFullScreenExitHint("");
+    }
+
+    public boolean getHunterIsAnAi() {
+        return checkBoxHunterISAnAi.isSelected();
+    }
+
+    public boolean getMonsterIsAnAI() {
+        return checkBoxMonsterIsAnAI.isSelected();
     }
 }

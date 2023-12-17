@@ -95,14 +95,12 @@ public class Monster {
                     this.setMonsterCoord(event.getCoord());
                 }
             } catch (NullPointerException e) {
-                System.out.println("CellEvent null");
             }
             try {
                 if (event.getState() == CellInfo.HUNTER) {
                     this.setHunterCoord(event.getCoord());
                 }
             } catch (NullPointerException e) {
-                System.out.println("CellEvent null");
             }
         }
     }
