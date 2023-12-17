@@ -35,6 +35,7 @@ public class MazeSolver implements IMonsterStrategy {
      */
     public MazeSolver(Maze maze) {
         this.maze = maze;
+        initialize(maze.getWall());
     }
 
     public void loadMovements() {
@@ -57,7 +58,7 @@ public class MazeSolver implements IMonsterStrategy {
     }
 
     public static void main(String[] args) {
-        MazeSolver ms = new MazeSolver(new Maze("/home/infoetu/hugo.vallee2.etu/S3/sae/J1_SAE3A/resources/11x11.csv"));
+        MazeSolver ms = new MazeSolver(new Maze("E:\\iutinfo\\S3Custom\\J1_SAE3A\\resources\\11x11.csv"));
 
         ICoordinate cell = null;
         do {
