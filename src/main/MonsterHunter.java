@@ -63,7 +63,7 @@ public class MonsterHunter extends Application {
 
     public void initgame() {
         mainView = new MainView(INIT_FILE);
-        // initMusic();
+        initMusic();
         mainView.showAndWait();
 
         gameView = new GameView();

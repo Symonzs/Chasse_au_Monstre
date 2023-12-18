@@ -104,6 +104,21 @@ public class MainView extends Stage {
     private CheckBox checkBoxHunterISAnAi;
     private CheckBox checkBoxShowBearingWall;
 
+    /* generated maze setting */
+    private Scene mazeGeneratedSceneParameter;
+    private VBox rootMazeGeneratorParameter;
+    private Text mazeGeneratedTitleParameter;
+    private Label mazeGeneratedSizeMapTitleParameter;// 1
+    private Label mazeGeneratedLineNbTitleParameter;// 1
+    private Slider mazeGeneratedSliderLineNbParameter;// 1
+    private Label mazeGeneratedColumnNbTitleParameter;// 1
+    private Slider mazeGeneratedColumnNbSliceParmeter;// 1
+    private Label mazeGeneratedWallPercentTitleParameter;
+    private Slider mazeGeneratedWallPercentSliderParameter;
+
+    private VBox mazeGeneratedSizeVBoxParameter;
+    private VBox mazeGeneratedWallPercentVBoxParameter;
+
     public MainView(File file) {
         this.setTitle(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("StageTitle"));
 
