@@ -16,22 +16,19 @@ public class MazeGenerator {
     private Map<Integer, ICoordinate> hunter;
     private ICoordinate exit;
 
-    public static Integer WIDTH;
-    public static Integer HEIGHT;
-
     private Integer emptyCellsExpected;
     private ICoordinate currentCell;
     private Cardinals direction;
 
     private List<ICoordinate> emptyCells;
 
+    private final ThreadLocalRandom random = ThreadLocalRandom.current();
+
     public MazeGenerator(Integer nbRows, Integer nbCols, Integer wallPercent) {
         Maze.resetTurn();
         wall = new boolean[nbRows][nbCols];
         monster = new TreeMap<>();
         hunter = new TreeMap<>();
-        WIDTH = nbCols;
-        HEIGHT = nbRows;
         emptyCellsExpected = (nbRows * nbCols) * (100 - wallPercent) / 100;
         emptyCells = new ArrayList<>();
 
@@ -90,10 +87,9 @@ public class MazeGenerator {
         if (direction == Cardinals.NORTH || direction == Cardinals.SOUTH) {
             length = this.wall.length;
         }
-        origin = (int) (length / 5.0);
-        bound = Math.max(2, origin * 2);
-        origin = Math.max(1, origin);
-        return ThreadLocalRandom.current().nextInt(origin, bound);
+        origin = (length / 5) + 1;
+        bound = length;
+        return random.nextInt(origin, bound);
     }
 
     private Integer chooseLineLength() {
@@ -103,9 +99,10 @@ public class MazeGenerator {
         if (direction == Cardinals.NORTH || direction == Cardinals.SOUTH) {
             length = this.wall.length;
         }
-        origin = (length / 5) + 1;
-        bound = length;
-        return ThreadLocalRandom.current().nextInt(origin, bound);
+        origin = (int) (length / 5.0);
+        bound = Math.max(2, origin * 2);
+        origin = Math.max(1, origin);
+        return random.nextInt(origin, bound);
     }
 
     private Integer breakLine(Integer lineLength) {
@@ -135,15 +132,15 @@ public class MazeGenerator {
     private void chooseNextDirection() {
         Cardinals nextDirection;
         do {
-            nextDirection = Cardinals.values()[ThreadLocalRandom.current().nextInt(0, Cardinals.values().length)];
+            nextDirection = Cardinals.values()[random.nextInt(0, Cardinals.values().length)];
         } while (nextDirection == direction.opposite()
-                || nextDirection.leadToBorder(currentCell));
+                || nextDirection.leadToBorder(currentCell, this.wall[0].length, this.wall.length));
         direction = nextDirection;
     }
 
     private ICoordinate chooseRandomCell() {
-        return new Coordinate(ThreadLocalRandom.current().nextInt(0, this.wall.length),
-                ThreadLocalRandom.current().nextInt(0, this.wall[0].length));
+        return new Coordinate(random.nextInt(0, this.wall.length),
+                random.nextInt(0, this.wall[0].length));
     }
 
     private void placeMonsterAndExit() {
@@ -154,12 +151,12 @@ public class MazeGenerator {
     }
 
     private <T> T getRandomElement(List<T> list) {
-        return list.get(ThreadLocalRandom.current().nextInt(list.size()));
+        return list.get(random.nextInt(list.size()));
     }
 
     private boolean areMonsterAndExitFarEnough() {
         ICoordinate monsterLocation = monster.get(Maze.currentTurn);
-        int minDistance = getEmptyCellsNumber() * 10 / 100;
+        int minDistance = getEmptyCellsNumber() * 15 / 100;
         int distance = Math.abs(exit.getRow() - monsterLocation.getRow())
                 + Math.abs(exit.getCol() - monsterLocation.getCol());
         return distance >= minDistance;
@@ -221,13 +218,13 @@ public class MazeGenerator {
             return new Coordinate(coord.getRow() + this.row, coord.getCol() + this.col);
         }
 
-        private boolean leadToBorder(ICoordinate current) {
+        private boolean leadToBorder(ICoordinate current, Integer width, Integer height) {
             boolean leadToBorder = false;
             switch (this) {
                 case NORTH -> leadToBorder = current.getRow() == 0;
                 case WEST -> leadToBorder = current.getCol() == 0;
-                case EAST -> leadToBorder = current.getCol() == MazeGenerator.WIDTH - 1;
-                case SOUTH -> leadToBorder = current.getRow() == MazeGenerator.HEIGHT - 1;
+                case EAST -> leadToBorder = current.getCol() == width - 1;
+                case SOUTH -> leadToBorder = current.getRow() == height - 1;
             }
             return leadToBorder;
         }
@@ -241,6 +238,34 @@ public class MazeGenerator {
                 case SOUTH -> opposite = NORTH;
             }
             return opposite;
+        }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < this.wall.length; i++) {
+            for (int j = 0; j < this.wall[0].length; j++) {
+                if (this.wall[i][j]) {
+                    sb.append("X");
+                } else {
+                    sb.append(".");
+                }
+            }
+            sb.append("\n");
+        }
+        return sb.toString();
+    }
+
+    public static void main(String[] args) {
+        for (int y = 0; y < 10; y++) {
+            MazeGenerator maze = new MazeGenerator(11, 11, 40);
+            System.out.println(maze);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

@@ -82,7 +82,6 @@ public class Maze extends Subject {
         this.hunter = mazeGen.getHunter();
         this.exit = mazeGen.getExit();
         this.winner = null;
-        System.out.println("exit row : " + this.exit.getRow() + " exit col : " + this.exit.getCol());
     }
 
     /**
@@ -116,6 +115,7 @@ public class Maze extends Subject {
         List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
         Integer nbRows = lines.size();
         Integer nbCols = lines.get(0).split(",").length;
+        System.out.println(nbRows + " " + nbCols);
 
         this.wall = new boolean[nbRows][nbCols];
         this.monster = new TreeMap<>();
@@ -171,12 +171,13 @@ public class Maze extends Subject {
      * 
      * @param eventRequest CellEvent à traiter
      */
-    public void cellUpdate(CellEvent eventRequest) {
+    public CellEvent[] cellUpdate(CellEvent eventRequest) {
         if (CellInfo.HUNTER.equals(eventRequest.getState())) {
-            cellUpdateHunter(eventRequest.getCoord(), Maze.currentTurn);
+            return cellUpdateHunter(eventRequest.getCoord(), Maze.currentTurn);
         } else if (CellInfo.MONSTER.equals(eventRequest.getState())) {
-            cellUpdateMonster(eventRequest.getCoord(), eventRequest.getTurn());
+            return cellUpdateMonster(eventRequest.getCoord(), eventRequest.getTurn());
         }
+        return null;
     }
 
     /**
@@ -189,7 +190,7 @@ public class Maze extends Subject {
      * @param eventCoord Nouvelle coordonnees du monstre
      * @param eventTurn  Tour du deplacement du monstre
      */
-    private void cellUpdateMonster(ICoordinate eventCoord, Integer eventTurn) {
+    private CellEvent[] cellUpdateMonster(ICoordinate eventCoord, Integer eventTurn) {
         CellEvent[] events = new CellEvent[2];
         this.monster.put(eventTurn, eventCoord);
         if (this.monsterAtExit()) {
@@ -199,6 +200,7 @@ public class Maze extends Subject {
             events[1] = new CellEvent(eventCoord, CellInfo.MONSTER);
             this.notifyObservers(events);
         }
+        return events;
     }
 
     /**
@@ -226,7 +228,7 @@ public class Maze extends Subject {
      * @param eventCoord Nouvelle coordonnees du chasseur
      * @param eventTurn  Tour du deplacement du chasseur
      */
-    private void cellUpdateHunter(ICoordinate eventCoord, Integer eventTurn) {
+    private CellEvent[] cellUpdateHunter(ICoordinate eventCoord, Integer eventTurn) {
         CellEvent[] events = new CellEvent[2];
         this.hunter.put(eventTurn, eventCoord);
         if (this.monsterWasHere(eventCoord)) {
@@ -246,6 +248,7 @@ public class Maze extends Subject {
         events[1] = new CellEvent(eventCoord, CellInfo.HUNTER);
         Maze.incrementTurn();
         notifyObservers(events);
+        return events;
     }
 
     /**

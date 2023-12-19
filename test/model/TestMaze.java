@@ -23,7 +23,7 @@ public class TestMaze {
         // Pensé a changer le chemin du fichier csv (Pour le moment il est en absolu
         // dans les tests)
         try {
-            maze = new Maze("D:\\Document\\IUT\\J1_SAE3A\\resources\\map", "4x4.csv");
+            maze = new Maze("/home/infoetu/raphael.kiecken.etu/S3/S3.02/J1_SAE3A/resources/map", "4x4.csv");
         } catch (Exception e2) {
             System.err.println(e2.getMessage());
         }
