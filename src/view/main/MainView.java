@@ -107,17 +107,22 @@ public class MainView extends Stage {
     /* generated maze setting */
     private Scene mazeGeneratedSceneParameter;
     private VBox rootMazeGeneratorParameter;
-    private Text mazeGeneratedTitleParameter;
+
+    private Button mazeGeneratedGoBackButtonParameter; // 0
+    private Text mazeGeneratedTitleParameter;// 0
+
     private Label mazeGeneratedSizeMapTitleParameter;// 1
     private Label mazeGeneratedLineNbTitleParameter;// 1
     private Slider mazeGeneratedSliderLineNbParameter;// 1
     private Label mazeGeneratedColumnNbTitleParameter;// 1
     private Slider mazeGeneratedColumnNbSliceParmeter;// 1
-    private Label mazeGeneratedWallPercentTitleParameter;
-    private Slider mazeGeneratedWallPercentSliderParameter;
 
-    private VBox mazeGeneratedSizeVBoxParameter;
-    private VBox mazeGeneratedWallPercentVBoxParameter;
+    private Label mazeGeneratedWallPercentTitleParameter;// 2
+    private Slider mazeGeneratedWallPercentSliderParameter;// 2
+    private CheckBox mazeGeneratedIsGermanCheckBoxParameter;// 2
+
+    private VBox mazeGeneratedSizeVBoxParameter;// 1
+    private VBox mazeGeneratedWallPercentVBoxParameter;// 2
 
     public MainView(File file) {
         this.setTitle(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("StageTitle"));
@@ -346,10 +351,16 @@ public class MainView extends Stage {
             }
         } else {
             Stage stage = new Stage();
-            stage.setTitle("Génération de la map");
+            rootMazeGeneratorParameter = new VBox();
+            mazeGeneratedTitleParameter = new Text(
+                    MonsterHunter.MENU_LANGUAGE_FILE.getProperty("mazeGeneratedTitleParameter"));
+
+            stage.setTitle("Génération de la map");// TODO jarter cette ligne
 
             Label label1 = new Label("Choisissez la taille de la map");
             Label label2 = new Label("Nombre de ligne");
+            mazeGeneratedSizeMapTitleParameter = new Label(
+                    MonsterHunter.MENU_LANGUAGE_FILE.getProperty("mazeGeneratedSizeMapTitleParameter"));
             Slider slider = new Slider();
             slider.setMin(4);
             slider.setMax(12);
