@@ -92,6 +92,7 @@ public class MainView extends Stage {
     private VBox playerVBoxParameter;
     private VBox languageVBoxParameter;
     private ListView<String> mapListView;
+    private Button generatedMapButtonParameter;
     private Text mapTitle;
     private Text playerTitle;
     private Text languageTitle;
@@ -121,6 +122,7 @@ public class MainView extends Stage {
     private Slider mazeGeneratedWallPercentSliderParameter;// 2
     private CheckBox mazeGeneratedIsGermanCheckBoxParameter;// 2
 
+    private HBox mazeGeneratorHbox;
     private VBox mazeGeneratedSizeVBoxParameter;// 1
     private VBox mazeGeneratedWallPercentVBoxParameter;// 2
 
@@ -130,6 +132,7 @@ public class MainView extends Stage {
         initFont();
         initMenu();
         initParameter();
+        initMazeGeneratorParamter();
 
         showInitMenu();
     }
@@ -269,11 +272,21 @@ public class MainView extends Stage {
 
         mapListView = initMapListView();
         mapListView.setDisable(checkBoxIsGeneratedMap.isSelected());
+        generatedMapButtonParameter = new Button(
+                MonsterHunter.MENU_LANGUAGE_FILE.getProperty("generatedMapButtonParameter"));
+        generatedMapButtonParameter.setDisable(!mapListView.isDisable());
+
+        generatedMapButtonParameter.setFont(litleFont);
+        generatedMapButtonParameter.setBackground(new Background(buttonbackground));
+        generatedMapButtonParameter.setOnAction(e -> {
+            showGeneratedParameterMenu();
+        });
 
         checkBoxShowBearingWall = new CheckBox(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("ShowBearingWall"));
         checkBoxShowBearingWall.setFont(litleFont);
         checkBoxShowBearingWall.setStyle("-fx-text-fill: black;");
-        mapVBoxParameter.getChildren().addAll(mapTitle, checkBoxIsGeneratedMap, mapListView, checkBoxShowBearingWall);
+        mapVBoxParameter.getChildren().addAll(mapTitle, checkBoxIsGeneratedMap, mapListView, checkBoxShowBearingWall,
+                generatedMapButtonParameter);
 
         playerTitle = new Text(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("playerTitle"));
         checkBoxIsMultyGame = new CheckBox(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("checkBoxIsMultyGame"));
@@ -350,65 +363,126 @@ public class MainView extends Stage {
                 return;
             }
         } else {
-            Stage stage = new Stage();
-            rootMazeGeneratorParameter = new VBox();
-            mazeGeneratedTitleParameter = new Text(
-                    MonsterHunter.MENU_LANGUAGE_FILE.getProperty("mazeGeneratedTitleParameter"));
 
-            stage.setTitle("Génération de la map");// TODO jarter cette ligne
+            this.maze = new Maze((int) mazeGeneratedSliderLineNbParameter.getValue(),
+                    (int) mazeGeneratedColumnNbSliceParmeter.getValue(),
+                    (int) mazeGeneratedWallPercentSliderParameter.getValue());
 
-            Label label1 = new Label("Choisissez la taille de la map");
-            Label label2 = new Label("Nombre de ligne");
-            mazeGeneratedSizeMapTitleParameter = new Label(
-                    MonsterHunter.MENU_LANGUAGE_FILE.getProperty("mazeGeneratedSizeMapTitleParameter"));
-            Slider slider = new Slider();
-            slider.setMin(4);
-            slider.setMax(12);
-            slider.setValue(8);
-            slider.setShowTickLabels(true);
-            slider.setShowTickMarks(true);
-            slider.setMajorTickUnit(2);
-
-            Label label3 = new Label("Nombre de colonne");
-            Slider slider2 = new Slider();
-            slider2.setMin(4);
-            slider2.setMax(12);
-            slider2.setValue(8);
-            slider2.setShowTickLabels(true);
-            slider2.setShowTickMarks(true);
-            slider2.setMajorTickUnit(2);
-
-            Label label4 = new Label("Choisissez le pourcentage de mur");
-            Slider slider3 = new Slider();
-            slider3.setMin(0);
-            slider3.setMax(100);
-            slider3.setValue(50);
-            slider3.setShowTickLabels(true);
-            slider3.setShowTickMarks(true);
-            slider3.setMajorTickUnit(10);
-
-            Button button = new Button("Générer");
-
-            button.setOnAction(e -> {
-                this.maze = new Maze((int) slider.getValue(), (int) slider2.getValue(), (int) slider3.getValue());
-                stage.close();
-            });
-
-            HBox hBox = new HBox(label2, slider);
-            HBox hBox2 = new HBox(label3, slider2);
-            VBox vBox = new VBox(label1, hBox, hBox2, label4, slider3, button);
-
-            Scene scene = new Scene(vBox);
-            stage.setMinHeight(300);
-            stage.setMinWidth(300);
-            stage.setScene(scene);
-            stage.showAndWait();
-            stage.setOnCloseRequest(e -> {
-                initMenu();
-            });
         }
 
         this.close();
+    }
+
+    private void initMazeGeneratorParamter() {
+
+        rootMazeGeneratorParameter = new VBox();
+        rootMazeGeneratorParameter.setAlignment(javafx.geometry.Pos.CENTER);
+
+        rootMazeGeneratorParameter.setBackground(new Background(panebackground));
+
+        mazeGeneratedGoBackButtonParameter = new Button(
+                MonsterHunter.MENU_LANGUAGE_FILE.getProperty("mazeGeneratedGoBackButtonParameter"));
+        mazeGeneratedGoBackButtonParameter.setFont(litleFont);
+        mazeGeneratedGoBackButtonParameter.setBackground(new Background(buttonbackground));
+        mazeGeneratedGoBackButtonParameter.setOnAction(e -> {
+            showParameterMenu();
+        });
+        mazeGeneratedTitleParameter = new Text(
+                MonsterHunter.MENU_LANGUAGE_FILE.getProperty("mazeGeneratedTitleParameter"));
+        mazeGeneratedTitleParameter.setFont(customFont);
+        mazeGeneratedTitleParameter.setFill(Color.rgb(100, 41, 0));
+
+        DropShadow dropShadow = new DropShadow();
+        dropShadow.setOffsetX(3.0);
+        dropShadow.setOffsetY(3.0);
+        dropShadow.setColor(Color.rgb(0, 0, 0));
+        mazeGeneratedTitleParameter.setEffect(dropShadow);
+        mazeGeneratedTitleParameter.setStyle("-fx-padding: 0;");
+
+        mazeGeneratedSizeVBoxParameter = new VBox();
+        mazeGeneratedSizeVBoxParameter.setStyle("-fx-padding: 50;");
+
+        mazeGeneratedSizeVBoxParameter.setBackground(new Background(parameterChoiceMenuBackgroundImage));
+
+        mazeGeneratedSizeMapTitleParameter = new Label(
+                MonsterHunter.MENU_LANGUAGE_FILE.getProperty("mazeGeneratedSizeMapTitleParameter"));
+        mazeGeneratedSizeMapTitleParameter.setFont(normalFont);
+        mazeGeneratedSizeMapTitleParameter.setStyle("-fx-text-fill: black;");
+
+        mazeGeneratedLineNbTitleParameter = new Label(
+                MonsterHunter.MENU_LANGUAGE_FILE.getProperty("mazeGeneratedLineNbTitleParameter"));
+        mazeGeneratedLineNbTitleParameter.setFont(litleFont);
+        mazeGeneratedLineNbTitleParameter.setStyle("-fx-text-fill: black;");
+
+        mazeGeneratedSliderLineNbParameter = new Slider();
+        mazeGeneratedSliderLineNbParameter.setMin(Integer
+                .parseInt(MonsterHunter.PROPERTIES.getProperty("mazeGeneratedSliderLineNbParameterMinValue")));
+        mazeGeneratedSliderLineNbParameter.setMax(Integer
+                .parseInt(MonsterHunter.PROPERTIES.getProperty("mazeGeneratedSliderLineNbParameterMaxValue")));
+        mazeGeneratedSliderLineNbParameter.setValue(
+                Integer.parseInt(MonsterHunter.PROPERTIES.getProperty("mazeGeneratedSliderLineNbParameterValue")));
+
+        mazeGeneratedSliderLineNbParameter.setMajorTickUnit(2);
+        mazeGeneratedSliderLineNbParameter.setShowTickLabels(true);
+        mazeGeneratedSliderLineNbParameter.setShowTickMarks(true);
+
+        mazeGeneratedColumnNbTitleParameter = new Label(
+                MonsterHunter.MENU_LANGUAGE_FILE.getProperty("mazeGeneratedColumnNbTitleParameter"));
+        mazeGeneratedColumnNbTitleParameter.setFont(litleFont);
+        mazeGeneratedColumnNbTitleParameter.setStyle("-fx-text-fill: black;");
+
+        mazeGeneratedColumnNbSliceParmeter = new Slider();
+
+        mazeGeneratedColumnNbSliceParmeter.setMin(Integer
+                .parseInt(MonsterHunter.PROPERTIES.getProperty("mazeGeneratedColumnNbSliceParmeterMinValue")));
+        mazeGeneratedColumnNbSliceParmeter.setMax(Integer
+                .parseInt(MonsterHunter.PROPERTIES.getProperty("mazeGeneratedColumnNbSliceParmeterMaxValue")));
+        mazeGeneratedColumnNbSliceParmeter.setValue(
+                Integer.parseInt(MonsterHunter.PROPERTIES.getProperty("mazeGeneratedColumnNbSliceParmeterValue")));
+
+        mazeGeneratedColumnNbSliceParmeter.setShowTickLabels(true);
+        mazeGeneratedColumnNbSliceParmeter.setShowTickMarks(true);
+        mazeGeneratedColumnNbSliceParmeter.setMajorTickUnit(2);
+
+        mazeGeneratedSizeVBoxParameter.getChildren().addAll(mazeGeneratedSizeMapTitleParameter,
+                mazeGeneratedLineNbTitleParameter, mazeGeneratedSliderLineNbParameter,
+                mazeGeneratedColumnNbTitleParameter, mazeGeneratedColumnNbSliceParmeter);
+
+        mazeGeneratedWallPercentVBoxParameter = new VBox();
+        mazeGeneratedWallPercentVBoxParameter.setStyle("-fx-padding: 50;");
+        mazeGeneratedWallPercentVBoxParameter.setBackground(new Background(parameterChoiceMenuBackgroundImage));
+        mazeGeneratedWallPercentTitleParameter = new Label(
+                MonsterHunter.MENU_LANGUAGE_FILE.getProperty("mazeGeneratedWallPercentTitleParameter"));
+        mazeGeneratedWallPercentTitleParameter.setFont(normalFont);
+        mazeGeneratedWallPercentTitleParameter.setStyle("-fx-text-fill: black;");
+
+        mazeGeneratedWallPercentSliderParameter = new Slider();
+        mazeGeneratedWallPercentSliderParameter.setMin(0);
+        mazeGeneratedWallPercentSliderParameter.setMax(100);
+        mazeGeneratedWallPercentSliderParameter
+                .setValue(Integer.parseInt(
+                        MonsterHunter.PROPERTIES.getProperty("mazeGeneratedWallPercentSliderParameterValue")));
+        mazeGeneratedWallPercentSliderParameter.setShowTickLabels(true);
+        mazeGeneratedWallPercentSliderParameter.setShowTickMarks(true);
+        mazeGeneratedWallPercentSliderParameter.setMajorTickUnit(10);
+
+        mazeGeneratedIsGermanCheckBoxParameter = new CheckBox(
+                MonsterHunter.MENU_LANGUAGE_FILE.getProperty("mazeGeneratedIsGermanCheckBoxParameter"));
+        mazeGeneratedIsGermanCheckBoxParameter
+                .setSelected(Boolean.parseBoolean(MonsterHunter.PROPERTIES.getProperty("IsGermanMaze")));
+        mazeGeneratedIsGermanCheckBoxParameter.setFont(litleFont);
+        mazeGeneratedIsGermanCheckBoxParameter.setStyle("-fx-text-fill: black;");
+
+        mazeGeneratedWallPercentVBoxParameter.getChildren().addAll(mazeGeneratedWallPercentTitleParameter,
+                mazeGeneratedWallPercentSliderParameter, mazeGeneratedIsGermanCheckBoxParameter);
+
+        mazeGeneratorHbox = new HBox();
+        mazeGeneratorHbox.setAlignment(javafx.geometry.Pos.CENTER);
+
+        mazeGeneratorHbox.getChildren().addAll(mazeGeneratedSizeVBoxParameter, mazeGeneratedWallPercentVBoxParameter);
+        rootMazeGeneratorParameter.getChildren().addAll(mazeGeneratedGoBackButtonParameter,
+                mazeGeneratedTitleParameter, mazeGeneratorHbox);
+        mazeGeneratedSceneParameter = new Scene(rootMazeGeneratorParameter);
     }
 
     private void initFont() {
@@ -473,15 +547,21 @@ public class MainView extends Stage {
     /* show method */
 
     public void showInitMenu() {
-        this.setScene(sceneMenu);
-        this.setFullScreen(true);
-        this.setFullScreenExitHint("");
+        showScenneInFullScreen(sceneMenu);
     }
 
     public void showParameterMenu() {
-        this.setScene(sceneParameter);
-        this.setFullScreen(true);
-        this.setFullScreenExitHint("");
+        showScenneInFullScreen(sceneParameter);
+    }
+
+    public void showGeneratedParameterMenu() {
+        showScenneInFullScreen(mazeGeneratedSceneParameter);
+    }
+
+    private void showScenneInFullScreen(Scene scene) {
+        setScene(scene);
+        setFullScreen(true);
+        setFullScreenExitHint("");
     }
 
     public boolean getHunterIsAnAi() {
