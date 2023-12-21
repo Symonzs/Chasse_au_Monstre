@@ -51,3 +51,5 @@ replay_pid*
 doc/cam-player-api-base-doc
 
 # End of https://www.toptal.com/developers/gitignore/api/java,visualstudiocode
+
+.project
