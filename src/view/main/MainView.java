@@ -181,7 +181,7 @@ public class MainView extends Stage {
         DropShadow dropShadow = new DropShadow();
         dropShadow.setOffsetX(3.0);
         dropShadow.setOffsetY(3.0);
-        dropShadow.setColor(Color.rgb(128, 0, 0));
+        dropShadow.setColor(Color.rgb(0, 0, 0));
         titleMenu.setEffect(dropShadow);
         titleMenu.setStyle("-fx-padding: 0;");
 

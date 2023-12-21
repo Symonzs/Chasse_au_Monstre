@@ -28,8 +28,9 @@ import model.Subject;
 
 public class MonsterView extends PlayView implements Observer {
 
-    private static final int RECT_COL = 75;
-    private static final int RECT_ROW = 75;
+    private final static Font THE_FAMOUS_FONT = new Font(3);
+    private final static int RECT_COL = (int) (40 * THE_FAMOUS_FONT.getSize());
+    private final static int RECT_ROW = (int) (40 * THE_FAMOUS_FONT.getSize());
 
     private Monster monster;
 

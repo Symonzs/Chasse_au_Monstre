@@ -65,7 +65,6 @@ public class MonsterHunter extends Application {
         mainView = new MainView(INIT_FILE);
         initMusic();
         mainView.showAndWait();
-
         gameView = new GameView();
         if (mainView.getMaze() == null) {
             initgame();
