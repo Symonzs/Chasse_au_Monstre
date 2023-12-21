@@ -4,27 +4,19 @@ import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
 
 /**
- * Classe representant le monstre et les informations qu'il possede
- * 
- * @see CellEvent
- * @see Coordinate
+ * Classe representant le monstre
  */
 public class Monster {
 
-    // Tableau de booleens representant les murs du labyrinte
     private final boolean[][] WALL;
-    // Coordonnees actuel du monstre
     private ICoordinate monsterCoord;
-    // Coordonnees du chasseur
     private ICoordinate hunterCoord;
-    // Coordonnees de la sortie
     private final ICoordinate EXIT;
 
     /**
-     * Constructeur de la classe Monster<br>
-     * Instancie les differents attributs de la classe<br>
+     * Constructeur de la classe Monster
      * 
-     * @param maze Le labyrinthe
+     * @param maze Le labyrinthe dans lequel le monstre se trouve
      */
     public Monster(Maze maze) {
         this.WALL = maze.getWall();
@@ -43,9 +35,9 @@ public class Monster {
     }
 
     /**
-     * Methode permettant de mettre à jour les coordonnees du chasseur
+     * Methode permettant de mettre à jour les coordonnees du tir du chasseur
      * 
-     * @param hunterCoord Les nouvelles coordonnees du chasseur
+     * @param hunterCoord Les nouvelles coordonnees du tir du chasseur
      */
     public void setHunterCoord(ICoordinate hunterCoord) {
         this.hunterCoord = hunterCoord;
@@ -61,9 +53,9 @@ public class Monster {
     }
 
     /**
-     * Methode permettant de recuperer les coordonnees du chasseur
+     * Methode permettant de recuperer les coordonnees du tir du chasseur
      * 
-     * @return Les coordonnees du chasseur
+     * @return Les coordonnees du tir du chasseur
      */
     public ICoordinate getHunterCoord() {
         return this.hunterCoord;
@@ -88,46 +80,21 @@ public class Monster {
         return this.WALL;
     }
 
+    /**
+     * Methode permettant de mettre à jour les coordonnees du monstre et du tir
+     * du chasseur
+     * 
+     * @param events Les evenements qui se sont produits
+     */
     public void update(CellEvent[] events) {
         for (CellEvent event : events) {
-            try {
+            if (event != null) {
                 if (event.getState() == CellInfo.MONSTER) {
                     this.setMonsterCoord(event.getCoord());
                 }
-            } catch (NullPointerException e) {
-            }
-            try {
                 if (event.getState() == CellInfo.HUNTER) {
                     this.setHunterCoord(event.getCoord());
                 }
-            } catch (NullPointerException e) {
-            }
-        }
-    }
-
-    /**
-     * Methode permettant de mettre à jour les coordonnees du monstre et du
-     * chasseur<br>
-     * Verifie si les objets passes en parametre ne sont pas null et si ce sont des
-     * CellEvent<br>
-     * Si c'est le cas, verifie si l'etat du premier CellEvent est egal à HUNTER
-     * puis met à jour les coordonnees du chasseur<br>
-     * Verifie si l'etat du second CellEvent est egal à MONSTER puis met à jour les
-     * coordonnees du monstre<br>
-     * 
-     * @param arg0 Le labyrinthe
-     * @param arg1 Le CellEvent contenant les nouvelles coordonnees du monstre
-     * @param arg2 Le CellEvent contenant les nouvelles coordonnees du chasseur
-     */
-    public void update(Subject arg0, Object arg1, Object arg2) {
-        if (arg1 != null && CellEvent.class == arg1.getClass()) {
-            CellEvent eventHunter = (CellEvent) arg1;
-            this.setHunterCoord(eventHunter.getCoord());
-        }
-        if (arg2 != null && CellEvent.class == arg2.getClass()) {
-            CellEvent eventMonster = (CellEvent) arg2;
-            if (eventMonster.getState() == CellInfo.MONSTER) {
-                this.setMonsterCoord(eventMonster.getCoord());
             }
         }
     }
