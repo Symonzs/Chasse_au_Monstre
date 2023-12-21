@@ -71,7 +71,7 @@ public class HunterView extends PlayView implements Observer {
     public void initPlayView() {
         playRoot = new VBox();
         playRoot.setPadding(new Insets(10));
-        playRoot.setAlignment(Pos.CENTER);
+        playRoot.setAlignment(javafx.geometry.Pos.CENTER);
         playGameBoard = new GridPane();
         playShotButton = new Button("Confirmer le tir");
         playShotButton.setPadding(new Insets(10));

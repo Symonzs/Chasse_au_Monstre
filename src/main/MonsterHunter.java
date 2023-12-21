@@ -14,6 +14,11 @@ import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
 import javafx.application.Application;
 import javafx.scene.control.Alert;
+import javafx.scene.image.Image;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.BackgroundPosition;
+import javafx.scene.layout.BackgroundRepeat;
+import javafx.scene.layout.BackgroundSize;
 import javafx.stage.Stage;
 import model.CellEvent;
 import model.Maze;
@@ -30,6 +35,30 @@ public class MonsterHunter extends Application {
     public static final Properties EXCEPTION_LANGUAGE_FILE = setUpLanguageFile("exception");
     private static MainView mainView;
     private static GameView gameView;
+
+    public static BackgroundImage mainbackgroundImage = new BackgroundImage(
+            new Image(
+                    Paths.get(MonsterHunter.PROPERTIES.getProperty("MenuBckgImage")).toUri().toString()),
+            BackgroundRepeat.SPACE,
+            BackgroundRepeat.SPACE,
+            BackgroundPosition.CENTER,
+            BackgroundSize.DEFAULT);
+
+    public static BackgroundImage buttonbackground = new BackgroundImage(
+            new Image(
+                    Paths.get(MonsterHunter.PROPERTIES.getProperty("ButtonTexture")).toUri().toString()),
+            BackgroundRepeat.SPACE,
+            BackgroundRepeat.SPACE,
+            BackgroundPosition.CENTER,
+            BackgroundSize.DEFAULT);
+
+    public static BackgroundImage choiceMenuBackgroundImage = new BackgroundImage(
+            new Image(
+                    Paths.get(MonsterHunter.PROPERTIES.getProperty("MenuOptionBkg")).toUri().toString()),
+            BackgroundRepeat.SPACE,
+            BackgroundRepeat.SPACE,
+            BackgroundPosition.CENTER,
+            BackgroundSize.DEFAULT);
 
     private static MonsterController monsterController;
     private static HunterController hunterController;

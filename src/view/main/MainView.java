@@ -34,6 +34,7 @@ import javafx.stage.Stage;
 import main.MonsterHunter;
 import model.Maze;
 import util.data.DataProp;
+import util.style.MainStyle;
 import view.play.NumberInStringComparator;
 
 public class MainView extends Stage {
@@ -46,33 +47,6 @@ public class MainView extends Stage {
     private Font mainFont;
     private Font normalFont;
     private Font litleFont;
-
-    private Image panebackgroundImage = new Image(
-            Paths.get(MonsterHunter.PROPERTIES.getProperty("MenuBckgImage")).toUri().toString());
-    BackgroundImage panebackground = new BackgroundImage(
-            panebackgroundImage,
-            BackgroundRepeat.SPACE,
-            BackgroundRepeat.SPACE,
-            BackgroundPosition.CENTER,
-            BackgroundSize.DEFAULT);
-
-    Image buttonbackgroundImage = new Image(
-            Paths.get(MonsterHunter.PROPERTIES.getProperty("ButtonTexture")).toUri().toString());
-    BackgroundImage buttonbackground = new BackgroundImage(
-            buttonbackgroundImage,
-            BackgroundRepeat.SPACE,
-            BackgroundRepeat.SPACE,
-            BackgroundPosition.CENTER,
-            BackgroundSize.DEFAULT);
-
-    Image parameterChoiceMenuImage = new Image(
-            Paths.get(MonsterHunter.PROPERTIES.getProperty("MenuOptionBkg")).toUri().toString());
-    BackgroundImage parameterChoiceMenuBackgroundImage = new BackgroundImage(
-            parameterChoiceMenuImage,
-            BackgroundRepeat.SPACE,
-            BackgroundRepeat.SPACE,
-            BackgroundPosition.CENTER,
-            BackgroundSize.DEFAULT);
 
     /* Main Menu */
     private Pane rootMenu;
@@ -175,7 +149,7 @@ public class MainView extends Stage {
         rootMenu = new Pane();
         paneMenu = new VBox();
         titleMenu = new Text(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("titleMenu"));
-        titleMenu.setFont(customFont);
+        titleMenu.setFont(MainStyle.customFont);
         titleMenu.setFill(Color.rgb(100, 41, 0));
 
         DropShadow dropShadow = new DropShadow();
@@ -195,7 +169,7 @@ public class MainView extends Stage {
         paneMenu.setMaxWidth(Screen.getPrimary().getVisualBounds().getWidth());
         paneMenu.setPrefWidth(Screen.getPrimary().getVisualBounds().getWidth());
 
-        paneMenu.setBackground(new Background(panebackground));
+        paneMenu.setBackground(new Background(MonsterHunter.mainbackgroundImage));
 
         playButtonMenu = new Button(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("playButtonMenu"));
 
@@ -209,8 +183,8 @@ public class MainView extends Stage {
         parameterButtonMenu.setFont(new Font(20));
         parameterButtonMenu.setStyle("-fx-padding: 0;");
 
-        playButtonMenu.setBackground(new Background(buttonbackground));
-        parameterButtonMenu.setBackground(new Background(buttonbackground));
+        playButtonMenu.setBackground(new Background(MonsterHunter.buttonbackground));
+        parameterButtonMenu.setBackground(new Background(MonsterHunter.buttonbackground));
         parameterButtonMenu.setFont(litleFont);
         parameterButtonMenu.setLayoutX(1650);
 
@@ -234,21 +208,13 @@ public class MainView extends Stage {
         hBoxParameter = new HBox();
 
         titleParameter = new Text(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("titleParameter"));
-        titleParameter.setFont(customFont);
-        titleParameter.setFill(Color.rgb(100, 41, 0));
-        DropShadow dropShadow = new DropShadow();
-        dropShadow.setOffsetX(3.0);
-        dropShadow.setOffsetY(3.0);
-        dropShadow.setColor(Color.rgb(128, 0, 0));
-        titleParameter.setEffect(dropShadow);
-        titleParameter.setStyle("-fx-padding: 0;");
+        MainStyle.applyTitleStyle(titleParameter);
 
-        rootParameter.setBackground(new Background(panebackground));
+        rootParameter.setBackground(new Background(MonsterHunter.mainbackgroundImage));
 
         quitParameter = new Button(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("quitParameter"));
+        MainStyle.applyLitleButtonStyle(quitParameter);
 
-        quitParameter.setBackground(new Background(buttonbackground));
-        quitParameter.setFont(litleFont);
         quitParameter.setOnAction(e -> {
             showInitMenu();
         });
@@ -275,9 +241,7 @@ public class MainView extends Stage {
         generatedMapButtonParameter = new Button(
                 MonsterHunter.MENU_LANGUAGE_FILE.getProperty("generatedMapButtonParameter"));
         generatedMapButtonParameter.setDisable(!mapListView.isDisable());
-
-        generatedMapButtonParameter.setFont(litleFont);
-        generatedMapButtonParameter.setBackground(new Background(buttonbackground));
+        MainStyle.applyLitleButtonStyle(generatedMapButtonParameter);
         generatedMapButtonParameter.setOnAction(e -> {
             showGeneratedParameterMenu();
         });
@@ -339,9 +303,9 @@ public class MainView extends Stage {
 
         setFileCheckBoxValue();
 
-        playerVBoxParameter.setBackground(new Background(parameterChoiceMenuBackgroundImage));
-        mapVBoxParameter.setBackground(new Background(parameterChoiceMenuBackgroundImage));
-        languageVBoxParameter.setBackground(new Background(parameterChoiceMenuBackgroundImage));
+        playerVBoxParameter.setBackground(new Background(MonsterHunter.choiceMenuBackgroundImage));
+        mapVBoxParameter.setBackground(new Background(MonsterHunter.choiceMenuBackgroundImage));
+        languageVBoxParameter.setBackground(new Background(MonsterHunter.choiceMenuBackgroundImage));
 
         hBoxParameter.setAlignment(javafx.geometry.Pos.CENTER);
         playerVBoxParameter.setStyle("-fx-padding: 50;");
@@ -378,12 +342,12 @@ public class MainView extends Stage {
         rootMazeGeneratorParameter = new VBox();
         rootMazeGeneratorParameter.setAlignment(javafx.geometry.Pos.CENTER);
 
-        rootMazeGeneratorParameter.setBackground(new Background(panebackground));
+        rootMazeGeneratorParameter.setBackground(new Background(MonsterHunter.mainbackgroundImage));
 
         mazeGeneratedGoBackButtonParameter = new Button(
                 MonsterHunter.MENU_LANGUAGE_FILE.getProperty("mazeGeneratedGoBackButtonParameter"));
         mazeGeneratedGoBackButtonParameter.setFont(litleFont);
-        mazeGeneratedGoBackButtonParameter.setBackground(new Background(buttonbackground));
+        mazeGeneratedGoBackButtonParameter.setBackground(new Background(MonsterHunter.buttonbackground));
         mazeGeneratedGoBackButtonParameter.setOnAction(e -> {
             showParameterMenu();
         });
@@ -402,7 +366,7 @@ public class MainView extends Stage {
         mazeGeneratedSizeVBoxParameter = new VBox();
         mazeGeneratedSizeVBoxParameter.setStyle("-fx-padding: 50;");
 
-        mazeGeneratedSizeVBoxParameter.setBackground(new Background(parameterChoiceMenuBackgroundImage));
+        mazeGeneratedSizeVBoxParameter.setBackground(new Background(MonsterHunter.choiceMenuBackgroundImage));
 
         mazeGeneratedSizeMapTitleParameter = new Label(
                 MonsterHunter.MENU_LANGUAGE_FILE.getProperty("mazeGeneratedSizeMapTitleParameter"));
@@ -450,7 +414,7 @@ public class MainView extends Stage {
 
         mazeGeneratedWallPercentVBoxParameter = new VBox();
         mazeGeneratedWallPercentVBoxParameter.setStyle("-fx-padding: 50;");
-        mazeGeneratedWallPercentVBoxParameter.setBackground(new Background(parameterChoiceMenuBackgroundImage));
+        mazeGeneratedWallPercentVBoxParameter.setBackground(new Background(MonsterHunter.choiceMenuBackgroundImage));
         mazeGeneratedWallPercentTitleParameter = new Label(
                 MonsterHunter.MENU_LANGUAGE_FILE.getProperty("mazeGeneratedWallPercentTitleParameter"));
         mazeGeneratedWallPercentTitleParameter.setFont(normalFont);
