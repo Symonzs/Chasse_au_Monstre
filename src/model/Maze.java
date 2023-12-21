@@ -7,8 +7,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.TreeMap;
 
-import ai.MazeSolver;
-
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;

@@ -77,28 +77,19 @@ public class MazeGenerator {
         }
     }
 
-    private Integer chooseFirstLineLength() {
+    private Integer chooseLineLength(boolean firstLine) {
         int origin;
         int bound;
         int length = this.wall[0].length;
         if (direction == Cardinals.NORTH || direction == Cardinals.SOUTH) {
             length = this.wall.length;
         }
-        origin = (length / 5) + 1;
-        bound = length;
-        return random.nextInt(origin, bound);
-    }
-
-    private Integer chooseLineLength() {
-        int origin;
-        int bound;
-        int length = this.wall[0].length;
-        if (direction == Cardinals.NORTH || direction == Cardinals.SOUTH) {
-            length = this.wall.length;
+        if (firstLine) {
+            origin = ((int) (length / 5.0)) + 1;
+            bound = length / 2;
         }
-        origin = (int) (length / 5.0);
-        bound = Math.max(2, origin * 2);
-        origin = Math.max(1, origin);
+        origin = length / 5;
+        bound = origin * 2;
         return random.nextInt(origin, bound);
     }
 
@@ -118,9 +109,9 @@ public class MazeGenerator {
     }
 
     private Integer makePath(Integer emptyCellsByPath) {
-        Integer emptyCellsCreated = breakLine(chooseFirstLineLength());
+        Integer emptyCellsCreated = breakLine(chooseLineLength(true));
         while (emptyCellsCreated < emptyCellsByPath) {
-            emptyCellsCreated += breakLine(chooseLineLength());
+            emptyCellsCreated += breakLine(chooseLineLength(false));
             chooseNextDirection();
         }
         return emptyCellsByPath - emptyCellsCreated;
