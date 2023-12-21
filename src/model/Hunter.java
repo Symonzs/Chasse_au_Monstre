@@ -7,26 +7,17 @@ import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 
 /**
- * Classe representant le chasseur et les informations qu'il possede
- * 
- * @see CellEvent
- * @see Coordinate
+ * Classe representant le chasseur
  */
 public class Hunter {
 
-    // Tableau de booleens representant les murs connus par le chasseur
     private boolean[][] knowWall;
-    // Tableau de booléens représentant les cases vides du labyrinte connus par le
-    // chasseur
     private boolean[][] knowEmpty;
-    // Coordonnées des monstres connus par le chasseur
     private Map<Integer, ICoordinate> knowMonsterCoords;
-    // Coordonnees du chasseur
     private ICoordinate hunterCoord;
 
     /**
-     * Constructeur de la classe Hunter<br>
-     * Instancie les differents attributs de la classe<br>
+     * Constructeur de la classe Hunter
      * 
      * @param rows Le nombre de lignes du labyrinthe
      * @param cols Le nombre de colonnes du labyrinthe
@@ -39,9 +30,10 @@ public class Hunter {
     }
 
     /**
-     * Methode permettant d'ajouter les coordonnees d'un monstre dans la liste des
-     * coordonees connus par le chasseur
+     * Methode permettant d'ajouter les coordonnees d'un monstre connu par le
+     * chasseur
      * 
+     * @param turn    Le tour durant lequel le monstre est passe sur la case
      * @param monster Les coordonnees du monstre
      */
     public void addKnowMonsterCoords(Integer turn, ICoordinate monster) {
@@ -49,18 +41,18 @@ public class Hunter {
     }
 
     /**
-     * Methode permettant de recuperer les murs connus par le chasseur
+     * Methode permettant de recuperer les cases murs connus par le chasseur
      * 
-     * @return Les murs connus par le chasseur
+     * @return Les cases murs connus par le chasseur
      */
     public boolean[][] getKnowWall() {
         return this.knowWall;
     }
 
     /**
-     * Méthode permettant de récupérer les cases vides connus par le chasseur
+     * Methode permettant de recuperer les cases vides connues par le chasseur
      * 
-     * @return Les cases vides connus par le chasseur
+     * @return Les cases vides connues par le chasseur
      */
     public boolean[][] getKnowEmpty() {
         return this.knowEmpty;
@@ -87,9 +79,10 @@ public class Hunter {
 
     /**
      * Methode permettant de recuperer le dernier tour durant lequel le monstre est
-     * passe sur la case donnee en parametre
+     * passe par les coordonnees passees en parametre
      * 
-     * @param coord Les coordonnees de la case
+     * @param coord Les coordonnees du monstre
+     * @return Un entier representant le tour
      */
     public Integer getLastTurnFromCoordinate(ICoordinate coord) {
         Integer lastTurn = null;
@@ -102,7 +95,7 @@ public class Hunter {
     }
 
     public void update(CellEvent event) {
-        try {
+        if (event != null) {
             this.hunterCoord = event.getCoord();
             if (event.getState() == CellInfo.MONSTER) {
                 this.addKnowMonsterCoords(event.getTurn(), event.getCoord());
@@ -111,7 +104,6 @@ public class Hunter {
             } else {
                 this.knowEmpty[event.getCoord().getRow()][event.getCoord().getCol()] = true;
             }
-        } catch (NullPointerException e) {
         }
     }
 }

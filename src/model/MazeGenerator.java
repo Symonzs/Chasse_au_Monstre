@@ -3,7 +3,6 @@ package model;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -12,8 +11,8 @@ import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 public class MazeGenerator {
 
     private boolean[][] wall;
-    private Map<Integer, ICoordinate> monster;
-    private Map<Integer, ICoordinate> hunter;
+    private TreeMap<Integer, ICoordinate> monster;
+    private TreeMap<Integer, ICoordinate> hunter;
     private ICoordinate exit;
 
     private Integer emptyCellsExpected;
@@ -42,9 +41,7 @@ public class MazeGenerator {
         } else {
             generateMaze();
         }
-        do {
-            placeMonsterAndExit();
-        } while (!areMonsterAndExitFarEnough());
+        placeMonsterAndExit();
     }
 
     private void generateSmallestMaze() {
@@ -154,14 +151,6 @@ public class MazeGenerator {
         return list.get(random.nextInt(list.size()));
     }
 
-    private boolean areMonsterAndExitFarEnough() {
-        ICoordinate monsterLocation = monster.get(Maze.currentTurn);
-        int minDistance = getEmptyCellsNumber() * 15 / 100;
-        int distance = Math.abs(exit.getRow() - monsterLocation.getRow())
-                + Math.abs(exit.getCol() - monsterLocation.getCol());
-        return distance >= minDistance;
-    }
-
     private boolean dig(ICoordinate coord) {
         boolean hasBeenDug = false;
         if (this.cellIsWall(coord)) {
@@ -187,11 +176,11 @@ public class MazeGenerator {
         return this.wall;
     }
 
-    public Map<Integer, ICoordinate> getMonster() {
+    public TreeMap<Integer, ICoordinate> getMonster() {
         return this.monster;
     }
 
-    public Map<Integer, ICoordinate> getHunter() {
+    public TreeMap<Integer, ICoordinate> getHunter() {
         return this.hunter;
     }
 

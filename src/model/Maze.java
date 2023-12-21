@@ -6,6 +6,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.TreeMap;
+
+import ai.MazeSolver;
+
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
@@ -15,9 +18,6 @@ import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
 
 /**
  * Classe representant le labyrinthe
- * 
- * @see CellEvent
- * @see Coordinate
  */
 public class Maze extends Subject {
 
@@ -28,8 +28,8 @@ public class Maze extends Subject {
     public static Integer currentTurn = 1;
 
     private boolean[][] wall;
-    private Map<Integer, ICoordinate> monster;
-    private Map<Integer, ICoordinate> hunter;
+    private TreeMap<Integer, ICoordinate> monster;
+    private TreeMap<Integer, ICoordinate> hunter;
     private ICoordinate exit;
 
     private CellInfo winner;
@@ -165,9 +165,7 @@ public class Maze extends Subject {
     }
 
     /**
-     * Met à jour la case du labyrinthe ciclee par le CellEvent
-     * Si l'etat du CellEvent est HUNTER, appel la methode cellUpdateHunter
-     * Si l'etat du CellEvent est MONSTER, appel la methode cellUpdateMonster
+     * Met à jour la case du labyrinthe ciclee par le CellEvent selon son etat
      * 
      * @param eventRequest CellEvent à traiter
      */
@@ -181,11 +179,7 @@ public class Maze extends Subject {
     }
 
     /**
-     * Met à jour la case du labyrinthe ciclee par le CellEvent
-     * Ajoute les coordonnees du monstre dans la map
-     * Si après l'ajout des coordonnees du monstre, le monstre est sur la sortie,
-     * appel la methode end
-     * Sinon, appel la methode notifyObserver
+     * Met à jour la case du labyrinthe ciclee par le monstre
      * 
      * @param eventCoord Nouvelle coordonnees du monstre
      * @param eventTurn  Tour du deplacement du monstre
@@ -193,8 +187,8 @@ public class Maze extends Subject {
     private CellEvent[] cellUpdateMonster(ICoordinate eventCoord, Integer eventTurn) {
         CellEvent[] events = new CellEvent[2];
         this.monster.put(eventTurn, eventCoord);
-        if (this.monsterAtExit()) {
-            this.end(CellInfo.MONSTER);
+        if (this.monsterIsAtExit()) {
+            this.setWinner(CellInfo.MONSTER);
         } else {
             events[0] = null;
             events[1] = new CellEvent(eventCoord, CellInfo.MONSTER);
@@ -204,26 +198,7 @@ public class Maze extends Subject {
     }
 
     /**
-     * Met à jour la case du labyrinthe ciclee par le CellEvent
-     * Ajoute les coordonnees du chasseur dans la map
-     * Si le monstre a dejà ete sur cette case, on verifie si le monstre y est
-     * toujours
-     * Si le monstre y est toujours, appel la methode end
-     * Sinon, on stocke dans eventHunter qui est un CellEvent(Coordonnees, Tour,
-     * Etat)
-     * - Les coordonnees de la case
-     * - Le tour du tir
-     * - L'etat de la case (MONSTER)
-     * Si le monstre n'a jamais ete sur cette case, on stocke dans eventHunter qui
-     * est un CellEvent(Coordonnees, Etat)
-     * - Les coordonnees de la case
-     * - L'etat de la case (EMPTY ou WALL selon si la case est vide ou non)
-     * 
-     * On stocke egalement dans eventMonster qui est un CellEvent(Coordonnees, Etat)
-     * - Les coordonnees de la case
-     * - L'etat de la case (HUNTER)
-     * 
-     * Enfin, on appel la methode notifyObserver
+     * Met à jour la case du labyrinthe ciclee par le chasseur
      * 
      * @param eventCoord Nouvelle coordonnees du chasseur
      * @param eventTurn  Tour du deplacement du chasseur
@@ -231,9 +206,9 @@ public class Maze extends Subject {
     private CellEvent[] cellUpdateHunter(ICoordinate eventCoord, Integer eventTurn) {
         CellEvent[] events = new CellEvent[2];
         this.hunter.put(eventTurn, eventCoord);
-        if (this.monsterWasHere(eventCoord)) {
+        if (this.monsterhasBeenHere(eventCoord)) {
             if (this.monsterIsHere(eventCoord)) {
-                this.end(CellInfo.HUNTER);
+                this.setWinner(CellInfo.HUNTER);
             } else {
                 events[0] = new CellEvent(eventCoord, this.getLastTurnFromCoordinate(eventCoord),
                         CellInfo.MONSTER);
@@ -257,7 +232,7 @@ public class Maze extends Subject {
      * @param eventCoord
      * @return true si le monstre est dejà passe sur la case, false sinon
      */
-    public boolean monsterWasHere(ICoordinate eventCoord) {
+    public boolean monsterhasBeenHere(ICoordinate eventCoord) {
         return this.monster.containsValue(eventCoord);
     }
 
@@ -286,7 +261,7 @@ public class Maze extends Subject {
      * 
      * @return true si le monstre est sur la sortie, false sinon
      */
-    public boolean monsterAtExit() {
+    public boolean monsterIsAtExit() {
         return exit.equals(this.monster.get(Maze.currentTurn));
     }
 
@@ -296,7 +271,7 @@ public class Maze extends Subject {
      * 
      * @param victoryInfo Qui du monstre ou du chasseur a gagne
      */
-    public void end(CellInfo victoryInfo) {
+    public void setWinner(CellInfo victoryInfo) {
         this.winner = victoryInfo;
         notifyObservers(victoryInfo);
     }
@@ -367,11 +342,12 @@ public class Maze extends Subject {
      * @return Coordonnees du monstre au tour actuel ou au tour precedent
      */
     public ICoordinate getLastMonsterCoordinate() {
-        ICoordinate lastMonsterCoord = this.monster.get(Maze.currentTurn);
-        if (lastMonsterCoord == null) {
-            lastMonsterCoord = this.monster.get(Maze.currentTurn - 1);
+        ICoordinate coord = null;
+        if (!this.monster.isEmpty()) {
+            coord = this.monster.lastEntry().getValue();
         }
-        return lastMonsterCoord;
+        return coord;
+
     }
 
     /**
@@ -381,11 +357,11 @@ public class Maze extends Subject {
      * @return Coordonnees du chasseur au tour actuel ou au tour precedent
      */
     public ICoordinate getLastHunterCoordinate() {
-        ICoordinate lastHunterCoord = this.hunter.get(Maze.currentTurn);
-        if (lastHunterCoord == null) {
-            lastHunterCoord = this.hunter.get(Maze.currentTurn - 1);
+        ICoordinate coord = null;
+        if (!this.hunter.isEmpty()) {
+            coord = this.hunter.lastEntry().getValue();
         }
-        return lastHunterCoord;
+        return coord;
     }
 
     public Integer getLastTurnFromCoordinate(ICoordinate coord) {
@@ -431,5 +407,27 @@ public class Maze extends Subject {
         this.gameIsClosed = b;
         notifyObservers(gameIsClosed);
     }
+
+    /*
+     * public static void main(String[] args) {
+     * long startTime = System.currentTimeMillis();
+     * Maze maze = new Maze(100, 100, 40);
+     * long endTime = System.currentTimeMillis();
+     * System.out.println("Generate maze in " + (endTime - startTime) + " ms");
+     * 
+     * System.out.println(maze.getLastMonsterCoordinate());
+     * System.out.println(maze.getExit());
+     * 
+     * long startTime2 = System.currentTimeMillis();
+     * MazeSolver solver = new MazeSolver(maze);
+     * long endTime2 = System.currentTimeMillis();
+     * ICoordinate cell;
+     * do {
+     * cell = solver.play();
+     * System.out.println(cell);
+     * } while (cell != null);
+     * System.out.println("Solve maze in " + (endTime2 - startTime2) + " ms");
+     * }
+     */
 
 }

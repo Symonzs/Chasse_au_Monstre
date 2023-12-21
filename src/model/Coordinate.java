@@ -51,4 +51,7 @@ public class Coordinate implements ICoordinate {
         return true;
     }
 
+    public String toString() {
+        return getRow() + ":" + getCol();
+    }
 }
