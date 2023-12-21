@@ -5,11 +5,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import fr.univlille.iutinfo.cam.player.monster.IMonsterStrategy;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent;
@@ -28,6 +28,8 @@ public class MazeSolver implements IMonsterStrategy {
     private Maze maze;
     private boolean[][] wall;
     private List<CursiveCoordinate> movements;
+
+    private static Logger logger = Logger.getLogger(MazeSolver.class.getName());
 
     /**
      * 
@@ -63,96 +65,15 @@ public class MazeSolver implements IMonsterStrategy {
         try {
             Maze maze = new Maze(11, 11, 50);
             MazeSolver solver = new MazeSolver(maze);
-            ICoordinate cell;
-            do {
+            ICoordinate cell = solver.play();
+            while (cell != null) {
+                String info = "Cell coord: " + cell.toString();
+                logger.log(Level.INFO, info);
                 cell = solver.play();
-                System.out.println(cell);
-            } while (cell != null);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Checks if the maze is correct by performing a breadth-first search.
-     * 
-     * @return true if the maze is correct, false otherwise.
-     */
-    public boolean isMazeCorrect() {
-        Queue<CursiveCoordinate> f = new LinkedList<CursiveCoordinate>();
-        List<CursiveCoordinate> discoveredCell = new ArrayList<>();
-
-        CursiveCoordinate entry = new CursiveCoordinate(maze.getMonster().get(1).getRow(),
-                maze.getMonster().get(1).getCol(), null);
-        f.add(entry);
-        discoveredCell.add(entry);
-
-        boolean estSortieTrouve = false;
-        while (!f.isEmpty() && !estSortieTrouve) {
-            CursiveCoordinate c = f.peek();
-            ICoordinate exit = maze.getExit();
-            if (exit.getCol() == c.getCol() && exit.getRow() == c.getRow()) {
-                estSortieTrouve = true;
-                // return true;
-            } else {
-                // Haut
-                if (c.getRow() - 1 >= 0) {
-                    CursiveCoordinate cHaut = new CursiveCoordinate((Integer) (c.getRow() - 1), (Integer) (c.getCol()),
-                            c);
-                    if (!this.maze.cellIsWall((ICoordinate) cHaut) && !discoveredCell.contains(cHaut)) {
-                        f.add(cHaut);
-                        discoveredCell.add(cHaut);
-                    }
-                }
-
-                // Bas
-                if (c.getRow() + 1 < maze.getWall().length) {
-                    CursiveCoordinate cBas = new CursiveCoordinate((Integer) (c.getRow() + 1), (Integer) (c.getCol()),
-                            c);
-                    if (!this.maze.cellIsWall((ICoordinate) cBas) && !discoveredCell.contains(cBas)) {
-                        f.add(cBas);
-                        discoveredCell.contains(cBas);
-                    }
-                }
-
-                // Gauche
-                if (c.getCol() - 1 >= 0) {
-                    CursiveCoordinate cGauche = new CursiveCoordinate((Integer) (c.getRow()),
-                            (Integer) (c.getCol() - 1), c);
-                    if (!this.maze.cellIsWall((ICoordinate) cGauche) && !discoveredCell.contains(cGauche)) {
-                        f.add(cGauche);
-                        discoveredCell.add(cGauche);
-                    }
-                }
-
-                // Droite
-                if (c.getCol() + 1 < maze.getWall()[1].length) {
-                    CursiveCoordinate cDroite = new CursiveCoordinate((Integer) c.getRow(), (Integer) (c.getCol() + 1),
-                            c);
-                    if (!this.maze.cellIsWall((ICoordinate) cDroite) && !discoveredCell.contains(cDroite)) {
-                        f.add(cDroite);
-                        discoveredCell.add(cDroite);
-                    }
-                }
-
-                f.poll();
-            }
-        }
-
-        for (CursiveCoordinate c : f) {
-            int i = 0;
-            while (c.getParent() != null) {
-                System.out.println(c);
-                c = c.getParent();
-                ++i;
-            }
-            System.out.println(c);
-            System.out.println(i);
-
-            System.out.println("--------------------");
-        }
-
-        return false;
     }
 
     /**
@@ -162,7 +83,7 @@ public class MazeSolver implements IMonsterStrategy {
      * @param start The starting coordinate.
      * @param end   The ending coordinate.
      * @return A list of CursiveCoordinates representing the path from start to end,
-     *         or null if no path is found.
+     *         or an empty list of CursiveCoordinates if no path is found.
      */
     private List<CursiveCoordinate> findPath(CursiveCoordinate start, CursiveCoordinate end) {
         Set<CursiveCoordinate> openSet = new HashSet<>();
@@ -186,25 +107,26 @@ public class MazeSolver implements IMonsterStrategy {
             openSet.remove(current);
             closedSet.add(current);
 
-            for (CursiveCoordinate neighbor : getNeighbors(current)) {
-                if (closedSet.contains(neighbor)) {
-                    continue;
-                }
+            if (current != null)
+                for (CursiveCoordinate neighbor : getNeighbors(current)) {
+                    if (closedSet.contains(neighbor)) {
+                        continue;
+                    }
 
-                double tentativeGScore = gScore.getOrDefault(current, Double.POSITIVE_INFINITY)
-                        + distanceBetween(current, neighbor);
+                    double tentativeGScore = gScore.getOrDefault(current, Double.POSITIVE_INFINITY)
+                            + distanceBetween(current, neighbor);
 
-                if (!openSet.contains(neighbor)
-                        || tentativeGScore < gScore.getOrDefault(neighbor, Double.POSITIVE_INFINITY)) {
-                    neighbor.setParent(current);
-                    gScore.put(neighbor, tentativeGScore);
-                    fScore.put(neighbor, tentativeGScore + heuristicCostEstimate(neighbor, end));
+                    if (!openSet.contains(neighbor)
+                            || tentativeGScore < gScore.getOrDefault(neighbor, Double.POSITIVE_INFINITY)) {
+                        neighbor.setParent(current);
+                        gScore.put(neighbor, tentativeGScore);
+                        fScore.put(neighbor, tentativeGScore + heuristicCostEstimate(neighbor, end));
 
-                    if (!openSet.contains(neighbor)) {
-                        openSet.add(neighbor);
+                        if (!openSet.contains(neighbor)) {
+                            openSet.add(neighbor);
+                        }
                     }
                 }
-            }
         }
 
         return new ArrayList<>();
