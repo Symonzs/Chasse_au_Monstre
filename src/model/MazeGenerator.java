@@ -221,7 +221,7 @@ public class MazeGenerator {
         }
     }
 
-    @Override
+    /*@Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < this.wall.length; i++) {
@@ -247,5 +247,5 @@ public class MazeGenerator {
                 e.printStackTrace();
             }
         }
-    }
+    } */
 }

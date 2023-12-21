@@ -494,4 +494,48 @@ public class TestMaze {
         // valide
     }
 
+    @Test
+    public void file_finder(){
+        String expectedName = "4x4.csv";
+
+        try {
+           String file = FileFinder.find("/home/infoetu/simon.hayart.etu/J1_SAE3A/resources/map", expectedName).getName();
+           assertEquals(expectedName, file);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+    }
+    
+    @Test
+    public void test_set_is_ready_to_next(){
+        maze.setIsReadyToNext(true);// set le labyrinthe a pret pour le prochain tour
+        assertTrue(maze.getIsReadyToNext());// test si le labyrinthe est pret pour le prochain tour
+        maze.setIsReadyToNext(false);// set le labyrinthe a pas pret pour le prochain tour
+        assertFalse(maze.getIsReadyToNext());// test si le labyrinthe est pret pour le prochain tour
+    }
+
+    @Test
+    public void test_set_hunter_has_played(){
+        maze.setHunterHasPlayed(true);// set le chasseur a jouer
+        assertTrue(maze.getHunterHasPlayed());// test si le chasseur a jouer
+        maze.setHunterHasPlayed(false);// set le chasseur a pas jouer
+        assertFalse(maze.getHunterHasPlayed());// test si le chasseur a pas jouer
+    }
+
+    @Test
+    public void test_set_monster_has_played(){
+        maze.setMonsterHasPlayed(true);// set le chasseur a jouer
+        assertTrue(maze.getMonsterHasPlayed());// test si le chasseur a jouer
+        maze.setMonsterHasPlayed(false);// set le chasseur a pas jouer
+        assertFalse(maze.getMonsterHasPlayed());// test si le chasseur a pas jouer
+    }
+
+    @Test
+    public void test_set_is_game_closed(){
+        maze.setGameIsClosed(true);// set le jeu a fini
+        assertTrue(maze.isGameClosed());// test si le jeu a fini
+        maze.setGameIsClosed(false);// set le jeu a pas fini
+        assertFalse(maze.isGameClosed());// test si le jeu a pas fini
+    }
+
 }
