@@ -260,7 +260,7 @@ public class Maze extends Subject {
      * @return true si le monstre est sur la sortie, false sinon
      */
     public boolean monsterIsAtExit() {
-        return exit.equals(this.monster.get(Maze.currentTurn));
+        return this.exit.equals(this.getLastMonsterCoordinate());
     }
 
     /**
