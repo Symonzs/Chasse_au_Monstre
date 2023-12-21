@@ -20,6 +20,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Screen;
 import model.CellEvent;
 import model.Maze;
 import model.Monster;
@@ -28,9 +29,9 @@ import model.Subject;
 
 public class MonsterView extends PlayView implements Observer {
 
-    private final static Font THE_FAMOUS_FONT = new Font(3);
-    private final static int RECT_COL = (int) (40 * THE_FAMOUS_FONT.getSize());
-    private final static int RECT_ROW = (int) (40 * THE_FAMOUS_FONT.getSize());
+    private static final Font THE_FAMOUS_FONT = new Font(3);
+    private static int RECT_COL = 75;
+    private static int RECT_ROW = 75;
 
     private Monster monster;
 
@@ -56,10 +57,16 @@ public class MonsterView extends PlayView implements Observer {
         this.properties = properties;
 
         this.font = new Font("Arial", 24);
-
+        initMazePaneSize(maze);
         initWaitingScene();
         initPlayScene();
         showPlayScene();
+    }
+
+    private void initMazePaneSize(Maze maze) {
+        RECT_COL = (int) ((Screen.getPrimary().getBounds().getHeight() - 200) / maze.getHeight());
+        RECT_ROW = (int) ((Screen.getPrimary().getBounds().getHeight() - 200) / maze.getHeight());
+
     }
 
     public void initPlayScene() {

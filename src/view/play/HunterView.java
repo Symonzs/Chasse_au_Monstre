@@ -20,6 +20,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Screen;
 import model.CellEvent;
 import model.Coordinate;
 import model.Hunter;
@@ -29,8 +30,8 @@ import model.Subject;
 
 public class HunterView extends PlayView implements Observer {
 
-    private static final int RECT_COL = 75;
-    private static final int RECT_ROW = 75;
+    private static int RECT_COL = 75;
+    private static int RECT_ROW = 75;
 
     private Hunter hunter;
 
@@ -61,6 +62,7 @@ public class HunterView extends PlayView implements Observer {
 
         this.font = new Font("Arial", 24);
 
+        initMazePaneSize(rows);
         initPlayView();
         initWaitView();
         showPlayScene();
@@ -82,6 +84,12 @@ public class HunterView extends PlayView implements Observer {
         playRoot.getChildren().addAll(playGameBoard, playVBoxNav);
 
         super.setPlayScene(new Scene(playRoot));
+
+    }
+
+    private void initMazePaneSize(Integer row) {
+        RECT_COL = (int) ((Screen.getPrimary().getBounds().getHeight() - 200) / row);
+        RECT_ROW = (int) ((Screen.getPrimary().getBounds().getHeight() - 200) / row);
 
     }
 

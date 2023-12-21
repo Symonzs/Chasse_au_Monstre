@@ -429,4 +429,12 @@ public class Maze extends Subject {
         notifyObservers(gameIsClosed);
     }
 
+    public int getWith() {
+        return wall[0].length;
+    }
+
+    public int getHeight() {
+        return wall.length;
+    }
+
 }
