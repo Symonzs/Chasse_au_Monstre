@@ -5,7 +5,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import ai.algorithm.AstarAlgorithm;
-import ai.algorithm.BidirectionnalAlgorithm;
 import ai.algorithm.IMazeSolverAlgorithm;
 import fr.univlille.iutinfo.cam.player.monster.IMonsterStrategy;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent;
@@ -71,8 +70,8 @@ public class MazeSolver implements IMonsterStrategy {
 
     public static void main(String[] args) {
         try {
-            Maze maze = new Maze("/home/infoetu/hugo.vallee2.etu/S3/sae/J1_SAE3A/resources/map/", "4x4.csv");
-            MazeSolver solver = new MazeSolver(new BidirectionnalAlgorithm(), maze);
+            Maze maze = new Maze("E:\\iutinfo\\S3Custom\\J1_SAE3A\\resources\\map", "11x11.csv");
+            MazeSolver solver = new MazeSolver(new AstarAlgorithm(), maze);
             ICoordinate cell = solver.play();
             while (cell != null) {
                 String info = "Cell coord: " + cell.toString();

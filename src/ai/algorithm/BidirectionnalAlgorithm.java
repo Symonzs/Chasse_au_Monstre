@@ -2,11 +2,9 @@ package ai.algorithm;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
@@ -29,63 +27,85 @@ public class BidirectionnalAlgorithm implements IMazeSolverAlgorithm {
         this.wall = wall;
     }
 
+    /**
+     * Finds a path between the given start and end coordinates using a
+     * bidirectional search algorithm.
+     * 
+     * @param start The starting coordinate.
+     * @param end   The ending coordinate.
+     * @return A list of CursiveCoordinates representing the path from start to end,
+     *         if a path is found.
+     *         Otherwise, an empty list is returned.
+     */
     @Override
     public List<CursiveCoordinate> findPath(CursiveCoordinate start, CursiveCoordinate end) {
-        Set<CursiveCoordinate> startVisited = new HashSet<>();
-        Set<CursiveCoordinate> endVisited = new HashSet<>();
+        Queue<CursiveCoordinate> forwardQueue = new LinkedList<>();
+        Queue<CursiveCoordinate> backwardQueue = new LinkedList<>();
+        Set<CursiveCoordinate> forwardVisited = new HashSet<>();
+        Set<CursiveCoordinate> backwardVisited = new HashSet<>();
 
-        Queue<CursiveCoordinate> startQueue = new LinkedList<>();
-        Queue<CursiveCoordinate> endQueue = new LinkedList<>();
+        forwardQueue.add(start);
+        backwardQueue.add(end);
 
-        Map<CursiveCoordinate, CursiveCoordinate> startParents = new HashMap<>();
-        Map<CursiveCoordinate, CursiveCoordinate> endParents = new HashMap<>();
+        while (!forwardQueue.isEmpty() && !backwardQueue.isEmpty()) {
+            // Forward search
+            CursiveCoordinate currentForward = forwardQueue.poll();
+            forwardVisited.add(currentForward);
 
-        startQueue.offer(start);
-        endQueue.offer(end);
-
-        startVisited.add(start);
-        endVisited.add(end);
-
-        while (!startQueue.isEmpty() && !endQueue.isEmpty()) {
-            CursiveCoordinate meetingPoint = expandFrontier(startQueue, startVisited, endVisited, startParents);
-            if (meetingPoint != null) {
-                return reconstructPath(meetingPoint, startParents, endParents);
-            }
-
-            meetingPoint = expandFrontier(endQueue, endVisited, startVisited, endParents);
-            if (meetingPoint != null) {
-                return reconstructPath(meetingPoint, startParents, endParents);
-            }
-        }
-
-        return new ArrayList<>();
-    }
-
-    private CursiveCoordinate expandFrontier(Queue<CursiveCoordinate> queue, Set<CursiveCoordinate> visited,
-            Set<CursiveCoordinate> oppositeVisited, Map<CursiveCoordinate, CursiveCoordinate> parents) {
-        int size = queue.size();
-
-        for (int i = 0; i < size; ++i) {
-            CursiveCoordinate current = queue.poll();
-
-            for (CursiveCoordinate neighbor : getNeighbors(current)) {
-                if (oppositeVisited.contains(neighbor)) {
-                    return neighbor;
+            for (CursiveCoordinate neighbor : getNeighbors(currentForward)) {
+                if (!forwardVisited.contains(neighbor)) {
+                    forwardQueue.add(neighbor);
+                    neighbor.setParent(currentForward);
                 }
+            }
 
-                if (!visited.contains(neighbor)) {
-                    queue.offer(neighbor);
-                    visited.add(neighbor);
-                    parents.put(neighbor, current);
+            // Backward search
+            CursiveCoordinate currentBackward = backwardQueue.poll();
+            backwardVisited.add(currentBackward);
+
+            for (CursiveCoordinate neighbor : getNeighbors(currentBackward)) {
+                if (forwardVisited.contains(neighbor)) {
+                    CursiveCoordinate intersectionStart = null;
+                    for (CursiveCoordinate cc : forwardVisited) {
+                        if (cc.equals(neighbor)) {
+                            intersectionStart = cc;
+                            break;
+                        }
+                    }
+                    return reconstructPath(intersectionStart, currentBackward);
+                } else if (!backwardVisited.contains(neighbor)) {
+                    backwardQueue.add(neighbor);
+                    neighbor.setParent(currentBackward);
                 }
             }
         }
 
-        return null;
+        // No path found
+        return Collections.emptyList();
     }
 
-    private List<CursiveCoordinate> getNeighbors(CursiveCoordinate current) {
-        List<CursiveCoordinate> neighbors = new ArrayList<>();
+    private List<CursiveCoordinate> reconstructPath(CursiveCoordinate intersectionStart,
+            CursiveCoordinate intersectionEnd) {
+        List<CursiveCoordinate> path = new ArrayList<>();
+        CursiveCoordinate current = intersectionStart;
+
+        while (current != null) {
+            path.add(current);
+            current = current.getParent();
+        }
+        Collections.reverse(path);
+
+        current = intersectionEnd;
+        while (current != null) {
+            path.add(current);
+            current = current.getParent();
+        }
+
+        return path;
+    }
+
+    private Set<CursiveCoordinate> getNeighbors(CursiveCoordinate current) {
+        Set<CursiveCoordinate> neighbors = new HashSet<>();
         int row = current.getRow();
         int col = current.getCol();
 
@@ -106,31 +126,11 @@ public class BidirectionnalAlgorithm implements IMazeSolverAlgorithm {
         if (rightCell.getCol() < wall[1].length && !wall[rightCell.getRow()][rightCell.getCol()]) {
             neighbors.add(new CursiveCoordinate(row, col + 1, current));
         }
+        // neighbors.add(new CursiveCoordinate(row - 1, col - 1, current));
+        // neighbors.add(new CursiveCoordinate(row - 1, col + 1, current));
+        // neighbors.add(new CursiveCoordinate(row + 1, col - 1, current));
+        // neighbors.add(new CursiveCoordinate(row + 1, col + 1, current));
 
         return neighbors;
-    }
-
-    private List<CursiveCoordinate> reconstructPath(CursiveCoordinate meetingPoint,
-            Map<CursiveCoordinate, CursiveCoordinate> startParents,
-            Map<CursiveCoordinate, CursiveCoordinate> endParents) {
-        List<CursiveCoordinate> path = new ArrayList<>();
-
-        CursiveCoordinate current = meetingPoint;
-        while (current != null) {
-            path.add(current);
-            current = startParents.get(current);
-        }
-
-        if (meetingPoint != null) {
-            current = endParents.get(meetingPoint.getParent());
-            while (current != null) {
-                path.add(current);
-                current = endParents.get(current);
-            }
-        }
-
-        Collections.reverse(path);
-
-        return path;
     }
 }
