@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import ai.algorithm.AstarAlgorithm;
 import ai.algorithm.IMazeSolverAlgorithm;
+import ai.algorithm.ThetaStarAlgorithm;
 import fr.univlille.iutinfo.cam.player.monster.IMonsterStrategy;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
@@ -71,7 +72,7 @@ public class MazeSolver implements IMonsterStrategy {
     public static void main(String[] args) {
         try {
             Maze maze = new Maze("E:\\iutinfo\\S3Custom\\J1_SAE3A\\resources\\map", "11x11.csv");
-            MazeSolver solver = new MazeSolver(new AstarAlgorithm(), maze);
+            MazeSolver solver = new MazeSolver(new ThetaStarAlgorithm(), maze);
             ICoordinate cell = solver.play();
             while (cell != null) {
                 String info = "Cell coord: " + cell.toString();
