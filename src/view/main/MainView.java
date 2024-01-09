@@ -229,6 +229,7 @@ public class MainView extends Stage {
         quitParameter.setFont(litleFont);
         quitParameter.setOnAction(e -> {
             showInitMenu();
+            
         });
 
         rootParameter.setAlignment(javafx.geometry.Pos.CENTER);

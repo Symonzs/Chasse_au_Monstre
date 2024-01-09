@@ -36,7 +36,7 @@ public class MonsterHunter extends Application {
     private static IMonsterStrategy monsterStrategy;
     private static IHunterStrategy hunterStrategy;
 
-    private static Properties setUpLanguageFile(String value) {
+    public static Properties setUpLanguageFile(String value) {
         String key = PROPERTIES.getProperty("LanguageValue");
 
         Properties languageSrcProperties = DataProp.read(Paths.get(PROPERTIES.getProperty("LanguageSetting")).toFile());
