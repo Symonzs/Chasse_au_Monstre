@@ -189,7 +189,8 @@ public class MainView extends Stage {
         playButtonMenu.setBackground(new Background(buttonbackground));
         parameterButtonMenu.setBackground(new Background(buttonbackground));
         parameterButtonMenu.setFont(litleFont);
-        parameterButtonMenu.setLayoutX(1650);
+        System.out.println(Screen.getPrimary().getBounds().getWidth() / 2 - parameterButtonMenu.getFont().getSize());
+        parameterButtonMenu.setLayoutX(Screen.getPrimary().getBounds().getWidth() / 2 - parameterButtonMenu.getFont().getSize());
 
         playButtonMenu.setOnAction(e -> {
             initMaze();
