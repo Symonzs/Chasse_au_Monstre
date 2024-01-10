@@ -1,6 +1,9 @@
 package model;
 
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
+
+import java.util.Arrays;
+
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
 
 /**
@@ -12,6 +15,7 @@ public class Monster {
     private ICoordinate monsterCoord;
     private ICoordinate hunterCoord;
     private final ICoordinate EXIT;
+    private boolean[][] fog;
 
     /**
      * Constructeur de la classe Monster
@@ -23,6 +27,11 @@ public class Monster {
         this.monsterCoord = maze.getLastMonsterCoordinate();
         this.hunterCoord = maze.getLastHunterCoordinate();
         this.EXIT = maze.getExit();
+        this.fog = new boolean[WALL.length][WALL[0].length];
+        for (boolean[] row : fog) {
+            Arrays.fill(row, true);
+        }
+        updateFog();
     }
 
     /**
@@ -32,6 +41,7 @@ public class Monster {
      */
     public void setMonsterCoord(ICoordinate monsterCoord) {
         this.monsterCoord = monsterCoord;
+        updateFog();
     }
 
     /**
@@ -81,6 +91,16 @@ public class Monster {
     }
 
     /**
+     * Methode permettant de recuperer le tableau de booleens representant le
+     * brouillard de guerre
+     * 
+     * @return Le tableau de booleens representant le brouillard de guerre
+     */
+    public boolean[][] getFog() {
+        return this.fog;
+    }
+
+    /**
      * Methode permettant de mettre à jour les coordonnees du monstre et du tir
      * du chasseur
      * 
@@ -94,6 +114,25 @@ public class Monster {
                 }
                 if (event.getState() == CellInfo.HUNTER) {
                     this.setHunterCoord(event.getCoord());
+                }
+            }
+        }
+    }
+
+    /**
+     * Methode permettant de mettre à jour le tableau de booleens representant
+     * le brouillard de guerre
+     */
+    public void updateFog() {
+        int row = this.monsterCoord.getRow();
+        int col = this.monsterCoord.getCol();
+        for (int i = row - 1; i <= row + 1; i++) {
+            if (i >= 0 && i < this.fog.length) {
+                for (int j = col - 1; j <= col + 1; j++) {
+                    if (j >= 0 && j < this.fog[0].length) {
+                        this.fog[i][j] = false;
+                        System.out.println("fog[" + i + "][" + j + "] = " + this.fog[i][j]);
+                    }
                 }
             }
         }

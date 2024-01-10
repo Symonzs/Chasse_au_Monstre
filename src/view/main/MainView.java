@@ -96,10 +96,8 @@ public class MainView extends Stage {
     private Text playerTitle;
     private Text languageTitle;
     private ListView<String> langListView;
-    private TextField textServerAddress;
     private CheckBox checkBoxIsGeneratedMap;
-    private CheckBox checkBoxIsMultyGame;
-    private CheckBox checkBoxIsServer;
+    private CheckBox checkBoxAllowDiagonalMove;
     private CheckBox checkBoxMonsterIsAnAI;
     private CheckBox checkBoxHunterISAnAi;
     private CheckBox checkBoxShowBearingWall;
@@ -127,24 +125,16 @@ public class MainView extends Stage {
         return checkBoxHunterISAnAi.isSelected();
     }
 
-    public boolean isMultyGame() {
-        return checkBoxIsMultyGame.isSelected();
-    }
-
-    public boolean isHost() {
-        return checkBoxIsServer.isSelected();
-    }
-
     public boolean isGeneratedMap() {
         return checkBoxIsGeneratedMap.isSelected();
     }
 
-    public boolean isShowBearingWall() {
-        return checkBoxShowBearingWall.isSelected();
+    public boolean isAllowDiagonalMove() {
+        return checkBoxAllowDiagonalMove.isSelected();
     }
 
-    public String getServerAddress() {
-        return textServerAddress.getText();
+    public boolean isShowBearingWall() {
+        return checkBoxShowBearingWall.isSelected();
     }
 
     /* init method */
@@ -190,7 +180,8 @@ public class MainView extends Stage {
         parameterButtonMenu.setBackground(new Background(buttonbackground));
         parameterButtonMenu.setFont(litleFont);
         System.out.println(Screen.getPrimary().getBounds().getWidth() / 2 - parameterButtonMenu.getFont().getSize());
-        parameterButtonMenu.setLayoutX(Screen.getPrimary().getBounds().getWidth() / 2 - parameterButtonMenu.getFont().getSize());
+        parameterButtonMenu
+                .setLayoutX(Screen.getPrimary().getBounds().getWidth() / 2 - parameterButtonMenu.getFont().getSize());
 
         playButtonMenu.setOnAction(e -> {
             initMaze();
@@ -229,7 +220,7 @@ public class MainView extends Stage {
         quitParameter.setFont(litleFont);
         quitParameter.setOnAction(e -> {
             showInitMenu();
-            
+
         });
 
         rootParameter.setAlignment(javafx.geometry.Pos.CENTER);
@@ -258,45 +249,23 @@ public class MainView extends Stage {
         mapVBoxParameter.getChildren().addAll(mapTitle, checkBoxIsGeneratedMap, mapListView, checkBoxShowBearingWall);
 
         playerTitle = new Text(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("playerTitle"));
-        checkBoxIsMultyGame = new CheckBox(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("checkBoxIsMultyGame"));
-        checkBoxIsServer = new CheckBox(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("checkBoxIsServer"));
-        textServerAddress = new TextField(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("textServerAddress"));
-        textServerAddress.setDisable(checkBoxIsServer.isSelected());
-
         playerTitle.setFont(normalFont);
 
-        checkBoxIsMultyGame.setFont(litleFont);
-        checkBoxIsMultyGame.setStyle("-fx-text-fill: black;");
-        checkBoxIsMultyGame.setOnAction(e -> {
-            checkBoxIsServer.setDisable(!checkBoxIsMultyGame.isSelected());
-        });
-
-        checkBoxIsServer.setFont(litleFont);
-        checkBoxIsServer.setStyle("-fx-text-fill: black;");
-        checkBoxIsServer.setOnAction(e -> {
-            textServerAddress.setDisable(checkBoxIsServer.isSelected());
-        });
-        checkBoxIsServer.setDisable(!checkBoxIsMultyGame.isSelected());
-
-        textServerAddress.setFont(litleFont);
-        textServerAddress.setStyle("-fx-text-fill: black;");
+        checkBoxAllowDiagonalMove = new CheckBox(
+                MonsterHunter.MENU_LANGUAGE_FILE.getProperty("checkBoxAllowDiagonalMove"));
+        checkBoxAllowDiagonalMove.setFont(litleFont);
+        checkBoxAllowDiagonalMove.setStyle("-fx-text-fill: black;");
 
         checkBoxMonsterIsAnAI = new CheckBox(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("checkBoxMonsterIsAnAI"));
         checkBoxMonsterIsAnAI.setFont(litleFont);
         checkBoxMonsterIsAnAI.setStyle("-fx-text-fill: black;");
-        checkBoxMonsterIsAnAI.setOnAction(e -> {
-            checkBoxHunterISAnAi.setDisable(checkBoxMonsterIsAnAI.isSelected());
-        });
 
         checkBoxHunterISAnAi = new CheckBox(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("checkBoxHunterISAnAi"));
         checkBoxHunterISAnAi.setFont(litleFont);
         checkBoxHunterISAnAi.setStyle("-fx-text-fill: black;");
-        checkBoxHunterISAnAi.setOnAction(e -> {
-            checkBoxMonsterIsAnAI.setDisable(checkBoxHunterISAnAi.isSelected());
-        });
 
-        playerVBoxParameter.getChildren().addAll(playerTitle, checkBoxIsMultyGame, checkBoxIsServer, textServerAddress,
-                checkBoxMonsterIsAnAI, checkBoxHunterISAnAi);
+        playerVBoxParameter.getChildren().addAll(playerTitle, checkBoxAllowDiagonalMove, checkBoxMonsterIsAnAI,
+                checkBoxHunterISAnAi);
 
         languageTitle = new Text(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("languageTitle"));
         languageTitle.setFont(normalFont);
@@ -438,13 +407,11 @@ public class MainView extends Stage {
     }
 
     private void setFileCheckBoxValue() {
+        checkBoxAllowDiagonalMove.setSelected(MonsterHunter.PROPERTIES.getProperty("AllowDiagonalMove").equals("true"));
         checkBoxHunterISAnAi.setSelected(MonsterHunter.PROPERTIES.getProperty("HunterISAnAi").equals("true"));
         checkBoxMonsterIsAnAI.setSelected(MonsterHunter.PROPERTIES.getProperty("MonsterIsAnAI").equals("true"));
         checkBoxIsGeneratedMap.setSelected(MonsterHunter.PROPERTIES.getProperty("IsGeneratedMap").equals("true"));
-        checkBoxIsMultyGame.setSelected(MonsterHunter.PROPERTIES.getProperty("IsMultyGame").equals("true"));
-        checkBoxIsServer.setSelected(MonsterHunter.PROPERTIES.getProperty("IsServer").equals("true"));
         checkBoxShowBearingWall.setSelected(MonsterHunter.PROPERTIES.getProperty("ShowBearingWall").equals("true"));
-
     }
     /* show method */
 

@@ -48,17 +48,17 @@ public class MonsterHunter extends Application {
     public void start(Stage primaryStage) throws InterruptedException {
         initgame();
         do {
-            if (mainView.getHunterIsAnAi()) {
+            if (mainView.getHunterIsAnAi() && mainView.getMonsterIsAnAI()) {
+                playWithHunterAIAndMonsterAI();
+            } else if (mainView.getHunterIsAnAi()) {
                 playWithHunterAI();
-            }
-            if (mainView.getMonsterIsAnAI()) {
+            } else if (mainView.getMonsterIsAnAI()) {
                 playWithMonsterAI();
-            }
-            if (!mainView.getHunterIsAnAi() && !mainView.getMonsterIsAnAI()) {
+            } else if (!mainView.getHunterIsAnAi() && !mainView.getMonsterIsAnAI()) {
                 playWithHuman();
             }
         } while (!gameIsFinished());
-        exitedGame();
+        exitedGame(primaryStage);
     }
 
     public void initgame() {
@@ -71,16 +71,29 @@ public class MonsterHunter extends Application {
             initgame();
         }
         mainView.getMaze().attach(gameView);
-        if (mainView.getHunterIsAnAi()) {
+        if (mainView.getHunterIsAnAi() && mainView.getMonsterIsAnAI()) {
+            monsterStrategy = new MazeSolver(mainView.getMaze());
             hunterStrategy = new MonsterFinder();
-            monsterController = new MonsterController(mainView.getMaze(), PROPERTIES);
-        }
-        if (mainView.getMonsterIsAnAI()) {
+            hunterStrategy.initialize(mainView.getMaze().getWall().length - 1,
+                    mainView.getMaze().getWall()[0].length - 1);
+        } else if (mainView.getHunterIsAnAi()) {
+            hunterStrategy = new MonsterFinder();
+            hunterStrategy.initialize(mainView.getMaze().getWall().length - 1,
+                    mainView.getMaze().getWall()[0].length - 1);
+            if (mainView.isAllowDiagonalMove()) {
+                monsterController = new MonsterController(mainView.getMaze(), PROPERTIES, true);
+            } else {
+                monsterController = new MonsterController(mainView.getMaze(), PROPERTIES, false);
+            }
+        } else if (mainView.getMonsterIsAnAI()) {
             monsterStrategy = new MazeSolver(mainView.getMaze());
             hunterController = new HunterController(mainView.getMaze(), PROPERTIES);
-        }
-        if (!mainView.getHunterIsAnAi() && !mainView.getMonsterIsAnAI()) {
-            monsterController = new MonsterController(mainView.getMaze(), PROPERTIES);
+        } else if (!mainView.getHunterIsAnAi() && !mainView.getMonsterIsAnAI()) {
+            if (mainView.isAllowDiagonalMove()) {
+                monsterController = new MonsterController(mainView.getMaze(), PROPERTIES, true);
+            } else {
+                monsterController = new MonsterController(mainView.getMaze(), PROPERTIES, false);
+            }
             hunterController = new HunterController(mainView.getMaze(), PROPERTIES);
         }
     }
@@ -120,6 +133,7 @@ public class MonsterHunter extends Application {
                 ICoordinate hunterPosition = hunterStrategy.play();
                 mainView.getMaze().cellUpdate(new CellEvent(hunterPosition, Maze.currentTurn,
                         CellInfo.HUNTER));
+                mainView.getMaze().setHunterHasPlayed(false);
             }
         }
         if (!gameIsFinished()) {
@@ -166,7 +180,26 @@ public class MonsterHunter extends Application {
         }
     }
 
-    public void exitedGame() {
+    public void playWithHunterAIAndMonsterAI() {
+        if (!gameIsFinished()) {
+            if (!mainView.getMaze().getHunterHasPlayed()) {
+                ICoordinate hunterPosition = hunterStrategy.play();
+                mainView.getMaze().cellUpdate(new CellEvent(hunterPosition, Maze.currentTurn,
+                        CellInfo.HUNTER));
+                mainView.getMaze().setMonsterHasPlayed(false);
+            }
+        }
+        if (!gameIsFinished()) {
+            if (!mainView.getMaze().getMonsterHasPlayed()) {
+                ICoordinate monsterPosition = monsterStrategy.play();
+                mainView.getMaze().cellUpdate(new CellEvent(monsterPosition, Maze.currentTurn,
+                        CellInfo.MONSTER));
+                mainView.getMaze().setHunterHasPlayed(false);
+            }
+        }
+    }
+
+    public void exitedGame(Stage primaryStage) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Fin de la partie");
         alert.setHeaderText("La partie est terminée.");
@@ -178,7 +211,11 @@ public class MonsterHunter extends Application {
         if (mainView.getMaze().getWinner() != null) {
             alert.setHeaderText(alert.getHeaderText() + " Le gagnant est " + mainView.getMaze().getWinner());
             alert.showAndWait();
-            initgame();
+            try {
+                start(primaryStage);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
     }

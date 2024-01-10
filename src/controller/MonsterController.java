@@ -14,6 +14,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
+import main.MonsterHunter;
 import model.CellEvent;
 import model.Coordinate;
 import model.Maze;
@@ -30,9 +31,12 @@ public class MonsterController {
     private boolean hasPlayed = false;
     private boolean isReadyToNext = false;
 
-    public MonsterController(Maze maze, Properties properties) {
+    private boolean diagonalMovesAllowed;
+
+    public MonsterController(Maze maze, Properties properties, boolean diagonalMovesAllowed) {
         this.maze = maze;
         this.view = new MonsterView(maze, properties);
+        this.diagonalMovesAllowed = diagonalMovesAllowed;
         maze.attach(view);
         this.makeGameBoard(view.getMonster().getWall());
         view.getExitButton().setOnAction(e -> {
@@ -42,7 +46,6 @@ public class MonsterController {
         view.getWaitButton().setOnAction(e -> {
             maze.setIsReadyToNext(true);
         });
-
     }
 
     public void makeGameBoard(boolean[][] board) {
@@ -62,11 +65,24 @@ public class MonsterController {
         Integer row2 = coordinate2.getRow();
         Integer col2 = coordinate2.getCol();
 
-        if (row1.equals(row2)) {
-            return col1.equals(col2 + 1) ^ col1.equals(col2 - 1);
-        }
-        if (col1.equals(col2)) {
-            return row1.equals(row2 + 1) ^ row1.equals(row2 - 1);
+        if (diagonalMovesAllowed) {
+            if (row1.equals(row2)) {
+                return col1.equals(col2 + 1) ^ col1.equals(col2 - 1);
+            }
+            if (col1.equals(col2)) {
+                return row1.equals(row2 + 1) ^ row1.equals(row2 - 1);
+            }
+            return row1.equals(row2 + 1) && col1.equals(col2 + 1)
+                    || row1.equals(row2 + 1) && col1.equals(col2 - 1)
+                    || row1.equals(row2 - 1) && col1.equals(col2 + 1)
+                    || row1.equals(row2 - 1) && col1.equals(col2 - 1);
+        } else {
+            if (row1.equals(row2)) {
+                return col1.equals(col2 + 1) ^ col1.equals(col2 - 1);
+            }
+            if (col1.equals(col2)) {
+                return row1.equals(row2 + 1) ^ row1.equals(row2 - 1);
+            }
         }
         return false;
     }

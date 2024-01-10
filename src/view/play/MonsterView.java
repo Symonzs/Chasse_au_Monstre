@@ -99,6 +99,7 @@ public class MonsterView extends PlayView implements Observer {
         ImagePattern wallTexture = new ImagePattern(new Image("file:" + properties.getProperty("WallViewAsset")));
         ImagePattern groundTexture = new ImagePattern(new Image("file:" + properties.getProperty("GroundViewAsset")));
         ImagePattern exitTexture = new ImagePattern(new Image("file:" + properties.getProperty("ExitViewAsset")));
+        ImagePattern unkwonTexture = new ImagePattern(new Image("file:" + properties.getProperty("UnknowTexture")));
 
         playGameBoard.setHgap(3);
         playGameBoard.setVgap(3);
@@ -123,7 +124,9 @@ public class MonsterView extends PlayView implements Observer {
             for (int j = 0; j < board[i].length; j++) {
                 Rectangle cell = new Rectangle(RECT_ROW, RECT_COL);
                 Text text = new Text(RECT_ROW, RECT_COL, "");
-                if (board[i][j]) {
+                if (monster.getFog()[i][j]) {
+                    cell.setFill(unkwonTexture);
+                } else if (board[i][j]) {
                     cell.setFill(wallTexture);
                 } else {
                     ICoordinate monsterCoord = monster.getMonsterCoord();
