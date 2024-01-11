@@ -30,13 +30,13 @@ public class MonsterHunter extends Application {
     public static Properties playLanguageFile = setUpLanguageFile("play");
     public static Properties menuLanguageFile = setUpLanguageFile("menu");
     public static Properties exceptionLanguageFile = setUpLanguageFile("exception");
-    private static MainView mainView;
-    private static GameView gameView;
+    private MainView mainView;
+    private GameView gameView;
 
-    private static MonsterController monsterController;
-    private static HunterController hunterController;
-    private static IMonsterStrategy monsterStrategy;
-    private static IHunterStrategy hunterStrategy;
+    private MonsterController monsterController;
+    private HunterController hunterController;
+    private IMonsterStrategy monsterStrategy;
+    private IHunterStrategy hunterStrategy;
 
     public static void main(String[] args) {
         launch(args);
@@ -70,7 +70,6 @@ public class MonsterHunter extends Application {
 
     public void initgame() {
         mainView = new MainView(INIT_FILE);
-        // initMusic();
         mainView.showAndWait();
         gameView = new GameView();
         if (mainView.getMaze() == null) {
@@ -137,7 +136,7 @@ public class MonsterHunter extends Application {
         }
     }
 
-    public void exitedGame(Stage primaryStage) {
+    public void exitedGame(Stage primaryStage) throws InterruptedException {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Fin de la partie");
         alert.setHeaderText("La partie est terminée.");
@@ -149,11 +148,7 @@ public class MonsterHunter extends Application {
         if (mainView.getMaze().getWinner() != null) {
             alert.setHeaderText(alert.getHeaderText() + " Le gagnant est " + mainView.getMaze().getWinner());
             alert.showAndWait();
-            try {
-                start(primaryStage);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            start(primaryStage);
         }
 
     }

@@ -10,6 +10,7 @@ import java.util.TreeMap;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedMap;
 
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
@@ -26,8 +27,8 @@ public class Maze extends Subject {
     public static Integer currentTurn = 1;
 
     private boolean[][] wall;
-    private TreeMap<Integer, ICoordinate> monster;
-    private TreeMap<Integer, ICoordinate> hunter;
+    private SortedMap<Integer, ICoordinate> monster;
+    private SortedMap<Integer, ICoordinate> hunter;
     private ICoordinate exit;
 
     private CellInfo winner;
@@ -113,7 +114,6 @@ public class Maze extends Subject {
         List<String> lines = Files.readAllLines(file.toPath(), StandardCharsets.UTF_8);
         Integer nbRows = lines.size();
         Integer nbCols = lines.get(0).split(",").length;
-        System.out.println(nbRows + " " + nbCols);
 
         this.wall = new boolean[nbRows][nbCols];
         this.monster = new TreeMap<>();
@@ -173,7 +173,7 @@ public class Maze extends Subject {
         } else if (CellInfo.MONSTER.equals(eventRequest.getState())) {
             return cellUpdateMonster(eventRequest.getCoord(), eventRequest.getTurn());
         }
-        return null;
+        return new CellEvent[0];
     }
 
     /**

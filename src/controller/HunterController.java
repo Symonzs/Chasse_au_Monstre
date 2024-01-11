@@ -3,7 +3,6 @@ package controller;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
 
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -28,15 +27,9 @@ public class HunterController {
         this.view = new HunterView(maze.getWall().length, maze.getWall()[0].length);
         maze.attach(view);
         this.makeGameBoard(view.getHunter().getKnowWall(), view.getHunter().getKnowEmpty());
-        view.getPlayShotButton().setOnAction(e -> {
-            shot(e);
-        });
-        view.getPlayExitButton().setOnAction(e -> {
-            maze.setGameIsClosed(true);
-        });
-        view.getWaitButton().setOnAction(e -> {
-            maze.setIsReadyToNext(true);
-        });
+        view.getPlayShotButton().setOnAction(e -> shot());
+        view.getPlayExitButton().setOnAction(e -> maze.setGameIsClosed(true));
+        view.getWaitButton().setOnAction(e -> maze.setIsReadyToNext(true));
 
     }
 
@@ -67,7 +60,7 @@ public class HunterController {
         }
     }
 
-    public void shot(ActionEvent e) {
+    public void shot() {
         if (selectedStack != null) {
             resetStackStroke(selectedStack);
             ICoordinate coord = new Coordinate(GridPane.getRowIndex(selectedStack) - 1,

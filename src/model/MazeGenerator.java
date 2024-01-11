@@ -3,6 +3,7 @@ package model;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -57,7 +58,7 @@ public class MazeGenerator {
 
         int emptyCellsNorth = baseEmptyCells + (remainder-- > 0 ? 1 : 0);
         int emptyCellsWest = baseEmptyCells + (remainder-- > 0 ? 1 : 0);
-        int emptyCellsEast = baseEmptyCells + (remainder-- > 0 ? 1 : 0);
+        int emptyCellsEast = baseEmptyCells + (remainder > 0 ? 1 : 0);
         int emptyCellsSouth = baseEmptyCells;
 
         currentCell = new Coordinate(this.wall.length / 2, this.wall[0].length / 2);
@@ -65,9 +66,9 @@ public class MazeGenerator {
         this.dig(currentCell);
         emptyCellsNorth--;
 
-        for (Cardinals direction : Cardinals.values()) {
+        for (Cardinals tempDirection : Cardinals.values()) {
             currentCell = new Coordinate(this.wall.length / 2, this.wall[0].length / 2);
-            this.direction = direction;
+            this.direction = tempDirection;
             switch (this.direction) {
                 case NORTH -> emptyCellsWest += makePath(emptyCellsNorth);
                 case WEST -> emptyCellsEast += makePath(emptyCellsWest);
@@ -87,6 +88,7 @@ public class MazeGenerator {
         if (firstLine) {
             origin = ((int) (length / 5.0)) + 1;
             bound = length / 2;
+            return random.nextInt(origin, bound);
         }
         origin = length / 5;
         bound = origin * 2;
@@ -175,11 +177,11 @@ public class MazeGenerator {
         return this.wall;
     }
 
-    public TreeMap<Integer, ICoordinate> getMonster() {
+    public SortedMap<Integer, ICoordinate> getMonster() {
         return this.monster;
     }
 
-    public TreeMap<Integer, ICoordinate> getHunter() {
+    public SortedMap<Integer, ICoordinate> getHunter() {
         return this.hunter;
     }
 
