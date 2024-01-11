@@ -10,6 +10,7 @@ import ai.algorithm.ThetaStarAlgorithm;
 import fr.univlille.iutinfo.cam.player.monster.IMonsterStrategy;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
+import model.Coordinate;
 import model.Maze;
 
 /**
