@@ -32,6 +32,7 @@ import view.play.NumberInStringComparator;
 public class MainView extends Stage {
     private final ObservableList<String> mazeListItems = FXCollections.observableArrayList();
     private final ObservableList<String> langListItems = FXCollections.observableArrayList();
+    private final ObservableList<String> algoListItems = FXCollections.observableArrayList();
 
     private Maze maze;
 
@@ -63,6 +64,7 @@ public class MainView extends Stage {
     private CheckBox checkBoxIsGeneratedMap;
     private CheckBox checkBoxAllowDiagonalMove;
     private CheckBox checkBoxMonsterIsAnAI;
+    private ListView<String> algoListView;
     private CheckBox checkBoxHunterIsAnAI;
     private CheckBox checkBoxcheckBoxWarFog;
 
@@ -157,9 +159,12 @@ public class MainView extends Stage {
         parameterButtonMenu.setLayoutX(Screen.getPrimary().getVisualBounds().getWidth() - 200);
 
         quitGameButtonMenu = new Button(MonsterHunter.playLanguageFile.getProperty("playExitButton"));
-        MainStyle.applyNormalButtonStyle(quitGameButtonMenu);
+        MainStyle.applyLitleButtonStyle(quitGameButtonMenu);
 
         quitGameButtonMenu.setLayoutX(Screen.getPrimary().getVisualBounds().getWidth() - 100);
+        quitGameButtonMenu.setOnAction(e -> {
+            System.exit(0);
+        });
 
         playButtonMenu.setOnAction(e -> {
             initMaze();
@@ -170,7 +175,7 @@ public class MainView extends Stage {
         });
 
         paneMenu.getChildren().addAll(titleMenu, playButtonMenu);
-        rootMenu.getChildren().addAll(paneMenu, parameterButtonMenu);
+        rootMenu.getChildren().addAll(paneMenu, parameterButtonMenu, quitGameButtonMenu);
         sceneMenu = new Scene(rootMenu);
 
     }
@@ -230,7 +235,6 @@ public class MainView extends Stage {
                 generatedMapButtonParameter);
 
         playerTitle = new Text(MonsterHunter.menuLanguageFile.getProperty("playerTitle"));
-
         MainStyle.applyMainTextStyle(playerTitle);
 
         checkBoxAllowDiagonalMove = new CheckBox(
@@ -240,20 +244,20 @@ public class MainView extends Stage {
         checkBoxMonsterIsAnAI = new CheckBox(MonsterHunter.menuLanguageFile.getProperty("checkBoxMonsterIsAnAI"));
         MainStyle.applyCheckBoxStyle(checkBoxMonsterIsAnAI);
         checkBoxMonsterIsAnAI.setOnAction(e -> {
-            checkBoxHunterIsAnAI.setDisable(checkBoxMonsterIsAnAI.isSelected());
+            algoListView.setDisable(!checkBoxMonsterIsAnAI.isSelected());
         });
+
+        algoListView = initAlgorithmListView();
+
+        algoListView.setDisable(!checkBoxMonsterIsAnAI.isSelected());
 
         checkBoxHunterIsAnAI = new CheckBox(MonsterHunter.menuLanguageFile.getProperty("checkBoxHunterIsAnAI"));
         MainStyle.applyCheckBoxStyle(checkBoxHunterIsAnAI);
-        checkBoxHunterIsAnAI.setOnAction(e -> {
-            checkBoxMonsterIsAnAI.setDisable(checkBoxHunterIsAnAI.isSelected());
-        });
 
         playerVBoxParameter.getChildren().addAll(playerTitle, checkBoxAllowDiagonalMove, checkBoxMonsterIsAnAI,
-                checkBoxHunterIsAnAI);
+                algoListView, checkBoxHunterIsAnAI);
 
         languageTitle = new Text(MonsterHunter.menuLanguageFile.getProperty("languageTitle"));
-
         MainStyle.applyMainTextStyle(languageTitle);
 
         langListView = initLangueListView();
@@ -290,7 +294,6 @@ public class MainView extends Stage {
                     (int) mazeGeneratedColumnNbSliceParmeter.getValue(),
                     (int) mazeGeneratedWallPercentSliderParameter.getValue());
         }
-
         this.close();
     }
 
@@ -449,6 +452,22 @@ public class MainView extends Stage {
         return langList;
     }
 
+    private ListView<String> initAlgorithmListView() {
+        ListView<String> algoList = new ListView<>();
+        algoList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        algoListItems.add("A*");
+        algoListItems.add("Bidirectional A*");
+        algoListItems.add("Theta*");
+        algoList.setPrefHeight(algoListItems.size() * 26.0);
+        algoList.setMaxWidth(200);
+        FXCollections.sort(algoListItems, new NumberInStringComparator());
+
+        algoList.setItems(algoListItems);
+        algoList.getSelectionModel().select(MonsterHunter.init.getProperty("ChoosedAlgorithm"));
+
+        return algoList;
+    }
+
     private void setFileCheckBoxValue() {
         checkBoxAllowDiagonalMove.setSelected(MonsterHunter.init.getProperty("AllowDiagonalMove").equals("true"));
         checkBoxHunterIsAnAI.setSelected(MonsterHunter.init.getProperty("HunterIsAnAI").equals("true"));
@@ -499,6 +518,7 @@ public class MainView extends Stage {
         MonsterHunter.init.setProperty("LanguageValue", langListView.getSelectionModel().getSelectedItem());
         MonsterHunter.init.setProperty("IsGeneratedMap", checkBoxIsGeneratedMap.isSelected() + "");
         MonsterHunter.init.setProperty("MonsterIsAnAI", checkBoxMonsterIsAnAI.isSelected() + "");
+        MonsterHunter.init.setProperty("ChoosedAlgorithm", algoListView.getSelectionModel().getSelectedItem());
         MonsterHunter.init.setProperty("HunterIsAnAI", checkBoxHunterIsAnAI.isSelected() + "");
         MonsterHunter.init.setProperty("WarFog", checkBoxcheckBoxWarFog.isSelected() + "");
         MonsterHunter.init.setProperty("AllowDiagonalMove", checkBoxAllowDiagonalMove.isSelected() + "");

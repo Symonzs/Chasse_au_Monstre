@@ -24,7 +24,7 @@ public class TestHunter {
         // Pensé a changer le chemin du fichier csv (Pour le moment il est en absolu
         // dans les tests)
         try {
-            maze = new Maze("/home/infoetu/raphael.kiecken.etu/S3/S3.02/J1_SAE3A/resources/map", "5x5.csv");
+            maze = new Maze("C:\\Users\\Raphk\\Documents\\Taff\\J1_SAE3A\\resources\\map\\", "5x5.csv");
         } catch (Exception e2) {
             System.err.println(e2.getMessage());
         }

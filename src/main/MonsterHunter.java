@@ -6,6 +6,8 @@ import java.util.Properties;
 
 import ai.MazeSolver;
 import ai.MonsterFinder;
+import ai.algorithm.BidirectionnalAlgorithm;
+import ai.algorithm.ThetaStarAlgorithm;
 import controller.HunterController;
 import controller.MonsterController;
 import fr.univlille.iutinfo.cam.player.hunter.IHunterStrategy;
@@ -77,7 +79,13 @@ public class MonsterHunter extends Application {
         mainView.getMaze().attach(gameView);
         if (init.getProperty("HunterIsAnAI").equals("true")
                 && init.getProperty("MonsterIsAnAI").equals("true")) {
-            monsterStrategy = new MazeSolver(mainView.getMaze());
+            if (init.getProperty("ChoosedAlgorithm").equals("Theta*")) {
+                monsterStrategy = new MazeSolver(new ThetaStarAlgorithm(), mainView.getMaze());
+            } else if (init.getProperty("ChoosedAlgorithm").equals("Bidirectional A*")) {
+                monsterStrategy = new MazeSolver(new BidirectionnalAlgorithm(), mainView.getMaze());
+            } else {
+                monsterStrategy = new MazeSolver(mainView.getMaze());
+            }
             hunterStrategy = new MonsterFinder();
             hunterStrategy.initialize(mainView.getMaze().getWall().length - 1,
                     mainView.getMaze().getWall()[0].length - 1);
@@ -85,7 +93,13 @@ public class MonsterHunter extends Application {
             hunterStrategy = new MonsterFinder();
             monsterController = new MonsterController(mainView.getMaze());
         } else if (init.getProperty("MonsterIsAnAI").equals("true")) {
-            monsterStrategy = new MazeSolver(mainView.getMaze());
+            if (init.getProperty("ChoosedAlgorithm").equals("Theta*")) {
+                monsterStrategy = new MazeSolver(new ThetaStarAlgorithm(), mainView.getMaze());
+            } else if (init.getProperty("ChoosedAlgorithm").equals("Bidirectional A*")) {
+                monsterStrategy = new MazeSolver(new BidirectionnalAlgorithm(), mainView.getMaze());
+            } else {
+                monsterStrategy = new MazeSolver(mainView.getMaze());
+            }
             hunterController = new HunterController(mainView.getMaze());
         } else {
             monsterController = new MonsterController(mainView.getMaze());
