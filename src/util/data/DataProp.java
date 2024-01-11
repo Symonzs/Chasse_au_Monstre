@@ -22,7 +22,7 @@ public class DataProp {
 
     public static void write(Properties properties, String fileName, String comment) {
         try {
-            FileOutputStream out = new FileOutputStream(fileName + ".prop");
+            FileOutputStream out = new FileOutputStream(fileName);
             try {
                 properties.store(out, comment != null ? comment : "//");
             } catch (IOException e) {

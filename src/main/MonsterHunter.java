@@ -14,11 +14,6 @@ import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
 import javafx.application.Application;
 import javafx.scene.control.Alert;
-import javafx.scene.image.Image;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
 import javafx.stage.Stage;
 import model.CellEvent;
 import model.Maze;
@@ -29,46 +24,26 @@ import view.main.MainView;
 
 public class MonsterHunter extends Application {
     public static final File INIT_FILE = Paths.get("./resources/config/init.conf").toFile();
-    public static final Properties PROPERTIES = DataProp.read(INIT_FILE);
-    public static final Properties PLAY_LANGUAGE_FILE = setUpLanguageFile("play");
-    public static final Properties MENU_LANGUAGE_FILE = setUpLanguageFile("menu");
-    public static final Properties EXCEPTION_LANGUAGE_FILE = setUpLanguageFile("exception");
+    public static Properties init = DataProp.read(INIT_FILE);
+    public static Properties playLanguageFile = setUpLanguageFile("play");
+    public static Properties menuLanguageFile = setUpLanguageFile("menu");
+    public static Properties EXCEPTION_LANGUAGE_FILE = setUpLanguageFile("exception");
     private static MainView mainView;
     private static GameView gameView;
-
-    public static BackgroundImage mainbackgroundImage = new BackgroundImage(
-            new Image(
-                    Paths.get(MonsterHunter.PROPERTIES.getProperty("MenuBckgImage")).toUri().toString()),
-            BackgroundRepeat.SPACE,
-            BackgroundRepeat.SPACE,
-            BackgroundPosition.CENTER,
-            BackgroundSize.DEFAULT);
-
-    public static BackgroundImage buttonbackground = new BackgroundImage(
-            new Image(
-                    Paths.get(MonsterHunter.PROPERTIES.getProperty("ButtonTexture")).toUri().toString()),
-            BackgroundRepeat.SPACE,
-            BackgroundRepeat.SPACE,
-            BackgroundPosition.CENTER,
-            BackgroundSize.DEFAULT);
-
-    public static BackgroundImage choiceMenuBackgroundImage = new BackgroundImage(
-            new Image(
-                    Paths.get(MonsterHunter.PROPERTIES.getProperty("MenuOptionBkg")).toUri().toString()),
-            BackgroundRepeat.SPACE,
-            BackgroundRepeat.SPACE,
-            BackgroundPosition.CENTER,
-            BackgroundSize.DEFAULT);
 
     private static MonsterController monsterController;
     private static HunterController hunterController;
     private static IMonsterStrategy monsterStrategy;
     private static IHunterStrategy hunterStrategy;
 
-    private static Properties setUpLanguageFile(String value) {
-        String key = PROPERTIES.getProperty("LanguageValue");
+    public static void main(String[] args) {
+        launch(args);
+    }
 
-        Properties languageSrcProperties = DataProp.read(Paths.get(PROPERTIES.getProperty("LanguageSetting")).toFile());
+    private static Properties setUpLanguageFile(String value) {
+        String key = init.getProperty("LanguageValue");
+
+        Properties languageSrcProperties = DataProp.read(Paths.get(init.getProperty("LanguageSetting")).toFile());
 
         return DataProp.read(Paths.get(languageSrcProperties.getProperty(key) + value + ".conf").toFile());
     }
@@ -101,15 +76,15 @@ public class MonsterHunter extends Application {
         mainView.getMaze().attach(gameView);
         if (mainView.getHunterIsAnAi()) {
             hunterStrategy = new MonsterFinder();
-            monsterController = new MonsterController(mainView.getMaze(), PROPERTIES);
+            monsterController = new MonsterController(mainView.getMaze(), init);
         }
         if (mainView.getMonsterIsAnAI()) {
             monsterStrategy = new MazeSolver(mainView.getMaze());
-            hunterController = new HunterController(mainView.getMaze(), PROPERTIES);
+            hunterController = new HunterController(mainView.getMaze(), init);
         }
         if (!mainView.getHunterIsAnAi() && !mainView.getMonsterIsAnAI()) {
-            monsterController = new MonsterController(mainView.getMaze(), PROPERTIES);
-            hunterController = new HunterController(mainView.getMaze(), PROPERTIES);
+            monsterController = new MonsterController(mainView.getMaze(), init);
+            hunterController = new HunterController(mainView.getMaze(), init);
         }
     }
 
@@ -212,12 +187,13 @@ public class MonsterHunter extends Application {
     }
 
     private void initMusic() {
-        String audioFilePath = PROPERTIES.getProperty("MainMusic");
+        String audioFilePath = init.getProperty("MainMusic");
         BackgroundMusicPlayer musicPlayer = new BackgroundMusicPlayer();
         musicPlayer.playAudio(audioFilePath);
     }
 
-    public static void main(String[] args) {
-        launch(args);
+    public MainView getMainView() {
+        return mainView;
     }
+
 }

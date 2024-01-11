@@ -13,6 +13,7 @@ import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
+import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -21,21 +22,21 @@ import main.MonsterHunter;
 public class MainStyle {
 
         public static Font customFont = Font
-                        .loadFont(Paths.get(MonsterHunter.PROPERTIES.getProperty("StylePolice")).toUri().toString(),
+                        .loadFont(Paths.get(MonsterHunter.init.getProperty("StylePolice")).toUri().toString(),
                                         200);
         public static Font mainFont = Font
-                        .loadFont(Paths.get(MonsterHunter.PROPERTIES.getProperty("StylePolice")).toUri().toString(),
+                        .loadFont(Paths.get(MonsterHunter.init.getProperty("StylePolice")).toUri().toString(),
                                         60);
         public static Font normalFont = Font
-                        .loadFont(Paths.get(MonsterHunter.PROPERTIES.getProperty("StylePolice")).toUri().toString(),
+                        .loadFont(Paths.get(MonsterHunter.init.getProperty("StylePolice")).toUri().toString(),
                                         40);
         public static Font litleFont = Font
-                        .loadFont(Paths.get(MonsterHunter.PROPERTIES.getProperty("StylePolice")).toUri().toString(),
+                        .loadFont(Paths.get(MonsterHunter.init.getProperty("StylePolice")).toUri().toString(),
                                         20);
 
         public static BackgroundImage mainbackgroundImage = new BackgroundImage(
                         new Image(
-                                        Paths.get(MonsterHunter.PROPERTIES.getProperty("MenuBckgImage")).toUri()
+                                        Paths.get(MonsterHunter.init.getProperty("MenuBckgImage")).toUri()
                                                         .toString()),
                         BackgroundRepeat.SPACE,
                         BackgroundRepeat.SPACE,
@@ -44,7 +45,7 @@ public class MainStyle {
 
         public static BackgroundImage buttonbackground = new BackgroundImage(
                         new Image(
-                                        Paths.get(MonsterHunter.PROPERTIES.getProperty("ButtonTexture")).toUri()
+                                        Paths.get(MonsterHunter.init.getProperty("ButtonTexture")).toUri()
                                                         .toString()),
                         BackgroundRepeat.SPACE,
                         BackgroundRepeat.SPACE,
@@ -53,7 +54,7 @@ public class MainStyle {
 
         public static BackgroundImage choiceMenuBackgroundImage = new BackgroundImage(
                         new Image(
-                                        Paths.get(MonsterHunter.PROPERTIES.getProperty("MenuOptionBkg")).toUri()
+                                        Paths.get(MonsterHunter.init.getProperty("MenuOptionBkg")).toUri()
                                                         .toString()),
                         BackgroundRepeat.SPACE,
                         BackgroundRepeat.SPACE,
@@ -83,7 +84,9 @@ public class MainStyle {
         private static void applyButtonStyle(Button button) {
                 button.setBackground(new Background(buttonbackground));
                 button.setTextFill(Color.rgb(0, 0, 0));
-                button.setStyle("-fx-padding: 0;");
+                button.setStyle("-fx-padding: 2;");
+                GridPane.setMargin(button, new javafx.geometry.Insets(10, 20, 10, 20)); // top, right, bottom, left
+
         }
 
         public static void applyTextFieldStyle(TextField textField) {
