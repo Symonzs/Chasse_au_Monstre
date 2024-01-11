@@ -77,7 +77,7 @@ public class HunterView extends PlayView implements Observer {
         playVBoxNav.setAlignment(Pos.CENTER);
         playVBoxNav.setSpacing(10);
 
-        playRoot.getChildren().addAll(playGameBoard, playVBoxNav);
+        playRoot.getChildren().addAll(new Label("Tour : " + Maze.currentTurn), playGameBoard, playVBoxNav);
         playRoot.setBackground(new Background(MainStyle.choiceMenuBackgroundImage));
 
         super.setPlayScene(new Scene(playRoot));
