@@ -25,7 +25,7 @@ public class MainStyle {
                                         200);
         public static Font mainFont = Font
                         .loadFont(Paths.get(MonsterHunter.PROPERTIES.getProperty("StylePolice")).toUri().toString(),
-                                        75);
+                                        60);
         public static Font normalFont = Font
                         .loadFont(Paths.get(MonsterHunter.PROPERTIES.getProperty("StylePolice")).toUri().toString(),
                                         40);
@@ -97,6 +97,11 @@ public class MainStyle {
 
         public static void applyLitleTextStyle(Text text) {
                 text.setFont(litleFont);
+                applyTextStyle(text);
+        }
+
+        public static void applyMainTextStyle(Text text) {
+                text.setFont(mainFont);
                 applyTextStyle(text);
         }
 

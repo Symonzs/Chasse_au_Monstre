@@ -162,10 +162,10 @@ public class MainView extends Stage {
 
         playButtonMenu = new Button(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("playButtonMenu"));
 
-        MainStyle.applyLitleButtonStyle(playButtonMenu);
+        MainStyle.applyMainButtonStyle(playButtonMenu);
 
         parameterButtonMenu = new Button(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("parameterButtonMenu"));
-        MainStyle.applyMainButtonStyle(parameterButtonMenu);
+        MainStyle.applyLitleButtonStyle(parameterButtonMenu);
 
         parameterButtonMenu.setLayoutX(1650);
 
@@ -193,7 +193,7 @@ public class MainView extends Stage {
         rootParameter.setBackground(new Background(MonsterHunter.mainbackgroundImage));
 
         quitParameter = new Button(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("quitParameter"));
-        MainStyle.applyLitleButtonStyle(quitParameter);
+        MainStyle.applyNormalButtonStyle(quitParameter);
 
         quitParameter.setOnAction(e -> {
             showInitMenu();
@@ -205,13 +205,15 @@ public class MainView extends Stage {
         languageVBoxParameter = new VBox();
 
         mapTitle = new Text(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("mapTitle"));
-        MainStyle.applyTitleStyle(mapTitle);
+        MainStyle.applyMainTextStyle(mapTitle);
 
         checkBoxIsGeneratedMap = new CheckBox(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("checkBoxIsGeneratedMap"));
         checkBoxIsGeneratedMap.setOnAction(e -> {
             mapListView.setDisable(checkBoxIsGeneratedMap.isSelected());
         });
+
         MainStyle.applyCheckBoxStyle(checkBoxIsGeneratedMap);
+
         checkBoxIsGeneratedMap.setSelected(true);
 
         mapListView = initMapListView();
@@ -219,13 +221,17 @@ public class MainView extends Stage {
         generatedMapButtonParameter = new Button(
                 MonsterHunter.MENU_LANGUAGE_FILE.getProperty("generatedMapButtonParameter"));
         generatedMapButtonParameter.setDisable(!mapListView.isDisable());
+
         MainStyle.applyLitleButtonStyle(generatedMapButtonParameter);
+
         generatedMapButtonParameter.setOnAction(e -> {
             showGeneratedParameterMenu();
         });
 
         checkBoxShowBearingWall = new CheckBox(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("ShowBearingWall"));
+
         MainStyle.applyCheckBoxStyle(checkBoxShowBearingWall);
+
         mapVBoxParameter.getChildren().addAll(mapTitle, checkBoxIsGeneratedMap, mapListView, checkBoxShowBearingWall,
                 generatedMapButtonParameter);
 
@@ -235,7 +241,7 @@ public class MainView extends Stage {
         textServerAddress = new TextField(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("textServerAddress"));
         textServerAddress.setDisable(checkBoxIsServer.isSelected());
 
-        MainStyle.applyTitleStyle(playerTitle);
+        MainStyle.applyMainTextStyle(playerTitle);
 
         MainStyle.applyCheckBoxStyle(checkBoxIsMultyGame);
 
@@ -273,7 +279,7 @@ public class MainView extends Stage {
 
         languageTitle = new Text(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("languageTitle"));
 
-        MainStyle.applyTitleStyle(languageTitle);
+        MainStyle.applyMainTextStyle(languageTitle);
 
         langListView = initLangueListView();
 
@@ -324,16 +330,18 @@ public class MainView extends Stage {
 
         mazeGeneratedGoBackButtonParameter = new Button(
                 MonsterHunter.MENU_LANGUAGE_FILE.getProperty("mazeGeneratedGoBackButtonParameter"));
-        MainStyle.applyLitleButtonStyle(mazeGeneratedGoBackButtonParameter);
+
+        MainStyle.applyNormalButtonStyle(mazeGeneratedGoBackButtonParameter);
+
         mazeGeneratedGoBackButtonParameter.setBackground(new Background(MonsterHunter.buttonbackground));
         mazeGeneratedGoBackButtonParameter.setOnAction(e -> {
             showParameterMenu();
         });
+
         mazeGeneratedTitleParameter = new Text(
                 MonsterHunter.MENU_LANGUAGE_FILE.getProperty("mazeGeneratedTitleParameter"));
-        MainStyle.applyLitleTextStyle(mazeGeneratedTitleParameter);
 
-        // mazeGeneratedTitleParameter.setFill(Color.rgb(100, 41, 0));
+        MainStyle.applyTitleStyle(mazeGeneratedTitleParameter);
 
         DropShadow dropShadow = new DropShadow();
         dropShadow.setOffsetX(3.0);
