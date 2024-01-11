@@ -3,7 +3,7 @@
 
 ### Java ###
 # Compiled class file
-bin/*
+bin
 *.class
 
 # Log file
@@ -28,12 +28,11 @@ hs_err_pid*
 replay_pid*
 
 ### VisualStudioCode ###
-.vscode/*
-.vscode/settings.json
-.vscode/tasks.json
-.vscode/launch.json
-.vscode/extensions.json
-.vscode/*.code-snippets
+.vscode
+
+### IDEA ###
+*.iml
+.idea
 
 # Local History for Visual Studio Code
 .history/
@@ -51,3 +50,5 @@ replay_pid*
 doc/cam-player-api-base-doc
 
 # End of https://www.toptal.com/developers/gitignore/api/java,visualstudiocode
+
+.project

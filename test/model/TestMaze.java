@@ -23,7 +23,7 @@ public class TestMaze {
         // Pensé a changer le chemin du fichier csv (Pour le moment il est en absolu
         // dans les tests)
         try {
-            maze = new Maze("D:\\Document\\IUT\\J1_SAE3A\\resources\\map", "4x4.csv");
+            maze = new Maze("C:\\Users\\Raphk\\Documents\\Taff\\J1_SAE3A\\resources\\map\\", "4x4.csv");
         } catch (Exception e2) {
             System.err.println(e2.getMessage());
         }
@@ -145,22 +145,23 @@ public class TestMaze {
     @Test
     public void test_monster_was_here() {
         // valide car le monstre est déjà passé par la
-        assertTrue(maze.monsterWasHere(new Coordinate(0, 0)));// test si le monstre est passé par la position de départ
-        assertTrue(maze.monsterWasHere(new Coordinate(1, 0)));// test si le monstre est passé par 1,0
+        assertTrue(maze.monsterhasBeenHere(new Coordinate(0, 0)));// test si le monstre est passé par la position de
+                                                                  // départ
+        assertTrue(maze.monsterhasBeenHere(new Coordinate(1, 0)));// test si le monstre est passé par 1,0
         // valide car le monstre est déjà passé par la
 
         // pas valide car case actuelle du monstre
-        assertTrue(maze.monsterWasHere(new Coordinate(2, 0)));// test si le monstre est passé par 2,0
+        assertTrue(maze.monsterhasBeenHere(new Coordinate(2, 0)));// test si le monstre est passé par 2,0
         // pas valide car case actuelle du monstre
 
         // pas valide le monstre n'est pas passer la
-        assertFalse(maze.monsterWasHere(new Coordinate(2, 1)));// test si le monstre est passé par 2,1
-        assertFalse(maze.monsterWasHere(new Coordinate(2, 2)));// test si le monstre est passé par 2,2
+        assertFalse(maze.monsterhasBeenHere(new Coordinate(2, 1)));// test si le monstre est passé par 2,1
+        assertFalse(maze.monsterhasBeenHere(new Coordinate(2, 2)));// test si le monstre est passé par 2,2
         // pas valide le monstre n'est pas passer la
 
         // pas valide coordonnées en dehors du tableaux
-        assertFalse(maze.monsterWasHere(new Coordinate(5, 7)));// test si le monstre est passé par 5,7
-        assertFalse(maze.monsterWasHere(new Coordinate(3, 3)));// test si le monstre est passé par 3,3
+        assertFalse(maze.monsterhasBeenHere(new Coordinate(5, 7)));// test si le monstre est passé par 5,7
+        assertFalse(maze.monsterhasBeenHere(new Coordinate(3, 3)));// test si le monstre est passé par 3,3
         // pas valide coordonnées en dehors du tableaux
     }
 
@@ -214,7 +215,7 @@ public class TestMaze {
     @Test
     public void test_monster_is_at_exit() {
         // pas valide car il n'est pas actuellement sur la case sortie
-        assertFalse(maze.monsterAtExit());// test si le monstre est sur la sortie
+        assertFalse(maze.monsterIsAtExit());// test si le monstre est sur la sortie
         // pas valide car il n'est pas actuellement sur la case sortie
 
         maze.cellUpdate(new CellEvent(new Coordinate(3, 0), Maze.currentTurn, CellInfo.MONSTER));// deplacement du
@@ -222,7 +223,7 @@ public class TestMaze {
                                                                                                  // trouve la sortie
 
         // valide car le monstre se trouve maintenant sur la sortie
-        assertTrue(maze.monsterAtExit());// test si le monstre est sur la sortie
+        assertTrue(maze.monsterIsAtExit());// test si le monstre est sur la sortie
         // valide car le monstre se trouve maintenant sur la sortie
     }
 
@@ -491,6 +492,51 @@ public class TestMaze {
         assertTrue(count_wall(mazetest) > 12 && count_wall(mazetest) < 18);// test si le nombre de mur est en accord
                                                                            // avec le pourcentage demandé
         // valide
+    }
+
+    @Test
+    public void file_finder() {
+        String expectedName = "4x4.csv";
+
+        try {
+            String file = FileFinder.find("/home/infoetu/simon.hayart.etu/J1_SAE3A/resources/map", expectedName)
+                    .getName();
+            assertEquals(expectedName, file);
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+    }
+
+    @Test
+    public void test_set_is_ready_to_next() {
+        maze.setIsReadyToNext(true);// set le labyrinthe a pret pour le prochain tour
+        assertTrue(maze.getIsReadyToNext());// test si le labyrinthe est pret pour le prochain tour
+        maze.setIsReadyToNext(false);// set le labyrinthe a pas pret pour le prochain tour
+        assertFalse(maze.getIsReadyToNext());// test si le labyrinthe est pret pour le prochain tour
+    }
+
+    @Test
+    public void test_set_hunter_has_played() {
+        maze.setHunterHasPlayed(true);// set le chasseur a jouer
+        assertTrue(maze.getHunterHasPlayed());// test si le chasseur a jouer
+        maze.setHunterHasPlayed(false);// set le chasseur a pas jouer
+        assertFalse(maze.getHunterHasPlayed());// test si le chasseur a pas jouer
+    }
+
+    @Test
+    public void test_set_monster_has_played() {
+        maze.setMonsterHasPlayed(true);// set le chasseur a jouer
+        assertTrue(maze.getMonsterHasPlayed());// test si le chasseur a jouer
+        maze.setMonsterHasPlayed(false);// set le chasseur a pas jouer
+        assertFalse(maze.getMonsterHasPlayed());// test si le chasseur a pas jouer
+    }
+
+    @Test
+    public void test_set_is_game_closed() {
+        maze.setGameIsClosed(true);// set le jeu a fini
+        assertTrue(maze.isGameClosed());// test si le jeu a fini
+        maze.setGameIsClosed(false);// set le jeu a pas fini
+        assertFalse(maze.isGameClosed());// test si le jeu a pas fini
     }
 
 }

@@ -1,7 +1,6 @@
 package view.main;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Properties;
 
@@ -15,64 +14,27 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Slider;
-import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.image.Image;
 import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.BackgroundPosition;
-import javafx.scene.layout.BackgroundRepeat;
-import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import main.MonsterHunter;
 import model.Maze;
 import util.data.DataProp;
+import util.style.MainStyle;
 import view.play.NumberInStringComparator;
 
 public class MainView extends Stage {
     private final ObservableList<String> mazeListItems = FXCollections.observableArrayList();
     private final ObservableList<String> langListItems = FXCollections.observableArrayList();
+    private final ObservableList<String> algoListItems = FXCollections.observableArrayList();
 
     private Maze maze;
-
-    private Font customFont;
-    private Font mainFont;
-    private Font normalFont;
-    private Font litleFont;
-
-    private Image panebackgroundImage = new Image(
-            Paths.get(MonsterHunter.PROPERTIES.getProperty("MenuBckgImage")).toUri().toString());
-    BackgroundImage panebackground = new BackgroundImage(
-            panebackgroundImage,
-            BackgroundRepeat.SPACE,
-            BackgroundRepeat.SPACE,
-            BackgroundPosition.CENTER,
-            BackgroundSize.DEFAULT);
-
-    Image buttonbackgroundImage = new Image(
-            Paths.get(MonsterHunter.PROPERTIES.getProperty("ButtonTexture")).toUri().toString());
-    BackgroundImage buttonbackground = new BackgroundImage(
-            buttonbackgroundImage,
-            BackgroundRepeat.SPACE,
-            BackgroundRepeat.SPACE,
-            BackgroundPosition.CENTER,
-            BackgroundSize.DEFAULT);
-
-    Image parameterChoiceMenuImage = new Image(
-            Paths.get(MonsterHunter.PROPERTIES.getProperty("MenuOptionBkg")).toUri().toString());
-    BackgroundImage parameterChoiceMenuBackgroundImage = new BackgroundImage(
-            parameterChoiceMenuImage,
-            BackgroundRepeat.SPACE,
-            BackgroundRepeat.SPACE,
-            BackgroundPosition.CENTER,
-            BackgroundSize.DEFAULT);
 
     /* Main Menu */
     private Pane rootMenu;
@@ -80,6 +42,7 @@ public class MainView extends Stage {
     private Text titleMenu;
     private Button playButtonMenu;
     private Button parameterButtonMenu;
+    private Button quitGameButtonMenu;
     private Scene sceneMenu;
 
     /* Parameter Menu */
@@ -87,29 +50,50 @@ public class MainView extends Stage {
     private VBox rootParameter;
     private HBox hBoxParameter;
     private Button quitParameter;
+    private Button resetByDefault;
     private Text titleParameter;
     private VBox mapVBoxParameter;
     private VBox playerVBoxParameter;
     private VBox languageVBoxParameter;
     private ListView<String> mapListView;
+    private Button generatedMapButtonParameter;
     private Text mapTitle;
     private Text playerTitle;
     private Text languageTitle;
     private ListView<String> langListView;
-    private TextField textServerAddress;
     private CheckBox checkBoxIsGeneratedMap;
-    private CheckBox checkBoxIsMultyGame;
-    private CheckBox checkBoxIsServer;
+    private CheckBox checkBoxAllowDiagonalMove;
     private CheckBox checkBoxMonsterIsAnAI;
-    private CheckBox checkBoxHunterISAnAi;
-    private CheckBox checkBoxShowBearingWall;
+    private ListView<String> algoListView;
+    private CheckBox checkBoxHunterIsAnAI;
+    private CheckBox checkBoxcheckBoxWarFog;
+
+    /* generated maze setting */
+    private Scene mazeGeneratedSceneParameter;
+    private VBox rootMazeGeneratorParameter;
+
+    private Button mazeGeneratedGoBackButtonParameter; // 0
+    private Text mazeGeneratedTitleParameter;// 0
+
+    private Label mazeGeneratedSizeMapTitleParameter;// 1
+    private Label mazeGeneratedLineNbTitleParameter;// 1
+    private Slider mazeGeneratedSliderLineNbParameter;// 1
+    private Label mazeGeneratedColumnNbTitleParameter;// 1
+    private Slider mazeGeneratedColumnNbSliceParmeter;// 1
+
+    private Label mazeGeneratedWallPercentTitleParameter;// 2
+    private Slider mazeGeneratedWallPercentSliderParameter;// 2
+
+    private HBox mazeGeneratorHbox;
+    private VBox mazeGeneratedSizeVBoxParameter;// 1
+    private VBox mazeGeneratedWallPercentVBoxParameter;// 2
 
     public MainView(File file) {
-        this.setTitle(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("StageTitle"));
+        this.setTitle(MonsterHunter.menuLanguageFile.getProperty("StageTitle"));
 
-        initFont();
         initMenu();
         initParameter();
+        initMazeGeneratorParamter();
 
         showInitMenu();
     }
@@ -124,41 +108,33 @@ public class MainView extends Stage {
     }
 
     public boolean isHunterIsAnAI() {
-        return checkBoxHunterISAnAi.isSelected();
-    }
-
-    public boolean isMultyGame() {
-        return checkBoxIsMultyGame.isSelected();
-    }
-
-    public boolean isHost() {
-        return checkBoxIsServer.isSelected();
+        return checkBoxHunterIsAnAI.isSelected();
     }
 
     public boolean isGeneratedMap() {
         return checkBoxIsGeneratedMap.isSelected();
     }
 
-    public boolean isShowBearingWall() {
-        return checkBoxShowBearingWall.isSelected();
+    public boolean isAllowDiagonalMove() {
+        return checkBoxAllowDiagonalMove.isSelected();
     }
 
-    public String getServerAddress() {
-        return textServerAddress.getText();
+    public boolean ischeckBoxWarFog() {
+        return checkBoxcheckBoxWarFog.isSelected();
     }
 
     /* init method */
     private void initMenu() {
         rootMenu = new Pane();
         paneMenu = new VBox();
-        titleMenu = new Text(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("titleMenu"));
-        titleMenu.setFont(customFont);
+        titleMenu = new Text(MonsterHunter.menuLanguageFile.getProperty("titleMenu"));
+        titleMenu.setFont(MainStyle.customFont);
         titleMenu.setFill(Color.rgb(100, 41, 0));
 
         DropShadow dropShadow = new DropShadow();
         dropShadow.setOffsetX(3.0);
         dropShadow.setOffsetY(3.0);
-        dropShadow.setColor(Color.rgb(128, 0, 0));
+        dropShadow.setColor(Color.rgb(0, 0, 0));
         titleMenu.setEffect(dropShadow);
         titleMenu.setStyle("-fx-padding: 0;");
 
@@ -172,24 +148,23 @@ public class MainView extends Stage {
         paneMenu.setMaxWidth(Screen.getPrimary().getVisualBounds().getWidth());
         paneMenu.setPrefWidth(Screen.getPrimary().getVisualBounds().getWidth());
 
-        paneMenu.setBackground(new Background(panebackground));
+        paneMenu.setBackground(new Background(MainStyle.mainbackgroundImage));
 
-        playButtonMenu = new Button(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("playButtonMenu"));
+        playButtonMenu = new Button(MonsterHunter.menuLanguageFile.getProperty("playButtonMenu"));
+        MainStyle.applyMainButtonStyle(playButtonMenu);
 
-        playButtonMenu.setBackground(null);
+        parameterButtonMenu = new Button(MonsterHunter.menuLanguageFile.getProperty("parameterButtonMenu"));
+        MainStyle.applyLitleButtonStyle(parameterButtonMenu);
 
-        playButtonMenu.setFont(mainFont);
-        playButtonMenu.setStyle("-fx-padding: 0;");
+        parameterButtonMenu.setLayoutX(Screen.getPrimary().getVisualBounds().getWidth() - 250);
 
-        parameterButtonMenu = new Button(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("parameterButtonMenu"));
-        parameterButtonMenu.setFont(mainFont);
-        parameterButtonMenu.setFont(new Font(20));
-        parameterButtonMenu.setStyle("-fx-padding: 0;");
+        quitGameButtonMenu = new Button(MonsterHunter.playLanguageFile.getProperty("playExitButton"));
+        MainStyle.applyLitleButtonStyle(quitGameButtonMenu);
 
-        playButtonMenu.setBackground(new Background(buttonbackground));
-        parameterButtonMenu.setBackground(new Background(buttonbackground));
-        parameterButtonMenu.setFont(litleFont);
-        parameterButtonMenu.setLayoutX(1650);
+        quitGameButtonMenu.setLayoutX(Screen.getPrimary().getVisualBounds().getWidth() - 150);
+        quitGameButtonMenu.setOnAction(e -> {
+            System.exit(0);
+        });
 
         playButtonMenu.setOnAction(e -> {
             initMaze();
@@ -200,9 +175,8 @@ public class MainView extends Stage {
         });
 
         paneMenu.getChildren().addAll(titleMenu, playButtonMenu);
-        rootMenu.getChildren().addAll(paneMenu, parameterButtonMenu);
+        rootMenu.getChildren().addAll(paneMenu, parameterButtonMenu, quitGameButtonMenu);
         sceneMenu = new Scene(rootMenu);
-        // playButtonMenu.setLayoutX(sceneMenu.widthProperty().doubleValue() / 2);
 
     }
 
@@ -210,95 +184,80 @@ public class MainView extends Stage {
         rootParameter = new VBox();
         hBoxParameter = new HBox();
 
-        titleParameter = new Text(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("titleParameter"));
-        titleParameter.setFont(customFont);
-        titleParameter.setFill(Color.rgb(100, 41, 0));
-        DropShadow dropShadow = new DropShadow();
-        dropShadow.setOffsetX(3.0);
-        dropShadow.setOffsetY(3.0);
-        dropShadow.setColor(Color.rgb(128, 0, 0));
-        titleParameter.setEffect(dropShadow);
-        titleParameter.setStyle("-fx-padding: 0;");
+        titleParameter = new Text(MonsterHunter.menuLanguageFile.getProperty("titleParameter"));
+        MainStyle.applyTitleStyle(titleParameter);
 
-        rootParameter.setBackground(new Background(panebackground));
+        rootParameter.setBackground(new Background(MainStyle.mainbackgroundImage));
+        rootParameter.setAlignment(javafx.geometry.Pos.CENTER);
 
-        quitParameter = new Button(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("quitParameter"));
+        resetByDefault = new Button(MonsterHunter.menuLanguageFile.getProperty("resetByDefault"));
+        MainStyle.applyLitleButtonStyle(resetByDefault);
+        resetByDefault.setOnAction(e -> {
+            reInitParameters();
+            this.close();
+        });
 
-        quitParameter.setBackground(new Background(buttonbackground));
-        quitParameter.setFont(litleFont);
+        quitParameter = new Button(MonsterHunter.menuLanguageFile.getProperty("quitParameter"));
+        MainStyle.applyNormalButtonStyle(quitParameter);
         quitParameter.setOnAction(e -> {
+            saveParameters();
             showInitMenu();
         });
 
-        rootParameter.setAlignment(javafx.geometry.Pos.CENTER);
         mapVBoxParameter = new VBox();
         playerVBoxParameter = new VBox();
         languageVBoxParameter = new VBox();
 
-        mapTitle = new Text(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("mapTitle"));
-        mapTitle.setFont(normalFont);
-        mapTitle.setStyle("-fx-text-fill: black;");
+        mapTitle = new Text(MonsterHunter.menuLanguageFile.getProperty("mapTitle"));
+        MainStyle.applyMainTextStyle(mapTitle);
 
-        checkBoxIsGeneratedMap = new CheckBox(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("checkBoxIsGeneratedMap"));
+        checkBoxIsGeneratedMap = new CheckBox(MonsterHunter.menuLanguageFile.getProperty("checkBoxIsGeneratedMap"));
+        MainStyle.applyCheckBoxStyle(checkBoxIsGeneratedMap);
         checkBoxIsGeneratedMap.setOnAction(e -> {
             mapListView.setDisable(checkBoxIsGeneratedMap.isSelected());
         });
-        checkBoxIsGeneratedMap.setFont(litleFont);
-        checkBoxIsGeneratedMap.setStyle("-fx-text-fill: black;");
         checkBoxIsGeneratedMap.setSelected(true);
 
         mapListView = initMapListView();
         mapListView.setDisable(checkBoxIsGeneratedMap.isSelected());
 
-        checkBoxShowBearingWall = new CheckBox(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("ShowBearingWall"));
-        checkBoxShowBearingWall.setFont(litleFont);
-        checkBoxShowBearingWall.setStyle("-fx-text-fill: black;");
-        mapVBoxParameter.getChildren().addAll(mapTitle, checkBoxIsGeneratedMap, mapListView, checkBoxShowBearingWall);
-
-        playerTitle = new Text(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("playerTitle"));
-        checkBoxIsMultyGame = new CheckBox(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("checkBoxIsMultyGame"));
-        checkBoxIsServer = new CheckBox(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("checkBoxIsServer"));
-        textServerAddress = new TextField(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("textServerAddress"));
-        textServerAddress.setDisable(checkBoxIsServer.isSelected());
-
-        playerTitle.setFont(normalFont);
-
-        checkBoxIsMultyGame.setFont(litleFont);
-        checkBoxIsMultyGame.setStyle("-fx-text-fill: black;");
-        checkBoxIsMultyGame.setOnAction(e -> {
-            checkBoxIsServer.setDisable(!checkBoxIsMultyGame.isSelected());
+        generatedMapButtonParameter = new Button(
+                MonsterHunter.menuLanguageFile.getProperty("generatedMapButtonParameter"));
+        MainStyle.applyLitleButtonStyle(generatedMapButtonParameter);
+        generatedMapButtonParameter.setDisable(!mapListView.isDisable());
+        generatedMapButtonParameter.setOnAction(e -> {
+            showGeneratedParameterMenu();
         });
 
-        checkBoxIsServer.setFont(litleFont);
-        checkBoxIsServer.setStyle("-fx-text-fill: black;");
-        checkBoxIsServer.setOnAction(e -> {
-            textServerAddress.setDisable(checkBoxIsServer.isSelected());
-        });
-        checkBoxIsServer.setDisable(!checkBoxIsMultyGame.isSelected());
+        checkBoxcheckBoxWarFog = new CheckBox(MonsterHunter.menuLanguageFile.getProperty("checkBoxWarFog"));
+        MainStyle.applyCheckBoxStyle(checkBoxcheckBoxWarFog);
 
-        textServerAddress.setFont(litleFont);
-        textServerAddress.setStyle("-fx-text-fill: black;");
+        mapVBoxParameter.getChildren().addAll(mapTitle, checkBoxIsGeneratedMap, mapListView, checkBoxcheckBoxWarFog,
+                generatedMapButtonParameter);
 
-        checkBoxMonsterIsAnAI = new CheckBox(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("checkBoxMonsterIsAnAI"));
-        checkBoxMonsterIsAnAI.setFont(litleFont);
-        checkBoxMonsterIsAnAI.setStyle("-fx-text-fill: black;");
+        playerTitle = new Text(MonsterHunter.menuLanguageFile.getProperty("playerTitle"));
+        MainStyle.applyMainTextStyle(playerTitle);
+
+        checkBoxAllowDiagonalMove = new CheckBox(
+                MonsterHunter.menuLanguageFile.getProperty("checkBoxAllowDiagonalMove"));
+        MainStyle.applyCheckBoxStyle(checkBoxAllowDiagonalMove);
+
+        checkBoxMonsterIsAnAI = new CheckBox(MonsterHunter.menuLanguageFile.getProperty("checkBoxMonsterIsAnAI"));
+        MainStyle.applyCheckBoxStyle(checkBoxMonsterIsAnAI);
         checkBoxMonsterIsAnAI.setOnAction(e -> {
-            checkBoxHunterISAnAi.setDisable(checkBoxMonsterIsAnAI.isSelected());
+            algoListView.setDisable(!checkBoxMonsterIsAnAI.isSelected());
         });
 
-        checkBoxHunterISAnAi = new CheckBox(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("checkBoxHunterISAnAi"));
-        checkBoxHunterISAnAi.setFont(litleFont);
-        checkBoxHunterISAnAi.setStyle("-fx-text-fill: black;");
-        checkBoxHunterISAnAi.setOnAction(e -> {
-            checkBoxMonsterIsAnAI.setDisable(checkBoxHunterISAnAi.isSelected());
-        });
+        algoListView = initAlgorithmListView();
 
-        playerVBoxParameter.getChildren().addAll(playerTitle, checkBoxIsMultyGame, checkBoxIsServer, textServerAddress,
-                checkBoxMonsterIsAnAI, checkBoxHunterISAnAi);
+        checkBoxHunterIsAnAI = new CheckBox(MonsterHunter.menuLanguageFile.getProperty("checkBoxHunterIsAnAI"));
+        MainStyle.applyCheckBoxStyle(checkBoxHunterIsAnAI);
 
-        languageTitle = new Text(MonsterHunter.MENU_LANGUAGE_FILE.getProperty("languageTitle"));
-        languageTitle.setFont(normalFont);
-        languageTitle.setStyle("-fx-text-fill: black;");
+        playerVBoxParameter.getChildren().addAll(playerTitle, checkBoxAllowDiagonalMove, checkBoxMonsterIsAnAI,
+                algoListView, checkBoxHunterIsAnAI);
+
+        languageTitle = new Text(MonsterHunter.menuLanguageFile.getProperty("languageTitle"));
+        MainStyle.applyMainTextStyle(languageTitle);
 
         langListView = initLangueListView();
 
@@ -306,17 +265,19 @@ public class MainView extends Stage {
 
         setFileCheckBoxValue();
 
-        playerVBoxParameter.setBackground(new Background(parameterChoiceMenuBackgroundImage));
-        mapVBoxParameter.setBackground(new Background(parameterChoiceMenuBackgroundImage));
-        languageVBoxParameter.setBackground(new Background(parameterChoiceMenuBackgroundImage));
+        algoListView.setDisable(!checkBoxMonsterIsAnAI.isSelected());
+
+        playerVBoxParameter.setBackground(new Background(MainStyle.choiceMenuBackgroundImage));
+        mapVBoxParameter.setBackground(new Background(MainStyle.choiceMenuBackgroundImage));
+        languageVBoxParameter.setBackground(new Background(MainStyle.choiceMenuBackgroundImage));
 
         hBoxParameter.setAlignment(javafx.geometry.Pos.CENTER);
-        playerVBoxParameter.setStyle("-fx-padding: 50;");
-        mapVBoxParameter.setStyle("-fx-padding: 50;");
-        languageVBoxParameter.setStyle("-fx-padding: 50;");
+        playerVBoxParameter.setStyle("-fx-padding: 10;");
+        mapVBoxParameter.setStyle("-fx-padding: 10;");
+        languageVBoxParameter.setStyle("-fx-padding: 10;");
 
         hBoxParameter.getChildren().addAll(mapVBoxParameter, playerVBoxParameter, languageVBoxParameter);
-        rootParameter.getChildren().addAll(quitParameter, titleParameter, hBoxParameter);
+        rootParameter.getChildren().addAll(quitParameter, resetByDefault, titleParameter, hBoxParameter);
         sceneParameter = new Scene(rootParameter);
     }
 
@@ -330,75 +291,131 @@ public class MainView extends Stage {
                 return;
             }
         } else {
-            Stage stage = new Stage();
-            stage.setTitle("Génération de la map");
-
-            Label label1 = new Label("Choisissez la taille de la map");
-            Label label2 = new Label("Nombre de ligne");
-            Slider slider = new Slider();
-            slider.setMin(4);
-            slider.setMax(12);
-            slider.setValue(8);
-            slider.setShowTickLabels(true);
-            slider.setShowTickMarks(true);
-            slider.setMajorTickUnit(2);
-
-            Label label3 = new Label("Nombre de colonne");
-            Slider slider2 = new Slider();
-            slider2.setMin(4);
-            slider2.setMax(12);
-            slider2.setValue(8);
-            slider2.setShowTickLabels(true);
-            slider2.setShowTickMarks(true);
-            slider2.setMajorTickUnit(2);
-
-            Label label4 = new Label("Choisissez le pourcentage de mur");
-            Slider slider3 = new Slider();
-            slider3.setMin(0);
-            slider3.setMax(100);
-            slider3.setValue(50);
-            slider3.setShowTickLabels(true);
-            slider3.setShowTickMarks(true);
-            slider3.setMajorTickUnit(10);
-
-            Button button = new Button("Générer");
-
-            button.setOnAction(e -> {
-                this.maze = new Maze((int) slider.getValue(), (int) slider2.getValue(), (int) slider3.getValue());
-                stage.close();
-            });
-
-            HBox hBox = new HBox(label2, slider);
-            HBox hBox2 = new HBox(label3, slider2);
-            VBox vBox = new VBox(label1, hBox, hBox2, label4, slider3, button);
-
-            Scene scene = new Scene(vBox);
-            stage.setMinHeight(300);
-            stage.setMinWidth(300);
-            stage.setScene(scene);
-            stage.showAndWait();
-            stage.setOnCloseRequest(e -> {
-                initMenu();
-            });
+            this.maze = new Maze((int) mazeGeneratedSliderLineNbParameter.getValue(),
+                    (int) mazeGeneratedColumnNbSliceParmeter.getValue(),
+                    (int) mazeGeneratedWallPercentSliderParameter.getValue());
         }
-
         this.close();
     }
 
-    private void initFont() {
-        String fontPath = MonsterHunter.PROPERTIES.getProperty("StylePolice");
-        Path absolutePath = Paths.get(fontPath);
-        String absoluteFontPath = absolutePath.toUri().toString();
-        customFont = Font.loadFont(absoluteFontPath, 200);
-        mainFont = Font.loadFont(absoluteFontPath, 75);
-        litleFont = Font.loadFont(absoluteFontPath, 20);
-        normalFont = Font.loadFont(absoluteFontPath, 40);
+    private void initMazeGeneratorParamter() {
+
+        rootMazeGeneratorParameter = new VBox();
+        rootMazeGeneratorParameter.setAlignment(javafx.geometry.Pos.CENTER);
+
+        rootMazeGeneratorParameter.setBackground(new Background(MainStyle.mainbackgroundImage));
+
+        mazeGeneratedGoBackButtonParameter = new Button(
+                MonsterHunter.menuLanguageFile.getProperty("mazeGeneratedGoBackButtonParameter"));
+
+        MainStyle.applyNormalButtonStyle(mazeGeneratedGoBackButtonParameter);
+
+        mazeGeneratedGoBackButtonParameter.setBackground(new Background(MainStyle.buttonbackground));
+        mazeGeneratedGoBackButtonParameter.setOnAction(e -> {
+            showParameterMenu();
+        });
+
+        mazeGeneratedTitleParameter = new Text(
+                MonsterHunter.menuLanguageFile.getProperty("mazeGeneratedTitleParameter"));
+
+        MainStyle.applyTitleStyle(mazeGeneratedTitleParameter);
+
+        DropShadow dropShadow = new DropShadow();
+        dropShadow.setOffsetX(3.0);
+        dropShadow.setOffsetY(3.0);
+        dropShadow.setColor(Color.rgb(0, 0, 0));
+        mazeGeneratedTitleParameter.setEffect(dropShadow);
+        mazeGeneratedTitleParameter.setStyle("-fx-padding: 0;");
+
+        mazeGeneratedSizeVBoxParameter = new VBox();
+        mazeGeneratedSizeVBoxParameter.setStyle("-fx-padding: 10;");
+
+        mazeGeneratedSizeVBoxParameter.setBackground(new Background(MainStyle.choiceMenuBackgroundImage));
+
+        mazeGeneratedSizeMapTitleParameter = new Label(
+                MonsterHunter.menuLanguageFile.getProperty("mazeGeneratedSizeMapTitleParameter"));
+
+        MainStyle.applyNormalLabelStyle(mazeGeneratedSizeMapTitleParameter);
+
+        mazeGeneratedLineNbTitleParameter = new Label(
+                MonsterHunter.menuLanguageFile.getProperty("mazeGeneratedLineNbTitleParameter"));
+
+        MainStyle.applyLitleLabelStyle(mazeGeneratedLineNbTitleParameter);
+
+        mazeGeneratedSliderLineNbParameter = new Slider();
+        mazeGeneratedSliderLineNbParameter.setMin(Integer
+                .parseInt(MonsterHunter.init.getProperty("mazeGeneratedSliderLineNbParameterMinValue")));
+        mazeGeneratedSliderLineNbParameter.setMax(Integer
+                .parseInt(MonsterHunter.init.getProperty("mazeGeneratedSliderLineNbParameterMaxValue")));
+        mazeGeneratedSliderLineNbParameter.setValue(
+                Integer.parseInt(MonsterHunter.init.getProperty("mazeGeneratedSliderLineNbParameterValue")));
+
+        mazeGeneratedSliderLineNbParameter.setSnapToTicks(true);
+        mazeGeneratedSliderLineNbParameter.setMajorTickUnit(1);
+        mazeGeneratedSliderLineNbParameter.setMinorTickCount(0);
+        mazeGeneratedSliderLineNbParameter.setShowTickLabels(true);
+        mazeGeneratedSliderLineNbParameter.setShowTickMarks(true);
+
+        mazeGeneratedColumnNbTitleParameter = new Label(
+                MonsterHunter.menuLanguageFile.getProperty("mazeGeneratedColumnNbTitleParameter"));
+
+        MainStyle.applyLitleLabelStyle(mazeGeneratedColumnNbTitleParameter);
+
+        mazeGeneratedColumnNbSliceParmeter = new Slider();
+
+        mazeGeneratedColumnNbSliceParmeter.setMin(Integer
+                .parseInt(MonsterHunter.init.getProperty("mazeGeneratedColumnNbSliceParmeterMinValue")));
+        mazeGeneratedColumnNbSliceParmeter.setMax(Integer
+                .parseInt(MonsterHunter.init.getProperty("mazeGeneratedColumnNbSliceParmeterMaxValue")));
+        mazeGeneratedColumnNbSliceParmeter.setValue(
+                Integer.parseInt(MonsterHunter.init.getProperty("mazeGeneratedColumnNbSliceParmeterValue")));
+
+        mazeGeneratedColumnNbSliceParmeter.setSnapToTicks(true);
+        mazeGeneratedColumnNbSliceParmeter.setMajorTickUnit(1);
+        mazeGeneratedColumnNbSliceParmeter.setMinorTickCount(0);
+        mazeGeneratedColumnNbSliceParmeter.setShowTickLabels(true);
+        mazeGeneratedColumnNbSliceParmeter.setShowTickMarks(true);
+
+        mazeGeneratedSizeVBoxParameter.getChildren().addAll(mazeGeneratedSizeMapTitleParameter,
+                mazeGeneratedLineNbTitleParameter, mazeGeneratedSliderLineNbParameter,
+                mazeGeneratedColumnNbTitleParameter, mazeGeneratedColumnNbSliceParmeter);
+
+        mazeGeneratedWallPercentVBoxParameter = new VBox();
+        mazeGeneratedWallPercentVBoxParameter.setStyle("-fx-padding: 10;");
+        mazeGeneratedWallPercentVBoxParameter.setBackground(new Background(MainStyle.choiceMenuBackgroundImage));
+        mazeGeneratedWallPercentTitleParameter = new Label(
+                MonsterHunter.menuLanguageFile.getProperty("mazeGeneratedWallPercentTitleParameter"));
+
+        MainStyle.applyNormalLabelStyle(mazeGeneratedWallPercentTitleParameter);
+
+        mazeGeneratedWallPercentSliderParameter = new Slider();
+        mazeGeneratedWallPercentSliderParameter.setMin(0);
+        mazeGeneratedWallPercentSliderParameter.setMax(100);
+        mazeGeneratedWallPercentSliderParameter
+                .setValue(Integer.parseInt(
+                        MonsterHunter.init.getProperty("mazeGeneratedWallPercentSliderParameterValue")));
+        mazeGeneratedWallPercentSliderParameter.setSnapToTicks(true);
+        mazeGeneratedWallPercentSliderParameter.setMajorTickUnit(10);
+        mazeGeneratedWallPercentSliderParameter.setMinorTickCount(5);
+        mazeGeneratedWallPercentSliderParameter.setShowTickLabels(true);
+        mazeGeneratedWallPercentSliderParameter.setShowTickMarks(true);
+
+        mazeGeneratedWallPercentVBoxParameter.getChildren().addAll(mazeGeneratedWallPercentTitleParameter,
+                mazeGeneratedWallPercentSliderParameter);
+
+        mazeGeneratorHbox = new HBox();
+        mazeGeneratorHbox.setAlignment(javafx.geometry.Pos.CENTER);
+
+        mazeGeneratorHbox.getChildren().addAll(mazeGeneratedSizeVBoxParameter, mazeGeneratedWallPercentVBoxParameter);
+        rootMazeGeneratorParameter.getChildren().addAll(mazeGeneratedGoBackButtonParameter,
+                mazeGeneratedTitleParameter, mazeGeneratorHbox);
+        mazeGeneratedSceneParameter = new Scene(rootMazeGeneratorParameter);
     }
 
     private ListView<String> initMapListView() {
         ListView<String> mazeList = new ListView<>();
         mazeList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        File resources = Paths.get(MonsterHunter.PROPERTIES.getProperty("MapFindFolder")).toFile();
+        File resources = Paths.get(MonsterHunter.init.getProperty("MapFindFolder")).toFile();
         if (!resources.isDirectory()) {
             System.out.println("Le dossier resources n'existe pas");
         }
@@ -420,7 +437,7 @@ public class MainView extends Stage {
         ListView<String> langList = new ListView<>();
         langList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         Properties langvalue = DataProp
-                .read(Paths.get(MonsterHunter.PROPERTIES.getProperty("LanguageSetting")).toFile());
+                .read(Paths.get(MonsterHunter.init.getProperty("LanguageSetting")).toFile());
         for (Object obj : langvalue.keySet()) {
             if (obj instanceof String) {
                 String str = (String) obj;
@@ -431,38 +448,100 @@ public class MainView extends Stage {
         langList.setMaxWidth(200);
         FXCollections.sort(langListItems, new NumberInStringComparator());
         langList.setItems(langListItems);
+        langList.getSelectionModel().select(MonsterHunter.init.getProperty("LanguageValue"));
 
         return langList;
     }
 
-    private void setFileCheckBoxValue() {
-        checkBoxHunterISAnAi.setSelected(MonsterHunter.PROPERTIES.getProperty("HunterISAnAi").equals("true"));
-        checkBoxMonsterIsAnAI.setSelected(MonsterHunter.PROPERTIES.getProperty("MonsterIsAnAI").equals("true"));
-        checkBoxIsGeneratedMap.setSelected(MonsterHunter.PROPERTIES.getProperty("IsGeneratedMap").equals("true"));
-        checkBoxIsMultyGame.setSelected(MonsterHunter.PROPERTIES.getProperty("IsMultyGame").equals("true"));
-        checkBoxIsServer.setSelected(MonsterHunter.PROPERTIES.getProperty("IsServer").equals("true"));
-        checkBoxShowBearingWall.setSelected(MonsterHunter.PROPERTIES.getProperty("ShowBearingWall").equals("true"));
+    private ListView<String> initAlgorithmListView() {
+        ListView<String> algoList = new ListView<>();
+        algoList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        algoListItems.add("A*");
+        algoListItems.add("Bidirectional A*");
+        algoListItems.add("Theta*");
+        algoList.setPrefHeight(algoListItems.size() * 26.0);
+        algoList.setMaxWidth(200);
+        FXCollections.sort(algoListItems, new NumberInStringComparator());
 
+        algoList.setItems(algoListItems);
+        algoList.getSelectionModel().select(MonsterHunter.init.getProperty("ChoosedAlgorithm"));
+
+        return algoList;
+    }
+
+    private void setFileCheckBoxValue() {
+        checkBoxAllowDiagonalMove.setSelected(MonsterHunter.init.getProperty("AllowDiagonalMove").equals("true"));
+        checkBoxHunterIsAnAI.setSelected(MonsterHunter.init.getProperty("HunterIsAnAI").equals("true"));
+        checkBoxMonsterIsAnAI.setSelected(MonsterHunter.init.getProperty("MonsterIsAnAI").equals("true"));
+        checkBoxIsGeneratedMap.setSelected(MonsterHunter.init.getProperty("IsGeneratedMap").equals("true"));
+        checkBoxcheckBoxWarFog.setSelected(MonsterHunter.init.getProperty("WarFog").equals("true"));
     }
     /* show method */
 
     public void showInitMenu() {
-        this.setScene(sceneMenu);
-        this.setFullScreen(true);
-        this.setFullScreenExitHint("");
+        showScenneInFullScreen(sceneMenu);
     }
 
     public void showParameterMenu() {
-        this.setScene(sceneParameter);
-        this.setFullScreen(true);
-        this.setFullScreenExitHint("");
+        showScenneInFullScreen(sceneParameter);
+    }
+
+    public void showGeneratedParameterMenu() {
+        showScenneInFullScreen(mazeGeneratedSceneParameter);
+    }
+
+    private void showScenneInFullScreen(Scene scene) {
+        setScene(scene);
+        setFullScreen(true);
+        setFullScreenExitHint("");
     }
 
     public boolean getHunterIsAnAi() {
-        return checkBoxHunterISAnAi.isSelected();
+        return checkBoxHunterIsAnAI.isSelected();
     }
 
     public boolean getMonsterIsAnAI() {
         return checkBoxMonsterIsAnAI.isSelected();
+    }
+
+    private void reInitParameters() {
+        MonsterHunter.init = DataProp.read(Paths.get("./resources/config/defaultinit.conf").toFile());
+        System.out.println(MonsterHunter.init.getProperty("WarFog"));
+        writeParameter();
+    }
+
+    private void writeParameter() {
+        DataProp.write(MonsterHunter.init, MonsterHunter.INIT_FILE.getAbsolutePath(), "");
+    }
+
+    private void saveParameters() {
+        System.out.println("saved | is null : " + MonsterHunter.init.getProperty("LanguageValue") == null);
+
+        MonsterHunter.init.setProperty("LanguageValue", langListView.getSelectionModel().getSelectedItem());
+        MonsterHunter.init.setProperty("IsGeneratedMap", checkBoxIsGeneratedMap.isSelected() + "");
+        MonsterHunter.init.setProperty("MonsterIsAnAI", checkBoxMonsterIsAnAI.isSelected() + "");
+        MonsterHunter.init.setProperty("ChoosedAlgorithm", algoListView.getSelectionModel().getSelectedItem());
+        MonsterHunter.init.setProperty("HunterIsAnAI", checkBoxHunterIsAnAI.isSelected() + "");
+        MonsterHunter.init.setProperty("WarFog", checkBoxcheckBoxWarFog.isSelected() + "");
+        MonsterHunter.init.setProperty("AllowDiagonalMove", checkBoxAllowDiagonalMove.isSelected() + "");
+        MonsterHunter.init.setProperty("mazeGeneratedSliderLineNbParameterMinValue",
+                (int) mazeGeneratedSliderLineNbParameter.getMin() + "");
+        MonsterHunter.init.setProperty("mazeGeneratedSliderLineNbParameterMaxValue",
+                (int) mazeGeneratedSliderLineNbParameter.getMax() + "");
+        MonsterHunter.init.setProperty("mazeGeneratedSliderLineNbParameterValue",
+                (int) mazeGeneratedSliderLineNbParameter.getValue() + "");
+        MonsterHunter.init.setProperty("mazeGeneratedColumnNbSliceParmeterMinValue",
+                (int) mazeGeneratedColumnNbSliceParmeter.getMin() + "");
+        MonsterHunter.init.setProperty("mazeGeneratedColumnNbSliceParmeterMaxValue",
+                (int) mazeGeneratedColumnNbSliceParmeter.getMax() + "");
+        MonsterHunter.init.setProperty("mazeGeneratedColumnNbSliceParmeterValue",
+                (int) mazeGeneratedColumnNbSliceParmeter.getValue() + "");
+        MonsterHunter.init.setProperty("mazeGeneratedWallPercentSliderParameterValue",
+                (int) mazeGeneratedWallPercentSliderParameter.getValue() + "");
+        writeParameter();
+    }
+
+    public boolean isWarFogIsOn() {
+        return checkBoxcheckBoxWarFog.isSelected();
     }
 }

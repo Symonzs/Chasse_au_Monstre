@@ -1,7 +1,5 @@
 package view.play;
 
-import java.util.Properties;
-
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -17,24 +15,23 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Screen;
+import main.MonsterHunter;
 import model.CellEvent;
 import model.Coordinate;
 import model.Hunter;
 import model.Maze;
 import model.Observer;
 import model.Subject;
+import util.style.MainStyle;
 
 public class HunterView extends PlayView implements Observer {
 
-    private static final int RECT_COL = 75;
-    private static final int RECT_ROW = 75;
+    private static int RECT_COL = 75;
+    private static int RECT_ROW = 75;
 
     private Hunter hunter;
-
-    private Font font;
 
     /* Play Button : */
     private VBox playRoot;
@@ -42,6 +39,7 @@ public class HunterView extends PlayView implements Observer {
     private HBox playVBoxNav;
     private Button playShotButton;
     private Button playExitButton;
+    private Label labelTour;
 
     /* Waiting Button */
     private VBox waitRoot;
@@ -53,14 +51,10 @@ public class HunterView extends PlayView implements Observer {
     private Label errorLabel;
     private Button errorButton;
 
-    private Properties properties;
-
-    public HunterView(Integer rows, Integer cols, Properties properties) {
+    public HunterView(Integer rows, Integer cols) {
         this.hunter = new Hunter(rows, cols);
-        this.properties = properties;
 
-        this.font = new Font("Arial", 24);
-
+        initMazePaneSize(rows);
         initPlayView();
         initWaitView();
         showPlayScene();
@@ -69,19 +63,34 @@ public class HunterView extends PlayView implements Observer {
     public void initPlayView() {
         playRoot = new VBox();
         playRoot.setPadding(new Insets(10));
-        playRoot.setAlignment(Pos.CENTER);
-        playGameBoard = new GridPane();
-        playShotButton = new Button("Confirmer le tir");
-        playShotButton.setPadding(new Insets(10));
-        playShotButton.setFont(font);
-        playExitButton = new Button("Quitter le jeux");
-        playExitButton.setPadding(new Insets(10));
-        playExitButton.setFont(font);
-        playVBoxNav = new HBox(playShotButton, playExitButton);
 
-        playRoot.getChildren().addAll(playGameBoard, playVBoxNav);
+        playRoot.setAlignment(javafx.geometry.Pos.CENTER);
+
+        playGameBoard = new GridPane();
+        playGameBoard.setAlignment(Pos.CENTER);
+        playShotButton = new Button(MonsterHunter.playLanguageFile.getProperty("playShotButton"));
+        playExitButton = new Button(MonsterHunter.playLanguageFile.getProperty("playExitButton"));
+
+        MainStyle.applyNormalButtonStyle(playShotButton);
+        MainStyle.applyNormalButtonStyle(playExitButton);
+
+        playVBoxNav = new HBox(playShotButton, playExitButton);
+        playVBoxNav.setAlignment(Pos.CENTER);
+        playVBoxNav.setSpacing(10);
+
+        labelTour = new Label("Tour : " + Maze.currentTurn);
+        MainStyle.applyNormalLabelStyle(labelTour);
+
+        playRoot.getChildren().addAll(labelTour, playGameBoard, playVBoxNav);
+        playRoot.setBackground(new Background(MainStyle.choiceMenuBackgroundImage));
 
         super.setPlayScene(new Scene(playRoot));
+
+    }
+
+    private void initMazePaneSize(Integer row) {
+        RECT_COL = (int) ((Screen.getPrimary().getBounds().getHeight() - 200) / row);
+        RECT_ROW = (int) ((Screen.getPrimary().getBounds().getHeight() - 200) / row);
 
     }
 
@@ -90,13 +99,13 @@ public class HunterView extends PlayView implements Observer {
 
         waitRoot.setPadding(new Insets(10));
         waitRoot.setAlignment(Pos.CENTER);
-        waitLabel = new Label("Vous avez joué. C'est au tour du Monstre de jouer.");
-        waitLabel.setFont(font);
-        waitButton = new Button("Passez au tour suivant");
-        waitButton.setFont(font);
-        waitButton.setPadding(new Insets(10));
+        waitLabel = new Label(MonsterHunter.playLanguageFile.getProperty("HunterViewWaitLabel"));
+        MainStyle.applyNormalLabelStyle(waitLabel);
+        waitButton = new Button(MonsterHunter.playLanguageFile.getProperty("waitButton"));
+        MainStyle.applyLitleButtonStyle(waitButton);
 
         waitRoot.getChildren().addAll(waitLabel, waitButton);
+        waitRoot.setBackground(new Background(MainStyle.choiceMenuBackgroundImage));
 
         super.setWaitScene(new Scene(waitRoot));
     }
@@ -104,35 +113,24 @@ public class HunterView extends PlayView implements Observer {
     public void initErrorView(String message) {
         errorRoot = new VBox();
         errorLabel = new Label(message);
-        errorButton = new Button("J'ai compris");
+        errorButton = new Button(MonsterHunter.exceptionLanguageFile.getProperty("errorButton"));
     }
 
     public void makeGameBoard(boolean[][] wall, boolean[][] empty) {
         ImagePattern monsterTexture = new ImagePattern(
-                new Image("file:" + properties.getProperty("MonsterViewApparence")));
-        ImagePattern wallTexture = new ImagePattern(new Image("file:" + properties.getProperty("WallViewAsset")));
-        ImagePattern groundTexture = new ImagePattern(new Image("file:" + properties.getProperty("GroundViewAsset")));
-        ImagePattern unkwonTexture = new ImagePattern(new Image("file:" + properties.getProperty("UnknowTexture")));
+                new Image("file:" + MonsterHunter.init.getProperty("MonsterViewApparence")));
+        ImagePattern wallTexture = new ImagePattern(
+                new Image("file:" + MonsterHunter.init.getProperty("WallViewAsset")));
+        ImagePattern groundTexture = new ImagePattern(
+                new Image("file:" + MonsterHunter.init.getProperty("GroundViewAsset")));
+        ImagePattern unkwonTexture = new ImagePattern(
+                new Image("file:" + MonsterHunter.init.getProperty("UnknowTexture")));
 
         this.setTitle("Hunter View | Tour : " + Maze.currentTurn);
         this.playGameBoard.setHgap(3);
         this.playGameBoard.setVgap(3);
         this.playGameBoard.setBackground(new Background(
                 new BackgroundFill(javafx.scene.paint.Color.GRAY, null, null)));
-
-        for (int i = 0; i < wall.length; i++) {
-            Label columnHeader = new Label(String.valueOf(i));
-            columnHeader.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-            columnHeader.setAlignment(Pos.CENTER);
-            this.playGameBoard.add(columnHeader, i + 1, 0);
-        }
-
-        for (int j = 0; j < wall[0].length; j++) {
-            Label rowHeader = new Label(String.valueOf((char) ('A' + j)));
-            rowHeader.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-            rowHeader.setAlignment(Pos.CENTER);
-            this.playGameBoard.add(rowHeader, 0, j + 1);
-        }
 
         for (int i = 0; i < wall.length; i++) {
             for (int j = 0; j < wall[i].length; j++) {
@@ -205,6 +203,10 @@ public class HunterView extends PlayView implements Observer {
 
     public Label getErrorLabel() {
         return errorLabel;
+    }
+
+    public Label getLabelTour() {
+        return labelTour;
     }
 
     @Override

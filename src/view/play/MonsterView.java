@@ -1,7 +1,5 @@
 package view.play;
 
-import java.util.Properties;
-
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -17,23 +15,22 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
+import javafx.stage.Screen;
+import main.MonsterHunter;
 import model.CellEvent;
 import model.Maze;
 import model.Monster;
 import model.Observer;
 import model.Subject;
+import util.style.MainStyle;
 
 public class MonsterView extends PlayView implements Observer {
 
-    private static final int RECT_COL = 75;
-    private static final int RECT_ROW = 75;
+    private static int RECT_COL = 75;
+    private static int RECT_ROW = 75;
 
     private Monster monster;
-
-    private Font font;
 
     /* Play atribut */
     private VBox playRoot;
@@ -41,6 +38,7 @@ public class MonsterView extends PlayView implements Observer {
     private HBox playButtonBox;
     private Button playMoveButton;
     private Button playExitButton;
+    private Label labelTour;
 
     /* Waiting atribut */
 
@@ -48,17 +46,18 @@ public class MonsterView extends PlayView implements Observer {
     private Label waitLabel;
     private Button waitButton;
 
-    private Properties properties;
-
-    public MonsterView(Maze maze, Properties properties) {
+    public MonsterView(Maze maze) {
         this.monster = new Monster(maze);
-        this.properties = properties;
-
-        this.font = new Font("Arial", 24);
-
+        initMazePaneSize(maze);
         initWaitingScene();
         initPlayScene();
         showPlayScene();
+    }
+
+    private void initMazePaneSize(Maze maze) {
+        RECT_COL = (int) ((Screen.getPrimary().getBounds().getHeight() - 200) / maze.getHeight());
+        RECT_ROW = (int) ((Screen.getPrimary().getBounds().getHeight() - 200) / maze.getHeight());
+
     }
 
     public void initPlayScene() {
@@ -66,15 +65,25 @@ public class MonsterView extends PlayView implements Observer {
         playRoot.setPadding(new Insets(10));
         playRoot.setAlignment(Pos.CENTER);
         playGameBoard = new GridPane();
-        playMoveButton = new Button("Confirmer le déplacement.");
-        playMoveButton.setPadding(new Insets(10));
-        playMoveButton.setFont(font);
-        playExitButton = new Button("Quitter le jeux.");
-        playExitButton.setPadding(new Insets(10));
-        playExitButton.setFont(font);
-        playButtonBox = new HBox(playMoveButton, playExitButton);
 
-        playRoot.getChildren().addAll(playGameBoard, playButtonBox);
+        playGameBoard.setAlignment(Pos.CENTER);
+
+        playMoveButton = new Button(MonsterHunter.playLanguageFile.getProperty("playMoveButton"));
+        MainStyle.applyNormalButtonStyle(playMoveButton);
+
+        playExitButton = new Button(MonsterHunter.playLanguageFile.getProperty("playExitButton"));
+        MainStyle.applyNormalButtonStyle(playExitButton);
+
+        playButtonBox = new HBox(playMoveButton, playExitButton);
+        playButtonBox.setAlignment(Pos.CENTER);
+        playButtonBox.setSpacing(10);
+
+        playRoot.setBackground(new Background(MainStyle.choiceMenuBackgroundImage));
+
+        labelTour = new Label("Tour : " + Maze.currentTurn);
+        MainStyle.applyNormalLabelStyle(labelTour);
+
+        playRoot.getChildren().addAll(labelTour, playGameBoard, playButtonBox);
 
         super.setPlayScene(new Scene(playRoot));
     }
@@ -82,12 +91,15 @@ public class MonsterView extends PlayView implements Observer {
     public void initWaitingScene() {
         waitRoot = new VBox();
         waitRoot.setAlignment(Pos.CENTER);
-        waitLabel = new Label("Vous avez joué. C'est au tour du Chasseur de jouer.");
-        waitLabel.setFont(font);
-        waitButton = new Button("Passez au tour suivant");
-        waitLabel.setFont(font);
-        waitButton.setPadding(new Insets(10));
+        waitLabel = new Label(MonsterHunter.playLanguageFile.getProperty("MonsterViewWaitLabel"));
 
+        MainStyle.applyNormalLabelStyle(waitLabel);
+
+        waitButton = new Button(MonsterHunter.playLanguageFile.getProperty("waitButton"));
+
+        MainStyle.applyNormalButtonStyle(waitButton);
+
+        waitRoot.setBackground(new Background(MainStyle.choiceMenuBackgroundImage));
         waitRoot.getChildren().addAll(waitLabel, waitButton);
 
         super.setWaitScene(new Scene(waitRoot));
@@ -95,10 +107,15 @@ public class MonsterView extends PlayView implements Observer {
 
     public void makeGameBoard(boolean[][] board) {
         ImagePattern monsterTexture = new ImagePattern(
-                new Image("file:" + properties.getProperty("MonsterViewApparence")));
-        ImagePattern wallTexture = new ImagePattern(new Image("file:" + properties.getProperty("WallViewAsset")));
-        ImagePattern groundTexture = new ImagePattern(new Image("file:" + properties.getProperty("GroundViewAsset")));
-        ImagePattern exitTexture = new ImagePattern(new Image("file:" + properties.getProperty("ExitViewAsset")));
+                new Image("file:" + MonsterHunter.init.getProperty("MonsterViewApparence")));
+        ImagePattern wallTexture = new ImagePattern(
+                new Image("file:" + MonsterHunter.init.getProperty("WallViewAsset")));
+        ImagePattern groundTexture = new ImagePattern(
+                new Image("file:" + MonsterHunter.init.getProperty("GroundViewAsset")));
+        ImagePattern exitTexture = new ImagePattern(
+                new Image("file:" + MonsterHunter.init.getProperty("ExitViewAsset")));
+        ImagePattern unkwonTexture = new ImagePattern(
+                new Image("file:" + MonsterHunter.init.getProperty("UnknowTexture")));
 
         playGameBoard.setHgap(3);
         playGameBoard.setVgap(3);
@@ -106,24 +123,12 @@ public class MonsterView extends PlayView implements Observer {
                 new BackgroundFill(javafx.scene.paint.Color.GRAY, null, null)));
 
         for (int i = 0; i < board.length; i++) {
-            Label columnHeader = new Label(String.valueOf(i));
-            columnHeader.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-            columnHeader.setAlignment(Pos.CENTER);
-            playGameBoard.add(columnHeader, i + 1, 0);
-        }
-
-        for (int j = 0; j < board[0].length; j++) {
-            Label rowHeader = new Label(String.valueOf((char) ('A' + j)));
-            rowHeader.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-            rowHeader.setAlignment(Pos.CENTER);
-            playGameBoard.add(rowHeader, 0, j + 1);
-        }
-
-        for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
                 Rectangle cell = new Rectangle(RECT_ROW, RECT_COL);
                 Text text = new Text(RECT_ROW, RECT_COL, "");
-                if (board[i][j]) {
+                if (monster.getFog()[i][j]) {
+                    cell.setFill(unkwonTexture);
+                } else if (board[i][j]) {
                     cell.setFill(wallTexture);
                 } else {
                     ICoordinate monsterCoord = monster.getMonsterCoord();
@@ -138,7 +143,7 @@ public class MonsterView extends PlayView implements Observer {
                 }
                 ICoordinate hunterCoord = monster.getHunterCoord();
                 if (hunterCoord != null && (i == hunterCoord.getRow() && j == hunterCoord.getCol())) {
-                    cell.setStroke(javafx.scene.paint.Color.BROWN);
+                    cell.setStroke(javafx.scene.paint.Color.BLACK);
                     cell.setStrokeWidth(3);
                 } else {
                     cell.setStroke(javafx.scene.paint.Color.BLACK);
@@ -177,6 +182,10 @@ public class MonsterView extends PlayView implements Observer {
         return waitButton;
     }
 
+    public Label getLabelTour() {
+        return labelTour;
+    }
+
     @Override
     public void update(Subject arg0) {
         // Ne fait rien
@@ -186,7 +195,7 @@ public class MonsterView extends PlayView implements Observer {
     public void update(Subject arg0, Object arg1) {
         if (CellEvent[].class == arg1.getClass()) {
             CellEvent[] events = (CellEvent[]) arg1;
-            monster.update(events);
+            monster.update(events[1]);
         }
     }
 }

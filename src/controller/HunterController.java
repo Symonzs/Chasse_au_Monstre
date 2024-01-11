@@ -2,10 +2,7 @@ package controller;
 
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
 
-import java.util.Properties;
-
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -25,24 +22,19 @@ public class HunterController {
     private Button shot;
     private StackPane selectedStack;
 
-    public HunterController(Maze maze, Properties properties) {
+    public HunterController(Maze maze) {
         this.maze = maze;
-        this.view = new HunterView(maze.getWall().length, maze.getWall()[0].length, properties);
+        this.view = new HunterView(maze.getWall().length, maze.getWall()[0].length);
         maze.attach(view);
         this.makeGameBoard(view.getHunter().getKnowWall(), view.getHunter().getKnowEmpty());
-        view.getPlayShotButton().setOnAction(e -> {
-            shot(e);
-        });
-        view.getPlayExitButton().setOnAction(e -> {
-            maze.setGameIsClosed(true);
-        });
-        view.getWaitButton().setOnAction(e -> {
-            maze.setIsReadyToNext(true);
-        });
+        view.getPlayShotButton().setOnAction(e -> shot());
+        view.getPlayExitButton().setOnAction(e -> maze.setGameIsClosed(true));
+        view.getWaitButton().setOnAction(e -> maze.setIsReadyToNext(true));
 
     }
 
     public void makeGameBoard(boolean[][] wall, boolean[][] empty) {
+        view.getLabelTour().setText("Tour : " + Maze.currentTurn);
         view.makeGameBoard(wall, empty);
         for (Node node : view.getPlayGameBoard().getChildren()) {
             if (StackPane.class == node.getClass()) {
@@ -68,14 +60,13 @@ public class HunterController {
         }
     }
 
-    public void shot(ActionEvent e) {
+    public void shot() {
         if (selectedStack != null) {
             resetStackStroke(selectedStack);
             ICoordinate coord = new Coordinate(GridPane.getRowIndex(selectedStack) - 1,
                     GridPane.getColumnIndex(selectedStack) - 1);
             maze.cellUpdate(new CellEvent(coord, Maze.currentTurn, CellInfo.HUNTER));
             makeGameBoard(view.getHunter().getKnowWall(), view.getHunter().getKnowEmpty());
-            view.getPlayRoot().getChildren().set(0, view.getPlayGameBoard());
             selectedStack = null;
             maze.setIsReadyToNext(false);
             maze.setHunterHasPlayed(true);

@@ -1,7 +1,6 @@
 package controller;
 
 import java.util.InputMismatchException;
-import java.util.Properties;
 
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
@@ -14,6 +13,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
+import main.MonsterHunter;
 import model.CellEvent;
 import model.Coordinate;
 import model.Maze;
@@ -26,13 +26,12 @@ public class MonsterController {
     private MonsterView view;
     private Button move;
     private StackPane selectedStack;
-
     private boolean hasPlayed = false;
     private boolean isReadyToNext = false;
 
-    public MonsterController(Maze maze, Properties properties) {
+    public MonsterController(Maze maze) {
         this.maze = maze;
-        this.view = new MonsterView(maze, properties);
+        this.view = new MonsterView(maze);
         maze.attach(view);
         this.makeGameBoard(view.getMonster().getWall());
         view.getExitButton().setOnAction(e -> {
@@ -42,10 +41,10 @@ public class MonsterController {
         view.getWaitButton().setOnAction(e -> {
             maze.setIsReadyToNext(true);
         });
-
     }
 
     public void makeGameBoard(boolean[][] board) {
+        view.getLabelTour().setText("Tour : " + Maze.currentTurn);
         view.makeGameBoard(board);
         for (Node node : view.getGameBoard().getChildren()) {
             if (StackPane.class == node.getClass()) {
@@ -62,11 +61,24 @@ public class MonsterController {
         Integer row2 = coordinate2.getRow();
         Integer col2 = coordinate2.getCol();
 
-        if (row1.equals(row2)) {
-            return col1.equals(col2 + 1) ^ col1.equals(col2 - 1);
-        }
-        if (col1.equals(col2)) {
-            return row1.equals(row2 + 1) ^ row1.equals(row2 - 1);
+        if (MonsterHunter.init.getProperty("AllowDiagonalMove").equals("true")) {
+            if (row1.equals(row2)) {
+                return col1.equals(col2 + 1) ^ col1.equals(col2 - 1);
+            }
+            if (col1.equals(col2)) {
+                return row1.equals(row2 + 1) ^ row1.equals(row2 - 1);
+            }
+            return row1.equals(row2 + 1) && col1.equals(col2 + 1)
+                    || row1.equals(row2 + 1) && col1.equals(col2 - 1)
+                    || row1.equals(row2 - 1) && col1.equals(col2 + 1)
+                    || row1.equals(row2 - 1) && col1.equals(col2 - 1);
+        } else {
+            if (row1.equals(row2)) {
+                return col1.equals(col2 + 1) ^ col1.equals(col2 - 1);
+            }
+            if (col1.equals(col2)) {
+                return row1.equals(row2 + 1) ^ row1.equals(row2 - 1);
+            }
         }
         return false;
     }
@@ -127,7 +139,6 @@ public class MonsterController {
                 }
                 maze.cellUpdate(new CellEvent(coord, Maze.currentTurn, CellInfo.MONSTER));
                 makeGameBoard(view.getMonster().getWall());
-                view.getRoot().getChildren().set(0, view.getGameBoard());
                 selectedStack = null;
                 maze.setIsReadyToNext(false);
                 maze.setMonsterHasPlayed(true);
