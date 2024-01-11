@@ -21,11 +21,13 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
+import main.MonsterHunter;
 import model.CellEvent;
 import model.Maze;
 import model.Monster;
 import model.Observer;
 import model.Subject;
+import util.style.MainStyle;
 
 public class MonsterView extends PlayView implements Observer {
 
@@ -74,13 +76,20 @@ public class MonsterView extends PlayView implements Observer {
         playRoot.setPadding(new Insets(10));
         playRoot.setAlignment(Pos.CENTER);
         playGameBoard = new GridPane();
-        playMoveButton = new Button("Confirmer le déplacement.");
-        playMoveButton.setPadding(new Insets(10));
-        playMoveButton.setFont(font);
-        playExitButton = new Button("Quitter le jeux.");
-        playExitButton.setPadding(new Insets(10));
-        playExitButton.setFont(font);
+
+        playRoot.setAlignment(Pos.CENTER);
+
+        playMoveButton = new Button(MonsterHunter.playLanguageFile.getProperty("playMoveButton"));
+
+        MainStyle.applyNormalButtonStyle(playMoveButton);
+
+        playExitButton = new Button(MonsterHunter.playLanguageFile.getProperty("playExitButton"));
+
+        MainStyle.applyNormalButtonStyle(playExitButton);
+
         playButtonBox = new HBox(playMoveButton, playExitButton);
+
+        playRoot.setBackground(new Background(MainStyle.choiceMenuBackgroundImage));
 
         playRoot.getChildren().addAll(playGameBoard, playButtonBox);
 
@@ -90,12 +99,15 @@ public class MonsterView extends PlayView implements Observer {
     public void initWaitingScene() {
         waitRoot = new VBox();
         waitRoot.setAlignment(Pos.CENTER);
-        waitLabel = new Label("Vous avez joué. C'est au tour du Chasseur de jouer.");
-        waitLabel.setFont(font);
-        waitButton = new Button("Passez au tour suivant");
-        waitLabel.setFont(font);
-        waitButton.setPadding(new Insets(10));
+        waitLabel = new Label(MonsterHunter.playLanguageFile.getProperty("MonsterViewWaitLabel"));
 
+        MainStyle.applyNormalLabelStyle(waitLabel);
+
+        waitButton = new Button(MonsterHunter.playLanguageFile.getProperty("waitButton"));
+
+        MainStyle.applyNormalButtonStyle(waitButton);
+
+        waitRoot.setBackground(new Background(MainStyle.choiceMenuBackgroundImage));
         waitRoot.getChildren().addAll(waitLabel, waitButton);
 
         super.setWaitScene(new Scene(waitRoot));

@@ -27,7 +27,7 @@ public class MonsterHunter extends Application {
     public static Properties init = DataProp.read(INIT_FILE);
     public static Properties playLanguageFile = setUpLanguageFile("play");
     public static Properties menuLanguageFile = setUpLanguageFile("menu");
-    public static Properties EXCEPTION_LANGUAGE_FILE = setUpLanguageFile("exception");
+    public static Properties exceptionLanguageFile = setUpLanguageFile("exception");
     private static MainView mainView;
     private static GameView gameView;
 

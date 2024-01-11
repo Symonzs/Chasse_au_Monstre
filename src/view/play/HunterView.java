@@ -15,18 +15,21 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
+import main.MonsterHunter;
 import model.CellEvent;
 import model.Coordinate;
 import model.Hunter;
 import model.Maze;
 import model.Observer;
 import model.Subject;
+import util.style.MainStyle;
 
 public class HunterView extends PlayView implements Observer {
 
@@ -71,17 +74,20 @@ public class HunterView extends PlayView implements Observer {
     public void initPlayView() {
         playRoot = new VBox();
         playRoot.setPadding(new Insets(10));
+
         playRoot.setAlignment(javafx.geometry.Pos.CENTER);
+
         playGameBoard = new GridPane();
-        playShotButton = new Button("Confirmer le tir");
-        playShotButton.setPadding(new Insets(10));
-        playShotButton.setFont(font);
-        playExitButton = new Button("Quitter le jeux");
-        playExitButton.setPadding(new Insets(10));
-        playExitButton.setFont(font);
+        playShotButton = new Button(MonsterHunter.playLanguageFile.getProperty("playShotButton"));
+        playExitButton = new Button(MonsterHunter.playLanguageFile.getProperty("playExitButton"));
+
+        MainStyle.applyNormalButtonStyle(playShotButton);
+        MainStyle.applyNormalButtonStyle(playExitButton);
+
         playVBoxNav = new HBox(playShotButton, playExitButton);
 
         playRoot.getChildren().addAll(playGameBoard, playVBoxNav);
+        playRoot.setBackground(new Background(MainStyle.choiceMenuBackgroundImage));
 
         super.setPlayScene(new Scene(playRoot));
 
@@ -98,13 +104,13 @@ public class HunterView extends PlayView implements Observer {
 
         waitRoot.setPadding(new Insets(10));
         waitRoot.setAlignment(Pos.CENTER);
-        waitLabel = new Label("Vous avez joué. C'est au tour du Monstre de jouer.");
-        waitLabel.setFont(font);
-        waitButton = new Button("Passez au tour suivant");
-        waitButton.setFont(font);
-        waitButton.setPadding(new Insets(10));
+        waitLabel = new Label(MonsterHunter.playLanguageFile.getProperty("HunterViewWaitLabel"));
+        MainStyle.applyNormalLabelStyle(waitLabel);
+        waitButton = new Button(MonsterHunter.playLanguageFile.getProperty("waitButton"));
+        MainStyle.applyLitleButtonStyle(waitButton);
 
         waitRoot.getChildren().addAll(waitLabel, waitButton);
+        waitRoot.setBackground(new Background(MainStyle.choiceMenuBackgroundImage));
 
         super.setWaitScene(new Scene(waitRoot));
     }
@@ -112,7 +118,7 @@ public class HunterView extends PlayView implements Observer {
     public void initErrorView(String message) {
         errorRoot = new VBox();
         errorLabel = new Label(message);
-        errorButton = new Button("J'ai compris");
+        errorButton = new Button(MonsterHunter.exceptionLanguageFile.getProperty("errorButton"));
     }
 
     public void makeGameBoard(boolean[][] wall, boolean[][] empty) {
