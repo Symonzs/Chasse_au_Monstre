@@ -126,10 +126,6 @@ public class BidirectionnalAlgorithm implements IMazeSolverAlgorithm {
         if (rightCell.getCol() < wall[1].length && !wall[rightCell.getRow()][rightCell.getCol()]) {
             neighbors.add(new CursiveCoordinate(row, col + 1, current));
         }
-        // neighbors.add(new CursiveCoordinate(row - 1, col - 1, current));
-        // neighbors.add(new CursiveCoordinate(row - 1, col + 1, current));
-        // neighbors.add(new CursiveCoordinate(row + 1, col - 1, current));
-        // neighbors.add(new CursiveCoordinate(row + 1, col + 1, current));
 
         return neighbors;
     }

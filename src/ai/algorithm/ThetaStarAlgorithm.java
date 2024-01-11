@@ -123,6 +123,28 @@ public class ThetaStarAlgorithm implements IMazeSolverAlgorithm {
             neighbors.add(new CursiveCoordinate(row, col + 1, current, goal));
         }
 
+        // Add diagonal neighbors
+        ICoordinate upperLeftCell = new Coordinate(row - 1, col - 1);
+        if (upperLeftCell.getRow() >= 0 && upperLeftCell.getCol() >= 0
+                && !wall[upperLeftCell.getRow()][upperLeftCell.getCol()]) {
+            neighbors.add(new CursiveCoordinate(row - 1, col - 1, current, goal));
+        }
+        ICoordinate upperRightCell = new Coordinate(row - 1, col + 1);
+        if (upperRightCell.getRow() >= 0 && upperRightCell.getCol() < wall[1].length
+                && !wall[upperRightCell.getRow()][upperRightCell.getCol()]) {
+            neighbors.add(new CursiveCoordinate(row - 1, col + 1, current, goal));
+        }
+        ICoordinate lowerLeftCell = new Coordinate(row + 1, col - 1);
+        if (lowerLeftCell.getRow() < wall.length && lowerLeftCell.getCol() >= 0
+                && !wall[lowerLeftCell.getRow()][lowerLeftCell.getCol()]) {
+            neighbors.add(new CursiveCoordinate(row + 1, col - 1, current, goal));
+        }
+        ICoordinate lowerRightCell = new Coordinate(row + 1, col + 1);
+        if (lowerRightCell.getRow() < wall.length && lowerRightCell.getCol() < wall[1].length
+                && !wall[lowerRightCell.getRow()][lowerRightCell.getCol()]) {
+            neighbors.add(new CursiveCoordinate(row + 1, col + 1, current, goal));
+        }
+
         return neighbors;
     }
 
