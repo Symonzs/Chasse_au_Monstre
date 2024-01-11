@@ -212,6 +212,7 @@ public class MainView extends Stage {
 
         mapListView = initMapListView();
         mapListView.setDisable(checkBoxIsGeneratedMap.isSelected());
+        mapListView.getSelectionModel().select(0);
 
         generatedMapButtonParameter = new Button(
                 MonsterHunter.menuLanguageFile.getProperty("generatedMapButtonParameter"));
