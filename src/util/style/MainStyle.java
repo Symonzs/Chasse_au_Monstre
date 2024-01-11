@@ -85,7 +85,7 @@ public class MainStyle {
                 button.setBackground(new Background(buttonbackground));
                 button.setTextFill(Color.rgb(0, 0, 0));
                 button.setStyle("-fx-padding: 2;");
-                GridPane.setMargin(button, new javafx.geometry.Insets(10, 20, 10, 20)); // top, right, bottom, left
+                GridPane.setMargin(button, new javafx.geometry.Insets(10, 25, 10, 25)); // top, right, bottom, left
 
         }
 

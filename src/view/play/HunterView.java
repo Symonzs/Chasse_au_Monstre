@@ -68,6 +68,7 @@ public class HunterView extends PlayView implements Observer {
         playRoot.setAlignment(javafx.geometry.Pos.CENTER);
 
         playGameBoard = new GridPane();
+        playGameBoard.setAlignment(Pos.CENTER);
         playShotButton = new Button(MonsterHunter.playLanguageFile.getProperty("playShotButton"));
         playExitButton = new Button(MonsterHunter.playLanguageFile.getProperty("playExitButton"));
 
@@ -75,6 +76,8 @@ public class HunterView extends PlayView implements Observer {
         MainStyle.applyNormalButtonStyle(playExitButton);
 
         playVBoxNav = new HBox(playShotButton, playExitButton);
+        playVBoxNav.setAlignment(Pos.CENTER);
+        playVBoxNav.setSpacing(10);
 
         playRoot.getChildren().addAll(playGameBoard, playVBoxNav);
         playRoot.setBackground(new Background(MainStyle.choiceMenuBackgroundImage));

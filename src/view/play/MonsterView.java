@@ -67,17 +67,17 @@ public class MonsterView extends PlayView implements Observer {
         playRoot.setAlignment(Pos.CENTER);
         playGameBoard = new GridPane();
 
-        playRoot.setAlignment(Pos.CENTER);
+        playGameBoard.setAlignment(Pos.CENTER);
 
         playMoveButton = new Button(MonsterHunter.playLanguageFile.getProperty("playMoveButton"));
-
         MainStyle.applyNormalButtonStyle(playMoveButton);
 
         playExitButton = new Button(MonsterHunter.playLanguageFile.getProperty("playExitButton"));
-
         MainStyle.applyNormalButtonStyle(playExitButton);
 
         playButtonBox = new HBox(playMoveButton, playExitButton);
+        playButtonBox.setAlignment(Pos.CENTER);
+        playButtonBox.setSpacing(10);
 
         playRoot.setBackground(new Background(MainStyle.choiceMenuBackgroundImage));
 
