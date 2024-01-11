@@ -162,17 +162,11 @@ public class MainView extends Stage {
         MainStyle.applyLitleButtonStyle(quitGameButtonMenu);
 
         quitGameButtonMenu.setLayoutX(Screen.getPrimary().getVisualBounds().getWidth() - 150);
-        quitGameButtonMenu.setOnAction(e -> {
-            System.exit(0);
-        });
+        quitGameButtonMenu.setOnAction(e -> System.exit(0));
 
-        playButtonMenu.setOnAction(e -> {
-            initMaze();
-        });
+        playButtonMenu.setOnAction(e -> initMaze());
 
-        parameterButtonMenu.setOnAction(e -> {
-            showParameterMenu();
-        });
+        parameterButtonMenu.setOnAction(e -> showParameterMenu());
 
         paneMenu.getChildren().addAll(titleMenu, playButtonMenu);
         rootMenu.getChildren().addAll(paneMenu, parameterButtonMenu, quitGameButtonMenu);
@@ -213,9 +207,7 @@ public class MainView extends Stage {
 
         checkBoxIsGeneratedMap = new CheckBox(MonsterHunter.menuLanguageFile.getProperty("checkBoxIsGeneratedMap"));
         MainStyle.applyCheckBoxStyle(checkBoxIsGeneratedMap);
-        checkBoxIsGeneratedMap.setOnAction(e -> {
-            mapListView.setDisable(checkBoxIsGeneratedMap.isSelected());
-        });
+        checkBoxIsGeneratedMap.setOnAction(e -> mapListView.setDisable(checkBoxIsGeneratedMap.isSelected()));
         checkBoxIsGeneratedMap.setSelected(true);
 
         mapListView = initMapListView();

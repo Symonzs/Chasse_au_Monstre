@@ -95,3 +95,46 @@
 
   - Création du nouvel algorithme de génération de labyrinthe
   - Ajout de nombreux test sur le model
+
+### Semaine du 18-12 :
+
+Raphaël :
+
+  - Refactoring et débug du maze generator
+
+Charles :
+
+  - Ajout d'un second menu pour les paramètres
+  - Essai et finalisation de la taille relative des éléments de l'interface
+
+Hugo :
+
+  - WIP algorithme bidirectionnel
+  - Refactoring du code de l'IA du monstre
+
+Simon :
+
+  - Ajout de nombreux test sur le model
+
+### Semaine du 01-01 :
+
+Hugo :
+
+  - Fin de l'algorithme bidirectionnel
+  - Theta* commencé et fini
+
+### Semaine du 08-01 :
+
+Charles :
+
+  - Ajout de la sauvegarde des paramètres
+  - Refactoring du code du menu
+
+Raphaël :
+
+  - Refactoring et débug général pour le rendu
+
+Simon : 
+
+  - Traduction des textes du dans différentes langues
+

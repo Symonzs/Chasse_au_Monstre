@@ -34,13 +34,9 @@ public class MonsterController {
         this.view = new MonsterView(maze);
         maze.attach(view);
         this.makeGameBoard(view.getMonster().getWall());
-        view.getExitButton().setOnAction(e -> {
-            maze.setGameIsClosed(true);
-        });
+        view.getExitButton().setOnAction(e -> maze.setGameIsClosed(true));
         view.getPlayMoveButton().setOnAction(new ActionHandler());
-        view.getWaitButton().setOnAction(e -> {
-            maze.setIsReadyToNext(true);
-        });
+        view.getWaitButton().setOnAction(e -> maze.setIsReadyToNext(true));
     }
 
     public void makeGameBoard(boolean[][] board) {
