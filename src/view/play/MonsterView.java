@@ -49,11 +49,8 @@ public class MonsterView extends PlayView implements Observer {
     private Label waitLabel;
     private Button waitButton;
 
-    private Properties properties;
-
-    public MonsterView(Maze maze, Properties properties) {
-        this.monster = new Monster(maze, properties.getProperty("WarFog").equals("true"));
-        this.properties = properties;
+    public MonsterView(Maze maze) {
+        this.monster = new Monster(maze);
         initMazePaneSize(maze);
         initWaitingScene();
         initPlayScene();
@@ -110,11 +107,15 @@ public class MonsterView extends PlayView implements Observer {
 
     public void makeGameBoard(boolean[][] board) {
         ImagePattern monsterTexture = new ImagePattern(
-                new Image("file:" + properties.getProperty("MonsterViewApparence")));
-        ImagePattern wallTexture = new ImagePattern(new Image("file:" + properties.getProperty("WallViewAsset")));
-        ImagePattern groundTexture = new ImagePattern(new Image("file:" + properties.getProperty("GroundViewAsset")));
-        ImagePattern exitTexture = new ImagePattern(new Image("file:" + properties.getProperty("ExitViewAsset")));
-        ImagePattern unkwonTexture = new ImagePattern(new Image("file:" + properties.getProperty("UnknowTexture")));
+                new Image("file:" + MonsterHunter.init.getProperty("MonsterViewApparence")));
+        ImagePattern wallTexture = new ImagePattern(
+                new Image("file:" + MonsterHunter.init.getProperty("WallViewAsset")));
+        ImagePattern groundTexture = new ImagePattern(
+                new Image("file:" + MonsterHunter.init.getProperty("GroundViewAsset")));
+        ImagePattern exitTexture = new ImagePattern(
+                new Image("file:" + MonsterHunter.init.getProperty("ExitViewAsset")));
+        ImagePattern unkwonTexture = new ImagePattern(
+                new Image("file:" + MonsterHunter.init.getProperty("UnknowTexture")));
 
         playGameBoard.setHgap(3);
         playGameBoard.setVgap(3);
@@ -156,7 +157,7 @@ public class MonsterView extends PlayView implements Observer {
                 }
                 ICoordinate hunterCoord = monster.getHunterCoord();
                 if (hunterCoord != null && (i == hunterCoord.getRow() && j == hunterCoord.getCol())) {
-                    cell.setStroke(javafx.scene.paint.Color.BROWN);
+                    cell.setStroke(javafx.scene.paint.Color.BLACK);
                     cell.setStrokeWidth(3);
                 } else {
                     cell.setStroke(javafx.scene.paint.Color.BLACK);

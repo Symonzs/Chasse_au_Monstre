@@ -5,6 +5,7 @@ import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import java.util.Arrays;
 
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
+import main.MonsterHunter;
 
 /**
  * Classe representant le monstre
@@ -22,13 +23,13 @@ public class Monster {
      * 
      * @param maze Le labyrinthe dans lequel le monstre se trouve
      */
-    public Monster(Maze maze, boolean warFogIsOn) {
+    public Monster(Maze maze) {
         this.WALL = maze.getWall();
         this.monsterCoord = maze.getLastMonsterCoordinate();
         this.hunterCoord = maze.getLastHunterCoordinate();
         this.EXIT = maze.getExit();
         this.fog = new boolean[WALL.length][WALL[0].length];
-        if (warFogIsOn) {
+        if (MonsterHunter.init.getProperty("WarFog").equals("true")) {
             for (boolean[] row : fog) {
                 Arrays.fill(row, true);
             }

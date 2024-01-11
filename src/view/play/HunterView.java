@@ -1,7 +1,5 @@
 package view.play;
 
-import java.util.Properties;
-
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -54,11 +52,8 @@ public class HunterView extends PlayView implements Observer {
     private Label errorLabel;
     private Button errorButton;
 
-    private Properties properties;
-
-    public HunterView(Integer rows, Integer cols, Properties properties) {
+    public HunterView(Integer rows, Integer cols) {
         this.hunter = new Hunter(rows, cols);
-        this.properties = properties;
 
         initMazePaneSize(rows);
         initPlayView();
@@ -118,10 +113,13 @@ public class HunterView extends PlayView implements Observer {
 
     public void makeGameBoard(boolean[][] wall, boolean[][] empty) {
         ImagePattern monsterTexture = new ImagePattern(
-                new Image("file:" + properties.getProperty("MonsterViewApparence")));
-        ImagePattern wallTexture = new ImagePattern(new Image("file:" + properties.getProperty("WallViewAsset")));
-        ImagePattern groundTexture = new ImagePattern(new Image("file:" + properties.getProperty("GroundViewAsset")));
-        ImagePattern unkwonTexture = new ImagePattern(new Image("file:" + properties.getProperty("UnknowTexture")));
+                new Image("file:" + MonsterHunter.init.getProperty("MonsterViewApparence")));
+        ImagePattern wallTexture = new ImagePattern(
+                new Image("file:" + MonsterHunter.init.getProperty("WallViewAsset")));
+        ImagePattern groundTexture = new ImagePattern(
+                new Image("file:" + MonsterHunter.init.getProperty("GroundViewAsset")));
+        ImagePattern unkwonTexture = new ImagePattern(
+                new Image("file:" + MonsterHunter.init.getProperty("UnknowTexture")));
 
         this.setTitle("Hunter View | Tour : " + Maze.currentTurn);
         this.playGameBoard.setHgap(3);

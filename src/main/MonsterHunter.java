@@ -50,8 +50,18 @@ public class MonsterHunter extends Application {
 
     @Override
     public void start(Stage primaryStage) throws InterruptedException {
+        initgame();
         do {
-            initgame();
+            if (init.getProperty("HunterIsAnAI").equals("true")
+                    && init.getProperty("MonsterIsAnAI").equals("true")) {
+                playWithHunterAIAndMonsterAI();
+            } else if (init.getProperty("HunterIsAnAI").equals("true")) {
+                playWithHunterAI();
+            } else if (init.getProperty("MonsterIsAnAI").equals("true")) {
+                playWithMonsterAI();
+            } else {
+                playWithHuman();
+            }
         } while (!gameIsFinished());
         exitedGame(primaryStage);
     }
@@ -71,20 +81,17 @@ public class MonsterHunter extends Application {
             hunterStrategy = new MonsterFinder();
             hunterStrategy.initialize(mainView.getMaze().getWall().length - 1,
                     mainView.getMaze().getWall()[0].length - 1);
-            playWithHunterAIAndMonsterAI();
         } else if (init.getProperty("HunterIsAnAI").equals("true")) {
             hunterStrategy = new MonsterFinder();
-            monsterController = new MonsterController(mainView.getMaze(), init);
-            playWithHunterAI();
+            monsterController = new MonsterController(mainView.getMaze());
         } else if (init.getProperty("MonsterIsAnAI").equals("true")) {
             monsterStrategy = new MazeSolver(mainView.getMaze());
-            hunterController = new HunterController(mainView.getMaze(), init);
-            playWithMonsterAI();
+            hunterController = new HunterController(mainView.getMaze());
         } else {
-            monsterController = new MonsterController(mainView.getMaze(), init);
-            hunterController = new HunterController(mainView.getMaze(), init);
-            playWithHuman();
+            monsterController = new MonsterController(mainView.getMaze());
+            hunterController = new HunterController(mainView.getMaze());
         }
+
     }
 
     public boolean gameIsFinished() {
