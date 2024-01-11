@@ -11,10 +11,18 @@ import model.Coordinate;
  */
 public class CursiveCoordinate extends Coordinate {
     private CursiveCoordinate parent;
+    private double g;
+    private double h;
 
     public CursiveCoordinate(Integer row, Integer col, CursiveCoordinate cor) {
         super(row, col);
         parent = cor;
+    }
+
+    public CursiveCoordinate(Integer row, Integer col, CursiveCoordinate cor, CursiveCoordinate goal) {
+        this(row, col, cor);
+        this.g = 1;
+        this.h = calculateHeuristic(this, goal);
     }
 
     /**
@@ -44,6 +52,14 @@ public class CursiveCoordinate extends Coordinate {
     @Override
     public int hashCode() {
         return super.hashCode();
+    }
+
+    public double getF() {
+        return g + h;
+    }
+
+    private double calculateHeuristic(CursiveCoordinate current, CursiveCoordinate goal) {
+        return Math.hypot((double) goal.getRow() - current.getRow(), (double) goal.getCol() - current.getCol());
     }
 
 }
