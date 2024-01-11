@@ -31,13 +31,10 @@ import util.style.MainStyle;
 
 public class MonsterView extends PlayView implements Observer {
 
-    private static final Font THE_FAMOUS_FONT = new Font(3);
     private static int RECT_COL = 75;
     private static int RECT_ROW = 75;
 
     private Monster monster;
-
-    private Font font;
 
     /* Play atribut */
     private VBox playRoot;
@@ -54,11 +51,9 @@ public class MonsterView extends PlayView implements Observer {
 
     private Properties properties;
 
-    public MonsterView(Maze maze, Properties properties, boolean warFogIsOn) {
-        this.monster = new Monster(maze, warFogIsOn);
+    public MonsterView(Maze maze, Properties properties) {
+        this.monster = new Monster(maze, properties.getProperty("WarFog").equals("true"));
         this.properties = properties;
-
-        this.font = new Font("Arial", 24);
         initMazePaneSize(maze);
         initWaitingScene();
         initPlayScene();

@@ -15,7 +15,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -37,8 +36,6 @@ public class HunterView extends PlayView implements Observer {
     private static int RECT_ROW = 75;
 
     private Hunter hunter;
-
-    private Font font;
 
     /* Play Button : */
     private VBox playRoot;
@@ -62,8 +59,6 @@ public class HunterView extends PlayView implements Observer {
     public HunterView(Integer rows, Integer cols, Properties properties) {
         this.hunter = new Hunter(rows, cols);
         this.properties = properties;
-
-        this.font = new Font("Arial", 24);
 
         initMazePaneSize(rows);
         initPlayView();

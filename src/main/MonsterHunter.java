@@ -50,17 +50,8 @@ public class MonsterHunter extends Application {
 
     @Override
     public void start(Stage primaryStage) throws InterruptedException {
-        initgame();
         do {
-            if (mainView.getHunterIsAnAi() && mainView.getMonsterIsAnAI()) {
-                playWithHunterAIAndMonsterAI();
-            } else if (mainView.getHunterIsAnAi()) {
-                playWithHunterAI();
-            } else if (mainView.getMonsterIsAnAI()) {
-                playWithMonsterAI();
-            } else if (!mainView.getHunterIsAnAi() && !mainView.getMonsterIsAnAI()) {
-                playWithHuman();
-            }
+            initgame();
         } while (!gameIsFinished());
         exitedGame(primaryStage);
     }
@@ -74,24 +65,26 @@ public class MonsterHunter extends Application {
             initgame();
         }
         mainView.getMaze().attach(gameView);
-        if (mainView.getHunterIsAnAi() && mainView.getMonsterIsAnAI()) {
+        if (init.getProperty("HunterIsAnAI").equals("true")
+                && init.getProperty("MonsterIsAnAI").equals("true")) {
             monsterStrategy = new MazeSolver(mainView.getMaze());
             hunterStrategy = new MonsterFinder();
             hunterStrategy.initialize(mainView.getMaze().getWall().length - 1,
                     mainView.getMaze().getWall()[0].length - 1);
-        } else if (mainView.getHunterIsAnAi()) {
+            playWithHunterAIAndMonsterAI();
+        } else if (init.getProperty("HunterIsAnAI").equals("true")) {
             hunterStrategy = new MonsterFinder();
-            monsterController = new MonsterController(mainView.getMaze(), init, mainView.isAllowDiagonalMove(),
-                    mainView.isWarFogIsOn());
-        } else if (mainView.getMonsterIsAnAI()) {
+            monsterController = new MonsterController(mainView.getMaze(), init);
+            playWithHunterAI();
+        } else if (init.getProperty("MonsterIsAnAI").equals("true")) {
             monsterStrategy = new MazeSolver(mainView.getMaze());
             hunterController = new HunterController(mainView.getMaze(), init);
+            playWithMonsterAI();
         } else {
-            monsterController = new MonsterController(mainView.getMaze(), init, mainView.isAllowDiagonalMove(),
-                    mainView.isWarFogIsOn());
+            monsterController = new MonsterController(mainView.getMaze(), init);
             hunterController = new HunterController(mainView.getMaze(), init);
+            playWithHuman();
         }
-
     }
 
     public boolean gameIsFinished() {
@@ -193,7 +186,7 @@ public class MonsterHunter extends Application {
         alert.setTitle("Fin de la partie");
         alert.setHeaderText("La partie est terminée.");
         if (mainView.getMaze().isGameClosed()) {
-            alert.setHeaderText(alert.getHeaderText() + " La partie à été intérompue.");
+            alert.setHeaderText(alert.getHeaderText() + " La partie a été interrompue.");
             alert.showAndWait();
             System.exit(0);
         }

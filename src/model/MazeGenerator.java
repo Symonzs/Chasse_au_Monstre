@@ -220,24 +220,4 @@ public class MazeGenerator {
             return opposite;
         }
     }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < this.wall.length; i++) {
-            for (int j = 0; j < this.wall[0].length; j++) {
-                if (this.wall[i][j]) {
-                    sb.append("X");
-                } else {
-                    sb.append(".");
-                }
-            }
-            sb.append("\n");
-        }
-        return sb.toString();
-    }
-
-    public static void main(String[] args) {
-        MazeGenerator maze = new MazeGenerator(50, 50, 50);
-    }
 }

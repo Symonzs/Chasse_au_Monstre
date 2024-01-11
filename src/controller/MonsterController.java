@@ -14,7 +14,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
-import main.MonsterHunter;
 import model.CellEvent;
 import model.Coordinate;
 import model.Maze;
@@ -27,16 +26,15 @@ public class MonsterController {
     private MonsterView view;
     private Button move;
     private StackPane selectedStack;
+    private Properties properties;
 
     private boolean hasPlayed = false;
     private boolean isReadyToNext = false;
 
-    private boolean diagonalMovesAllowed;
-
-    public MonsterController(Maze maze, Properties properties, boolean diagonalMovesAllowed, boolean warFogIsOn) {
+    public MonsterController(Maze maze, Properties properties) {
         this.maze = maze;
-        this.view = new MonsterView(maze, properties, warFogIsOn);
-        this.diagonalMovesAllowed = diagonalMovesAllowed;
+        this.view = new MonsterView(maze, properties);
+        this.properties = properties;
         maze.attach(view);
         this.makeGameBoard(view.getMonster().getWall());
         view.getExitButton().setOnAction(e -> {
@@ -65,7 +63,7 @@ public class MonsterController {
         Integer row2 = coordinate2.getRow();
         Integer col2 = coordinate2.getCol();
 
-        if (diagonalMovesAllowed) {
+        if (properties.getProperty("AllowDiagonalMove").equals("true")) {
             if (row1.equals(row2)) {
                 return col1.equals(col2 + 1) ^ col1.equals(col2 - 1);
             }

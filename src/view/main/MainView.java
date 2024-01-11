@@ -445,10 +445,10 @@ public class MainView extends Stage {
 
     private void setFileCheckBoxValue() {
         checkBoxAllowDiagonalMove.setSelected(MonsterHunter.init.getProperty("AllowDiagonalMove").equals("true"));
-        checkBoxHunterISAnAi.setSelected(MonsterHunter.init.getProperty("HunterISAnAi").equals("true"));
+        checkBoxHunterISAnAi.setSelected(MonsterHunter.init.getProperty("HunterIsAnAI").equals("true"));
         checkBoxMonsterIsAnAI.setSelected(MonsterHunter.init.getProperty("MonsterIsAnAI").equals("true"));
         checkBoxIsGeneratedMap.setSelected(MonsterHunter.init.getProperty("IsGeneratedMap").equals("true"));
-        checkBoxShowBearingWall.setSelected(MonsterHunter.init.getProperty("ShowBearingWall").equals("true"));
+        checkBoxShowBearingWall.setSelected(MonsterHunter.init.getProperty("WarFog").equals("true"));
     }
     /* show method */
 
@@ -493,8 +493,8 @@ public class MainView extends Stage {
         MonsterHunter.init.setProperty("LanguageValue", langListView.getSelectionModel().getSelectedItem());
         MonsterHunter.init.setProperty("IsGeneratedMap", checkBoxIsGeneratedMap.isSelected() + "");
         MonsterHunter.init.setProperty("MonsterIsAnAI", checkBoxMonsterIsAnAI.isSelected() + "");
-        MonsterHunter.init.setProperty("HunterISAnAi", checkBoxHunterISAnAi.isSelected() + "");
-        MonsterHunter.init.setProperty("ShowBearingWall", checkBoxShowBearingWall.isSelected() + "");
+        MonsterHunter.init.setProperty("HunterIsAnAI", checkBoxHunterISAnAi.isSelected() + "");
+        MonsterHunter.init.setProperty("WarFog", checkBoxShowBearingWall.isSelected() + "");
         MonsterHunter.init.setProperty("AllowDiagonalMove", checkBoxAllowDiagonalMove.isSelected() + "");
         MonsterHunter.init.setProperty("mazeGeneratedSliderLineNbParameterMinValue",
                 (int) mazeGeneratedSliderLineNbParameter.getMin() + "");
