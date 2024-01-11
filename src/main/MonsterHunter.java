@@ -24,10 +24,10 @@ import view.main.MainView;
 
 public class MonsterHunter extends Application {
     public static final File INIT_FILE = Paths.get("./resources/config/init.conf").toFile();
-    public static final Properties PROPERTIES = DataProp.read(INIT_FILE);
-    public static final Properties PLAY_LANGUAGE_FILE = setUpLanguageFile("play");
-    public static final Properties MENU_LANGUAGE_FILE = setUpLanguageFile("menu");
-    public static final Properties EXCEPTION_LANGUAGE_FILE = setUpLanguageFile("exception");
+    public static Properties init = DataProp.read(INIT_FILE);
+    public static Properties playLanguageFile = setUpLanguageFile("play");
+    public static Properties menuLanguageFile = setUpLanguageFile("menu");
+    public static Properties exceptionLanguageFile = setUpLanguageFile("exception");
     private static MainView mainView;
     private static GameView gameView;
 
@@ -36,10 +36,14 @@ public class MonsterHunter extends Application {
     private static IMonsterStrategy monsterStrategy;
     private static IHunterStrategy hunterStrategy;
 
-    public static Properties setUpLanguageFile(String value) {
-        String key = PROPERTIES.getProperty("LanguageValue");
+    public static void main(String[] args) {
+        launch(args);
+    }
 
-        Properties languageSrcProperties = DataProp.read(Paths.get(PROPERTIES.getProperty("LanguageSetting")).toFile());
+    private static Properties setUpLanguageFile(String value) {
+        String key = init.getProperty("LanguageValue");
+
+        Properties languageSrcProperties = DataProp.read(Paths.get(init.getProperty("LanguageSetting")).toFile());
 
         return DataProp.read(Paths.get(languageSrcProperties.getProperty(key) + value + ".conf").toFile());
     }
@@ -63,9 +67,8 @@ public class MonsterHunter extends Application {
 
     public void initgame() {
         mainView = new MainView(INIT_FILE);
-        // initMusic();
+        initMusic();
         mainView.showAndWait();
-
         gameView = new GameView();
         if (mainView.getMaze() == null) {
             initgame();
@@ -78,20 +81,17 @@ public class MonsterHunter extends Application {
                     mainView.getMaze().getWall()[0].length - 1);
         } else if (mainView.getHunterIsAnAi()) {
             hunterStrategy = new MonsterFinder();
-            hunterStrategy.initialize(mainView.getMaze().getWall().length - 1,
-                    mainView.getMaze().getWall()[0].length - 1);
-            monsterController = new MonsterController(mainView.getMaze(), PROPERTIES, mainView.isAllowDiagonalMove(),
+            monsterController = new MonsterController(mainView.getMaze(), init, mainView.isAllowDiagonalMove(),
                     mainView.isWarFogIsOn());
-        } else if (mainView.getMonsterIsAnAI())
-
-        {
+        } else if (mainView.getMonsterIsAnAI()) {
             monsterStrategy = new MazeSolver(mainView.getMaze());
-            hunterController = new HunterController(mainView.getMaze(), PROPERTIES);
-        } else if (!mainView.getHunterIsAnAi() && !mainView.getMonsterIsAnAI()) {
-            monsterController = new MonsterController(mainView.getMaze(), PROPERTIES, mainView.isAllowDiagonalMove(),
+            hunterController = new HunterController(mainView.getMaze(), init);
+        } else {
+            monsterController = new MonsterController(mainView.getMaze(), init, mainView.isAllowDiagonalMove(),
                     mainView.isWarFogIsOn());
-            hunterController = new HunterController(mainView.getMaze(), PROPERTIES);
+            hunterController = new HunterController(mainView.getMaze(), init);
         }
+
     }
 
     public boolean gameIsFinished() {
@@ -210,12 +210,13 @@ public class MonsterHunter extends Application {
     }
 
     private void initMusic() {
-        String audioFilePath = PROPERTIES.getProperty("MainMusic");
+        String audioFilePath = init.getProperty("MainMusic");
         BackgroundMusicPlayer musicPlayer = new BackgroundMusicPlayer();
         musicPlayer.playAudio(audioFilePath);
     }
 
-    public static void main(String[] args) {
-        launch(args);
+    public MainView getMainView() {
+        return mainView;
     }
+
 }

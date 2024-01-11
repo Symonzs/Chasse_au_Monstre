@@ -406,26 +406,12 @@ public class Maze extends Subject {
         notifyObservers(gameIsClosed);
     }
 
-    /*
-     * public static void main(String[] args) {
-     * long startTime = System.currentTimeMillis();
-     * Maze maze = new Maze(100, 100, 40);
-     * long endTime = System.currentTimeMillis();
-     * System.out.println("Generate maze in " + (endTime - startTime) + " ms");
-     * 
-     * System.out.println(maze.getLastMonsterCoordinate());
-     * System.out.println(maze.getExit());
-     * 
-     * long startTime2 = System.currentTimeMillis();
-     * MazeSolver solver = new MazeSolver(maze);
-     * long endTime2 = System.currentTimeMillis();
-     * ICoordinate cell;
-     * do {
-     * cell = solver.play();
-     * System.out.println(cell);
-     * } while (cell != null);
-     * System.out.println("Solve maze in " + (endTime2 - startTime2) + " ms");
-     * }
-     */
+    public int getWith() {
+        return wall[0].length;
+    }
+
+    public int getHeight() {
+        return wall.length;
+    }
 
 }
