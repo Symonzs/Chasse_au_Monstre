@@ -23,16 +23,16 @@ public class MainStyle {
 
         public static Font customFont = Font
                         .loadFont(Paths.get(MonsterHunter.init.getProperty("StylePolice")).toUri().toString(),
-                                        200);
+                                        100);
         public static Font mainFont = Font
                         .loadFont(Paths.get(MonsterHunter.init.getProperty("StylePolice")).toUri().toString(),
-                                        60);
+                                        50);
         public static Font normalFont = Font
                         .loadFont(Paths.get(MonsterHunter.init.getProperty("StylePolice")).toUri().toString(),
-                                        40);
+                                        30);
         public static Font litleFont = Font
                         .loadFont(Paths.get(MonsterHunter.init.getProperty("StylePolice")).toUri().toString(),
-                                        20);
+                                        15);
 
         public static BackgroundImage mainbackgroundImage = new BackgroundImage(
                         new Image(

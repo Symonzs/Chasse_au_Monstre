@@ -81,7 +81,7 @@ public class MonsterView extends PlayView implements Observer {
         playRoot.setBackground(new Background(MainStyle.choiceMenuBackgroundImage));
 
         labelTour = new Label("Tour : " + Maze.currentTurn);
-        MainStyle.applyLitleLabelStyle(labelTour);
+        MainStyle.applyNormalLabelStyle(labelTour);
 
         playRoot.getChildren().addAll(labelTour, playGameBoard, playButtonBox);
 

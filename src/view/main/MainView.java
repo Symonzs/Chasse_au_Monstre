@@ -156,12 +156,12 @@ public class MainView extends Stage {
         parameterButtonMenu = new Button(MonsterHunter.menuLanguageFile.getProperty("parameterButtonMenu"));
         MainStyle.applyLitleButtonStyle(parameterButtonMenu);
 
-        parameterButtonMenu.setLayoutX(Screen.getPrimary().getVisualBounds().getWidth() - 200);
+        parameterButtonMenu.setLayoutX(Screen.getPrimary().getVisualBounds().getWidth() - 250);
 
         quitGameButtonMenu = new Button(MonsterHunter.playLanguageFile.getProperty("playExitButton"));
         MainStyle.applyLitleButtonStyle(quitGameButtonMenu);
 
-        quitGameButtonMenu.setLayoutX(Screen.getPrimary().getVisualBounds().getWidth() - 100);
+        quitGameButtonMenu.setLayoutX(Screen.getPrimary().getVisualBounds().getWidth() - 150);
         quitGameButtonMenu.setOnAction(e -> {
             System.exit(0);
         });
