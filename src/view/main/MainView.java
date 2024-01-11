@@ -249,8 +249,6 @@ public class MainView extends Stage {
 
         algoListView = initAlgorithmListView();
 
-        algoListView.setDisable(!checkBoxMonsterIsAnAI.isSelected());
-
         checkBoxHunterIsAnAI = new CheckBox(MonsterHunter.menuLanguageFile.getProperty("checkBoxHunterIsAnAI"));
         MainStyle.applyCheckBoxStyle(checkBoxHunterIsAnAI);
 
@@ -265,6 +263,8 @@ public class MainView extends Stage {
         languageVBoxParameter.getChildren().addAll(languageTitle, langListView);
 
         setFileCheckBoxValue();
+
+        algoListView.setDisable(!checkBoxMonsterIsAnAI.isSelected());
 
         playerVBoxParameter.setBackground(new Background(MainStyle.choiceMenuBackgroundImage));
         mapVBoxParameter.setBackground(new Background(MainStyle.choiceMenuBackgroundImage));
