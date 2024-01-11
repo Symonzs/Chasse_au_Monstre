@@ -7,7 +7,6 @@ import java.util.Properties;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
-import javafx.scene.chart.PieChart.Data;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -15,7 +14,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Slider;
-import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.HBox;
@@ -27,7 +25,6 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import main.MonsterHunter;
 import model.Maze;
-import model.Monster;
 import util.data.DataProp;
 import util.style.MainStyle;
 import view.play.NumberInStringComparator;
@@ -83,7 +80,6 @@ public class MainView extends Stage {
 
     private Label mazeGeneratedWallPercentTitleParameter;// 2
     private Slider mazeGeneratedWallPercentSliderParameter;// 2
-    private CheckBox mazeGeneratedIsGermanCheckBoxParameter;// 2
 
     private HBox mazeGeneratorHbox;
     private VBox mazeGeneratedSizeVBoxParameter;// 1
@@ -152,7 +148,6 @@ public class MainView extends Stage {
         paneMenu.setBackground(new Background(MainStyle.mainbackgroundImage));
 
         playButtonMenu = new Button(MonsterHunter.menuLanguageFile.getProperty("playButtonMenu"));
-
         MainStyle.applyMainButtonStyle(playButtonMenu);
 
         parameterButtonMenu = new Button(MonsterHunter.menuLanguageFile.getProperty("parameterButtonMenu"));
@@ -182,58 +177,47 @@ public class MainView extends Stage {
         MainStyle.applyTitleStyle(titleParameter);
 
         rootParameter.setBackground(new Background(MainStyle.mainbackgroundImage));
-
-        quitParameter = new Button(MonsterHunter.menuLanguageFile.getProperty("quitParameter"));
-
-        MainStyle.applyNormalButtonStyle(quitParameter);
+        rootParameter.setAlignment(javafx.geometry.Pos.CENTER);
 
         resetByDefault = new Button(MonsterHunter.menuLanguageFile.getProperty("resetByDefault"));
-
         MainStyle.applyLitleButtonStyle(resetByDefault);
-
         resetByDefault.setOnAction(e -> {
             reInitParameters();
         });
 
+        quitParameter = new Button(MonsterHunter.menuLanguageFile.getProperty("quitParameter"));
+        MainStyle.applyNormalButtonStyle(quitParameter);
         quitParameter.setOnAction(e -> {
             saveParameters();
             showInitMenu();
-
         });
-
-        rootParameter.setAlignment(javafx.geometry.Pos.CENTER);
 
         mapVBoxParameter = new VBox();
         playerVBoxParameter = new VBox();
         languageVBoxParameter = new VBox();
 
         mapTitle = new Text(MonsterHunter.menuLanguageFile.getProperty("mapTitle"));
-
         MainStyle.applyMainTextStyle(mapTitle);
 
         checkBoxIsGeneratedMap = new CheckBox(MonsterHunter.menuLanguageFile.getProperty("checkBoxIsGeneratedMap"));
+        MainStyle.applyCheckBoxStyle(checkBoxIsGeneratedMap);
         checkBoxIsGeneratedMap.setOnAction(e -> {
             mapListView.setDisable(checkBoxIsGeneratedMap.isSelected());
         });
-
-        MainStyle.applyCheckBoxStyle(checkBoxIsGeneratedMap);
-
         checkBoxIsGeneratedMap.setSelected(true);
 
         mapListView = initMapListView();
         mapListView.setDisable(checkBoxIsGeneratedMap.isSelected());
+
         generatedMapButtonParameter = new Button(
                 MonsterHunter.menuLanguageFile.getProperty("generatedMapButtonParameter"));
-        generatedMapButtonParameter.setDisable(!mapListView.isDisable());
-
         MainStyle.applyLitleButtonStyle(generatedMapButtonParameter);
-
+        generatedMapButtonParameter.setDisable(!mapListView.isDisable());
         generatedMapButtonParameter.setOnAction(e -> {
             showGeneratedParameterMenu();
         });
 
         checkBoxShowBearingWall = new CheckBox(MonsterHunter.menuLanguageFile.getProperty("ShowBearingWall"));
-
         MainStyle.applyCheckBoxStyle(checkBoxShowBearingWall);
 
         mapVBoxParameter.getChildren().addAll(mapTitle, checkBoxIsGeneratedMap, mapListView, checkBoxShowBearingWall,
@@ -245,19 +229,16 @@ public class MainView extends Stage {
 
         checkBoxAllowDiagonalMove = new CheckBox(
                 MonsterHunter.menuLanguageFile.getProperty("checkBoxAllowDiagonalMove"));
+        MainStyle.applyCheckBoxStyle(checkBoxAllowDiagonalMove);
 
         checkBoxMonsterIsAnAI = new CheckBox(MonsterHunter.menuLanguageFile.getProperty("checkBoxMonsterIsAnAI"));
-
         MainStyle.applyCheckBoxStyle(checkBoxMonsterIsAnAI);
-
         checkBoxMonsterIsAnAI.setOnAction(e -> {
             checkBoxHunterISAnAi.setDisable(checkBoxMonsterIsAnAI.isSelected());
         });
 
         checkBoxHunterISAnAi = new CheckBox(MonsterHunter.menuLanguageFile.getProperty("checkBoxHunterISAnAi"));
-
         MainStyle.applyCheckBoxStyle(checkBoxHunterISAnAi);
-
         checkBoxHunterISAnAi.setOnAction(e -> {
             checkBoxMonsterIsAnAI.setDisable(checkBoxHunterISAnAi.isSelected());
         });
@@ -359,9 +340,9 @@ public class MainView extends Stage {
         mazeGeneratedSliderLineNbParameter.setValue(
                 Integer.parseInt(MonsterHunter.init.getProperty("mazeGeneratedSliderLineNbParameterValue")));
 
-        mazeGeneratedSliderLineNbParameter.setBlockIncrement(1);
         mazeGeneratedSliderLineNbParameter.setSnapToTicks(true);
-        mazeGeneratedSliderLineNbParameter.setMajorTickUnit(2);
+        mazeGeneratedSliderLineNbParameter.setMajorTickUnit(1);
+        mazeGeneratedSliderLineNbParameter.setMinorTickCount(0);
         mazeGeneratedSliderLineNbParameter.setShowTickLabels(true);
         mazeGeneratedSliderLineNbParameter.setShowTickMarks(true);
 
@@ -379,9 +360,11 @@ public class MainView extends Stage {
         mazeGeneratedColumnNbSliceParmeter.setValue(
                 Integer.parseInt(MonsterHunter.init.getProperty("mazeGeneratedColumnNbSliceParmeterValue")));
 
+        mazeGeneratedColumnNbSliceParmeter.setSnapToTicks(true);
+        mazeGeneratedColumnNbSliceParmeter.setMajorTickUnit(1);
+        mazeGeneratedColumnNbSliceParmeter.setMinorTickCount(0);
         mazeGeneratedColumnNbSliceParmeter.setShowTickLabels(true);
         mazeGeneratedColumnNbSliceParmeter.setShowTickMarks(true);
-        mazeGeneratedColumnNbSliceParmeter.setMajorTickUnit(2);
 
         mazeGeneratedSizeVBoxParameter.getChildren().addAll(mazeGeneratedSizeMapTitleParameter,
                 mazeGeneratedLineNbTitleParameter, mazeGeneratedSliderLineNbParameter,
@@ -401,19 +384,14 @@ public class MainView extends Stage {
         mazeGeneratedWallPercentSliderParameter
                 .setValue(Integer.parseInt(
                         MonsterHunter.init.getProperty("mazeGeneratedWallPercentSliderParameterValue")));
+        mazeGeneratedWallPercentSliderParameter.setSnapToTicks(true);
+        mazeGeneratedWallPercentSliderParameter.setMajorTickUnit(10);
+        mazeGeneratedWallPercentSliderParameter.setMinorTickCount(5);
         mazeGeneratedWallPercentSliderParameter.setShowTickLabels(true);
         mazeGeneratedWallPercentSliderParameter.setShowTickMarks(true);
-        mazeGeneratedWallPercentSliderParameter.setMajorTickUnit(10);
-
-        mazeGeneratedIsGermanCheckBoxParameter = new CheckBox(
-                MonsterHunter.menuLanguageFile.getProperty("mazeGeneratedIsGermanCheckBoxParameter"));
-        mazeGeneratedIsGermanCheckBoxParameter
-                .setSelected(Boolean.parseBoolean(MonsterHunter.init.getProperty("IsGermanMaze")));
-
-        MainStyle.applyCheckBoxStyle(mazeGeneratedIsGermanCheckBoxParameter);
 
         mazeGeneratedWallPercentVBoxParameter.getChildren().addAll(mazeGeneratedWallPercentTitleParameter,
-                mazeGeneratedWallPercentSliderParameter, mazeGeneratedIsGermanCheckBoxParameter);
+                mazeGeneratedWallPercentSliderParameter);
 
         mazeGeneratorHbox = new HBox();
         mazeGeneratorHbox.setAlignment(javafx.geometry.Pos.CENTER);
@@ -507,7 +485,6 @@ public class MainView extends Stage {
 
     private void writeParameter() {
         DataProp.write(MonsterHunter.init, MonsterHunter.INIT_FILE.getAbsolutePath(), "");
-
     }
 
     private void saveParameters() {
@@ -518,24 +495,21 @@ public class MainView extends Stage {
         MonsterHunter.init.setProperty("MonsterIsAnAI", checkBoxMonsterIsAnAI.isSelected() + "");
         MonsterHunter.init.setProperty("HunterISAnAi", checkBoxHunterISAnAi.isSelected() + "");
         MonsterHunter.init.setProperty("ShowBearingWall", checkBoxShowBearingWall.isSelected() + "");
-        MonsterHunter.init.setProperty("IsGermanMaze", mazeGeneratedIsGermanCheckBoxParameter.isSelected() + "");
+        MonsterHunter.init.setProperty("AllowDiagonalMove", checkBoxAllowDiagonalMove.isSelected() + "");
         MonsterHunter.init.setProperty("mazeGeneratedSliderLineNbParameterMinValue",
                 (int) mazeGeneratedSliderLineNbParameter.getMin() + "");
         MonsterHunter.init.setProperty("mazeGeneratedSliderLineNbParameterMaxValue",
                 (int) mazeGeneratedSliderLineNbParameter.getMax() + "");
         MonsterHunter.init.setProperty("mazeGeneratedSliderLineNbParameterValue",
                 (int) mazeGeneratedSliderLineNbParameter.getValue() + "");
-
         MonsterHunter.init.setProperty("mazeGeneratedColumnNbSliceParmeterMinValue",
                 (int) mazeGeneratedColumnNbSliceParmeter.getMin() + "");
         MonsterHunter.init.setProperty("mazeGeneratedColumnNbSliceParmeterMaxValue",
                 (int) mazeGeneratedColumnNbSliceParmeter.getMax() + "");
         MonsterHunter.init.setProperty("mazeGeneratedColumnNbSliceParmeterValue",
                 (int) mazeGeneratedColumnNbSliceParmeter.getValue() + "");
-
         MonsterHunter.init.setProperty("mazeGeneratedWallPercentSliderParameterValue",
                 (int) mazeGeneratedWallPercentSliderParameter.getValue() + "");
-
         writeParameter();
     }
 

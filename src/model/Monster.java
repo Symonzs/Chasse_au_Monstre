@@ -15,7 +15,6 @@ public class Monster {
     private ICoordinate monsterCoord;
     private ICoordinate hunterCoord;
     private final ICoordinate EXIT;
-    private boolean warFogIsOn;
     private boolean[][] fog;
 
     /**
