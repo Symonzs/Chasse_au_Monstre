@@ -15,6 +15,7 @@ public class Monster {
     private ICoordinate monsterCoord;
     private ICoordinate hunterCoord;
     private final ICoordinate EXIT;
+    private boolean warFogIsOn;
     private boolean[][] fog;
 
     /**
@@ -22,16 +23,18 @@ public class Monster {
      * 
      * @param maze Le labyrinthe dans lequel le monstre se trouve
      */
-    public Monster(Maze maze) {
+    public Monster(Maze maze, boolean warFogIsOn) {
         this.WALL = maze.getWall();
         this.monsterCoord = maze.getLastMonsterCoordinate();
         this.hunterCoord = maze.getLastHunterCoordinate();
         this.EXIT = maze.getExit();
         this.fog = new boolean[WALL.length][WALL[0].length];
-        for (boolean[] row : fog) {
-            Arrays.fill(row, true);
+        if (warFogIsOn) {
+            for (boolean[] row : fog) {
+                Arrays.fill(row, true);
+            }
+            updateFog();
         }
-        updateFog();
     }
 
     /**
@@ -106,16 +109,12 @@ public class Monster {
      * 
      * @param events Les evenements qui se sont produits
      */
-    public void update(CellEvent[] events) {
-        for (CellEvent event : events) {
-            if (event != null) {
-                if (event.getState() == CellInfo.MONSTER) {
-                    this.setMonsterCoord(event.getCoord());
-                }
-                if (event.getState() == CellInfo.HUNTER) {
-                    this.setHunterCoord(event.getCoord());
-                }
-            }
+    public void update(CellEvent event) {
+        if (event.getState() == CellInfo.MONSTER) {
+            this.setMonsterCoord(event.getCoord());
+        }
+        if (event.getState() == CellInfo.HUNTER) {
+            this.setHunterCoord(event.getCoord());
         }
     }
 
@@ -131,7 +130,6 @@ public class Monster {
                 for (int j = col - 1; j <= col + 1; j++) {
                     if (j >= 0 && j < this.fog[0].length) {
                         this.fog[i][j] = false;
-                        System.out.println("fog[" + i + "][" + j + "] = " + this.fog[i][j]);
                     }
                 }
             }

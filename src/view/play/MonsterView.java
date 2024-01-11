@@ -50,8 +50,8 @@ public class MonsterView extends PlayView implements Observer {
 
     private Properties properties;
 
-    public MonsterView(Maze maze, Properties properties) {
-        this.monster = new Monster(maze);
+    public MonsterView(Maze maze, Properties properties, boolean warFogIsOn) {
+        this.monster = new Monster(maze, warFogIsOn);
         this.properties = properties;
 
         this.font = new Font("Arial", 24);
@@ -189,7 +189,7 @@ public class MonsterView extends PlayView implements Observer {
     public void update(Subject arg0, Object arg1) {
         if (CellEvent[].class == arg1.getClass()) {
             CellEvent[] events = (CellEvent[]) arg1;
-            monster.update(events);
+            monster.update(events[1]);
         }
     }
 }

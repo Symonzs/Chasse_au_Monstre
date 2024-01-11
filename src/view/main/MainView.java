@@ -434,4 +434,8 @@ public class MainView extends Stage {
     public boolean getMonsterIsAnAI() {
         return checkBoxMonsterIsAnAI.isSelected();
     }
+
+    public boolean isWarFogIsOn() {
+        return checkBoxShowBearingWall.isSelected();
+    }
 }

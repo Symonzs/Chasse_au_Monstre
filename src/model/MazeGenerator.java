@@ -221,7 +221,7 @@ public class MazeGenerator {
         }
     }
 
-    /*@Override
+    @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < this.wall.length; i++) {
@@ -238,14 +238,6 @@ public class MazeGenerator {
     }
 
     public static void main(String[] args) {
-        for (int y = 0; y < 10; y++) {
-            MazeGenerator maze = new MazeGenerator(11, 11, 40);
-            System.out.println(maze);
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-    } */
+        MazeGenerator maze = new MazeGenerator(50, 50, 50);
+    }
 }

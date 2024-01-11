@@ -33,9 +33,9 @@ public class MonsterController {
 
     private boolean diagonalMovesAllowed;
 
-    public MonsterController(Maze maze, Properties properties, boolean diagonalMovesAllowed) {
+    public MonsterController(Maze maze, Properties properties, boolean diagonalMovesAllowed, boolean warFogIsOn) {
         this.maze = maze;
-        this.view = new MonsterView(maze, properties);
+        this.view = new MonsterView(maze, properties, warFogIsOn);
         this.diagonalMovesAllowed = diagonalMovesAllowed;
         maze.attach(view);
         this.makeGameBoard(view.getMonster().getWall());

@@ -80,20 +80,16 @@ public class MonsterHunter extends Application {
             hunterStrategy = new MonsterFinder();
             hunterStrategy.initialize(mainView.getMaze().getWall().length - 1,
                     mainView.getMaze().getWall()[0].length - 1);
-            if (mainView.isAllowDiagonalMove()) {
-                monsterController = new MonsterController(mainView.getMaze(), PROPERTIES, true);
-            } else {
-                monsterController = new MonsterController(mainView.getMaze(), PROPERTIES, false);
-            }
-        } else if (mainView.getMonsterIsAnAI()) {
+            monsterController = new MonsterController(mainView.getMaze(), PROPERTIES, mainView.isAllowDiagonalMove(),
+                    mainView.isWarFogIsOn());
+        } else if (mainView.getMonsterIsAnAI())
+
+        {
             monsterStrategy = new MazeSolver(mainView.getMaze());
             hunterController = new HunterController(mainView.getMaze(), PROPERTIES);
         } else if (!mainView.getHunterIsAnAi() && !mainView.getMonsterIsAnAI()) {
-            if (mainView.isAllowDiagonalMove()) {
-                monsterController = new MonsterController(mainView.getMaze(), PROPERTIES, true);
-            } else {
-                monsterController = new MonsterController(mainView.getMaze(), PROPERTIES, false);
-            }
+            monsterController = new MonsterController(mainView.getMaze(), PROPERTIES, mainView.isAllowDiagonalMove(),
+                    mainView.isWarFogIsOn());
             hunterController = new HunterController(mainView.getMaze(), PROPERTIES);
         }
     }
@@ -137,11 +133,6 @@ public class MonsterHunter extends Application {
             }
         }
         if (!gameIsFinished()) {
-            if (mainView.getMaze().getHunterHasPlayed() && !mainView.getMaze().getIsReadyToNext()) {
-                mainView.getMaze().setHunterHasPlayed(false);
-            }
-        }
-        if (!gameIsFinished()) {
             if (!mainView.getMaze().getMonsterHasPlayed()) {
                 gameView.setSceneInFullScreen(monsterController.getView().getPlayScene());
             }
@@ -169,12 +160,10 @@ public class MonsterHunter extends Application {
         if (!gameIsFinished()) {
             if (!mainView.getMaze().getMonsterHasPlayed()) {
                 ICoordinate monsterPosition = monsterStrategy.play();
+                System.out.println(
+                        "Coordonnées du monstre : " + monsterPosition.getRow() + " " + monsterPosition.getCol());
                 mainView.getMaze().cellUpdate(new CellEvent(monsterPosition, Maze.currentTurn,
                         CellInfo.MONSTER));
-            }
-        }
-        if (!gameIsFinished()) {
-            if (mainView.getMaze().getMonsterHasPlayed() && !mainView.getMaze().getIsReadyToNext()) {
                 mainView.getMaze().setMonsterHasPlayed(false);
             }
         }

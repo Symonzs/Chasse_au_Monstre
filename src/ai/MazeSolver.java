@@ -43,6 +43,7 @@ public class MazeSolver implements IMonsterStrategy {
                 maze.getMonster().get(1).getCol(), null);
         CursiveCoordinate end = new CursiveCoordinate(maze.getExit().getRow(), maze.getExit().getCol(), null);
         movements = findPath(start, end);
+        movements.remove(0);
     }
 
     /**
@@ -61,7 +62,7 @@ public class MazeSolver implements IMonsterStrategy {
 
     public static void main(String[] args) {
         try {
-            Maze maze = new Maze(11, 11, 50);
+            Maze maze = new Maze("/home/infoetu/raphael.kiecken.etu/S3/S3.02/J1_SAE3A/resources/map/", "4x4.csv");
             MazeSolver solver = new MazeSolver(maze);
             ICoordinate cell;
             do {
