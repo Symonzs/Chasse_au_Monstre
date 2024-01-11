@@ -15,8 +15,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import main.MonsterHunter;
@@ -119,20 +117,6 @@ public class MonsterView extends PlayView implements Observer {
         playGameBoard.setVgap(3);
         playGameBoard.setBackground(new Background(
                 new BackgroundFill(javafx.scene.paint.Color.GRAY, null, null)));
-
-        for (int i = 0; i < board.length; i++) {
-            Label columnHeader = new Label(String.valueOf(i));
-            columnHeader.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-            columnHeader.setAlignment(Pos.CENTER);
-            playGameBoard.add(columnHeader, i + 1, 0);
-        }
-
-        for (int j = 0; j < board[0].length; j++) {
-            Label rowHeader = new Label(String.valueOf((char) ('A' + j)));
-            rowHeader.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-            rowHeader.setAlignment(Pos.CENTER);
-            playGameBoard.add(rowHeader, 0, j + 1);
-        }
 
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
