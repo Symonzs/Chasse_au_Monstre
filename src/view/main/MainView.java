@@ -194,6 +194,7 @@ public class MainView extends Stage {
         MainStyle.applyLitleButtonStyle(resetByDefault);
         resetByDefault.setOnAction(e -> {
             reInitParameters();
+            this.close();
         });
 
         quitParameter = new Button(MonsterHunter.menuLanguageFile.getProperty("quitParameter"));
@@ -505,6 +506,7 @@ public class MainView extends Stage {
 
     private void reInitParameters() {
         MonsterHunter.init = DataProp.read(Paths.get("./resources/config/defaultinit.conf").toFile());
+        System.out.println(MonsterHunter.init.getProperty("WarFog"));
         writeParameter();
     }
 

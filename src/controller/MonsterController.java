@@ -44,6 +44,7 @@ public class MonsterController {
     }
 
     public void makeGameBoard(boolean[][] board) {
+        view.getLabelTour().setText("Tour : " + Maze.currentTurn);
         view.makeGameBoard(board);
         for (Node node : view.getGameBoard().getChildren()) {
             if (StackPane.class == node.getClass()) {
@@ -138,7 +139,6 @@ public class MonsterController {
                 }
                 maze.cellUpdate(new CellEvent(coord, Maze.currentTurn, CellInfo.MONSTER));
                 makeGameBoard(view.getMonster().getWall());
-                view.getRoot().getChildren().set(0, view.getGameBoard());
                 selectedStack = null;
                 maze.setIsReadyToNext(false);
                 maze.setMonsterHasPlayed(true);

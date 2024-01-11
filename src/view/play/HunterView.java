@@ -39,6 +39,7 @@ public class HunterView extends PlayView implements Observer {
     private HBox playVBoxNav;
     private Button playShotButton;
     private Button playExitButton;
+    private Label labelTour;
 
     /* Waiting Button */
     private VBox waitRoot;
@@ -77,10 +78,10 @@ public class HunterView extends PlayView implements Observer {
         playVBoxNav.setAlignment(Pos.CENTER);
         playVBoxNav.setSpacing(10);
 
-        Label tourLabel = new Label("Tour : " + Maze.currentTurn);
-        MainStyle.applyNormalLabelStyle(tourLabel);
+        labelTour = new Label("Tour : " + Maze.currentTurn);
+        MainStyle.applyLitleLabelStyle(labelTour);
 
-        playRoot.getChildren().addAll(tourLabel, playGameBoard, playVBoxNav);
+        playRoot.getChildren().addAll(labelTour, playGameBoard, playVBoxNav);
         playRoot.setBackground(new Background(MainStyle.choiceMenuBackgroundImage));
 
         super.setPlayScene(new Scene(playRoot));
@@ -202,6 +203,10 @@ public class HunterView extends PlayView implements Observer {
 
     public Label getErrorLabel() {
         return errorLabel;
+    }
+
+    public Label getLabelTour() {
+        return labelTour;
     }
 
     @Override

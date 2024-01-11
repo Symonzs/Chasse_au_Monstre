@@ -38,6 +38,7 @@ public class MonsterView extends PlayView implements Observer {
     private HBox playButtonBox;
     private Button playMoveButton;
     private Button playExitButton;
+    private Label labelTour;
 
     /* Waiting atribut */
 
@@ -79,10 +80,10 @@ public class MonsterView extends PlayView implements Observer {
 
         playRoot.setBackground(new Background(MainStyle.choiceMenuBackgroundImage));
 
-        Label tourLabel = new Label("Tour : " + Maze.currentTurn);
-        MainStyle.applyNormalLabelStyle(tourLabel);
+        labelTour = new Label("Tour : " + Maze.currentTurn);
+        MainStyle.applyLitleLabelStyle(labelTour);
 
-        playRoot.getChildren().addAll(tourLabel, playGameBoard, playButtonBox);
+        playRoot.getChildren().addAll(labelTour, playGameBoard, playButtonBox);
 
         super.setPlayScene(new Scene(playRoot));
     }
@@ -179,6 +180,10 @@ public class MonsterView extends PlayView implements Observer {
 
     public Button getWaitButton() {
         return waitButton;
+    }
+
+    public Label getLabelTour() {
+        return labelTour;
     }
 
     @Override

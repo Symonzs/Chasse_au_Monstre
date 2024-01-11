@@ -41,6 +41,7 @@ public class HunterController {
     }
 
     public void makeGameBoard(boolean[][] wall, boolean[][] empty) {
+        view.getLabelTour().setText("Tour : " + Maze.currentTurn);
         view.makeGameBoard(wall, empty);
         for (Node node : view.getPlayGameBoard().getChildren()) {
             if (StackPane.class == node.getClass()) {
@@ -73,7 +74,6 @@ public class HunterController {
                     GridPane.getColumnIndex(selectedStack) - 1);
             maze.cellUpdate(new CellEvent(coord, Maze.currentTurn, CellInfo.HUNTER));
             makeGameBoard(view.getHunter().getKnowWall(), view.getHunter().getKnowEmpty());
-            view.getPlayRoot().getChildren().set(0, view.getPlayGameBoard());
             selectedStack = null;
             maze.setIsReadyToNext(false);
             maze.setHunterHasPlayed(true);

@@ -135,7 +135,15 @@ public class MazeGenerator {
         List<ICoordinate> tempEmptyCells = new ArrayList<>(emptyCells);
         monster.put(Maze.currentTurn, getRandomElement(tempEmptyCells));
         tempEmptyCells.remove(monster.get(Maze.currentTurn));
-        exit = getRandomElement(tempEmptyCells);
+        do {
+            exit = getRandomElement(tempEmptyCells);
+        } while (exitAndMonsterAreTooClose());
+    }
+
+    private boolean exitAndMonsterAreTooClose() {
+        Integer distance = Math.abs(exit.getRow() - monster.get(Maze.currentTurn).getRow())
+                + Math.abs(exit.getCol() - monster.get(Maze.currentTurn).getCol());
+        return distance < Math.min(this.wall.length, this.wall[0].length) / 2;
     }
 
     private <T> T getRandomElement(List<T> list) {
