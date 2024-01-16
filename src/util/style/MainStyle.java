@@ -5,6 +5,7 @@ import java.nio.file.Paths;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
@@ -146,5 +147,10 @@ public class MainStyle {
                 dropShadow.setColor(Color.rgb(0, 0, 0));
                 title.setEffect(dropShadow);
                 title.setStyle("-fx-padding: 0;");
+        }
+
+        public static void applySliderStyle(Slider slider) {
+                slider.setStyle("-fx-text-fill: black;");
+                // (Color.BLACK);
         }
 }

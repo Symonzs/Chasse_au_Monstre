@@ -12,6 +12,7 @@ import fr.univlille.iutinfo.cam.player.perception.ICellEvent;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import model.Coordinate;
 import model.Maze;
+import view.play.MonsterView;
 
 /**
  * Filename:
@@ -24,6 +25,8 @@ public class MazeSolver implements IMonsterStrategy {
     private Maze maze;
     private List<CursiveCoordinate> movements;
 
+    private MonsterView monsterView;
+
     private IMazeSolverAlgorithm choosedAlgorithm;
 
     private static Logger logger = Logger.getLogger(MazeSolver.class.getName());
@@ -33,9 +36,15 @@ public class MazeSolver implements IMonsterStrategy {
      * @param maze
      */
     public MazeSolver(Maze maze) {
+
         this.maze = maze;
         this.choosedAlgorithm = new AstarAlgorithm();
+        this.monsterView = new MonsterView(maze);
         initialize(maze.getWall());
+    }
+
+    public MonsterView getMonsterView() {
+        return monsterView;
     }
 
     /**

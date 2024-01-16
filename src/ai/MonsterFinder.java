@@ -6,6 +6,8 @@ import fr.univlille.iutinfo.cam.player.hunter.IHunterStrategy;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import model.Coordinate;
+import model.Maze;
+import view.play.HunterView;
 
 public class MonsterFinder implements IHunterStrategy {
     private final Random rand = new Random();
@@ -13,13 +15,26 @@ public class MonsterFinder implements IHunterStrategy {
     private int maxCol;
     private int maxRow;
 
+    private HunterView hunterView;
+
+    public MonsterFinder(Maze maze) {
+        maxCol = 0;
+        maxRow = 0;
+
+        hunterView = new HunterView(maze.getWall().length, maze.getWall()[0].length);
+    }
+
     public MonsterFinder() {
         maxCol = 0;
         maxRow = 0;
     }
 
+    public HunterView getHunterView() {
+        return hunterView;
+    }
+
     public static void main(String[] args) {
-        MonsterFinder mf = new MonsterFinder();
+        MonsterFinder mf = new MonsterFinder(null);
         mf.initialize(11, 11);
         for (int i = 0; i < 50; ++i) {
             mf.play();

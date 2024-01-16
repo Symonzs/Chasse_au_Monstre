@@ -21,6 +21,7 @@ import model.CellEvent;
 import model.Maze;
 import util.data.DataProp;
 import util.music.BackgroundMusicPlayer;
+import util.time.GameTime;
 import view.game.GameView;
 import view.main.MainView;
 
@@ -35,8 +36,8 @@ public class MonsterHunter extends Application {
 
     private MonsterController monsterController;
     private HunterController hunterController;
-    private IMonsterStrategy monsterStrategy;
-    private IHunterStrategy hunterStrategy;
+    private MazeSolver monsterStrategy;
+    private MonsterFinder hunterStrategy;
 
     public static void main(String[] args) {
         launch(args);
@@ -78,7 +79,7 @@ public class MonsterHunter extends Application {
         }
         mainView.getMaze().attach(gameView);
         if (init.getProperty("HunterIsAnAI").equals("true")) {
-            hunterStrategy = new MonsterFinder();
+            hunterStrategy = new MonsterFinder(mainView.getMaze());
         } else {
             hunterController = new HunterController(mainView.getMaze());
         }
@@ -124,6 +125,13 @@ public class MonsterHunter extends Application {
             ICoordinate hunterPosition = hunterStrategy.play();
             mainView.getMaze().cellUpdate(new CellEvent(hunterPosition, Maze.currentTurn,
                     CellInfo.HUNTER));
+            System.out.println("time ai hunter");
+            // TODO mettre les vue pour le controller
+            // /!\ huntercontroller est null !
+            gameView.setSceneInFullScreen(hunterStrategy.getHunterView().getPlayScene());
+            // GameTime.sleep(50);
+            gameView.show();
+            System.out.println("time ai monster");
             mainView.getMaze().setHunterHasPlayed(false);
         }
     }
@@ -133,6 +141,12 @@ public class MonsterHunter extends Application {
             ICoordinate monsterPosition = monsterStrategy.play();
             mainView.getMaze().cellUpdate(new CellEvent(monsterPosition, Maze.currentTurn,
                     CellInfo.MONSTER));
+            // TODO mettre les vue pour le controller
+            // /!\ controller est null !
+            gameView.setSceneInFullScreen(monsterStrategy.getMonsterView().getPlayScene());
+            // GameTime.sleep(50);
+            gameView.close();
+            System.out.println("time ai monster");
             mainView.getMaze().setMonsterHasPlayed(false);
         }
     }

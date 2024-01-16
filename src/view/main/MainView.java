@@ -343,6 +343,8 @@ public class MainView extends Stage {
         mazeGeneratedSliderLineNbParameter.setValue(
                 Integer.parseInt(MonsterHunter.init.getProperty("mazeGeneratedSliderLineNbParameterValue")));
 
+        MainStyle.applySliderStyle(mazeGeneratedSliderLineNbParameter);
+
         mazeGeneratedSliderLineNbParameter.setSnapToTicks(true);
         mazeGeneratedSliderLineNbParameter.setMajorTickUnit(1);
         mazeGeneratedSliderLineNbParameter.setMinorTickCount(0);
@@ -355,6 +357,8 @@ public class MainView extends Stage {
         MainStyle.applyLitleLabelStyle(mazeGeneratedColumnNbTitleParameter);
 
         mazeGeneratedColumnNbSliceParmeter = new Slider();
+
+        MainStyle.applySliderStyle(mazeGeneratedColumnNbSliceParmeter);
 
         mazeGeneratedColumnNbSliceParmeter.setMin(Integer
                 .parseInt(MonsterHunter.init.getProperty("mazeGeneratedColumnNbSliceParmeterMinValue")));
@@ -395,6 +399,8 @@ public class MainView extends Stage {
 
         mazeGeneratedWallPercentVBoxParameter.getChildren().addAll(mazeGeneratedWallPercentTitleParameter,
                 mazeGeneratedWallPercentSliderParameter);
+
+        MainStyle.applySliderStyle(mazeGeneratedSliderLineNbParameter);
 
         mazeGeneratorHbox = new HBox();
         mazeGeneratorHbox.setAlignment(javafx.geometry.Pos.CENTER);
