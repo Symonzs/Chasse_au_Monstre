@@ -15,15 +15,14 @@ public class MonsterFinder implements IHunterStrategy {
     private int maxCol;
     private int maxRow;
 
-    private Maze maze;
-
     private HunterView hunterView;
 
     public MonsterFinder(Maze maze) {
-        maxCol = 0;
-        maxRow = 0;
+        maxCol = maze.getWall()[0].length - 1;
+        maxRow = maze.getWall().length - 1;
 
         hunterView = new HunterView(maze.getWall().length, maze.getWall()[0].length);
+        maze.attach(hunterView);
     }
 
     public MonsterFinder() {

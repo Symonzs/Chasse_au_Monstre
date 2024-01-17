@@ -68,7 +68,7 @@ public class MonsterHunter extends Application {
     }
 
     public void initgame() {
-        initMusic();
+        // initMusic();
         mainView = new MainView(INIT_FILE);
         mainView.showAndWait();
         gameView = new GameView();
@@ -124,7 +124,6 @@ public class MonsterHunter extends Application {
             mainView.getMaze().cellUpdate(new CellEvent(hunterPosition, Maze.currentTurn,
                     CellInfo.HUNTER));
 
-            hunterStrategy.getHunterView().update(mainView.getMaze());
             hunterStrategy.getHunterView().makeGameBoard(
                     hunterStrategy.getHunterView().getHunter().getKnowWall(),
                     hunterStrategy.getHunterView().getHunter().getKnowEmpty());
@@ -145,10 +144,7 @@ public class MonsterHunter extends Application {
             ICoordinate monsterPosition = monsterStrategy.play();
             mainView.getMaze().cellUpdate(new CellEvent(monsterPosition, Maze.currentTurn,
                     CellInfo.MONSTER));
-            monsterStrategy.getMonsterView().update(mainView.getMaze());
             monsterStrategy.getMonsterView().makeGameBoard(monsterStrategy.getMonsterView().getMonster().getWall());
-            // TODO mettre les vues pour le controler
-            // /!\ controller est null !
             gameView.setSceneInFullScreenAndShow(monsterStrategy.getMonsterView().getPlayScene());
             GameTime.sleep(50);
             gameView.close();

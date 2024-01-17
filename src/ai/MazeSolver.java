@@ -40,6 +40,7 @@ public class MazeSolver implements IMonsterStrategy {
         this.maze = maze;
         this.choosedAlgorithm = new AstarAlgorithm();
         this.monsterView = new MonsterView(maze);
+        maze.attach(monsterView);
         initialize(maze.getWall());
     }
 

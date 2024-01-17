@@ -239,6 +239,8 @@ public class MainView extends Stage {
         MainStyle.applyCheckBoxStyle(checkBoxMonsterIsAnAI);
         checkBoxMonsterIsAnAI.setOnAction(e -> {
             algoListView.setDisable(!checkBoxMonsterIsAnAI.isSelected());
+            checkBoxcheckBoxWarFog.setDisable(checkBoxMonsterIsAnAI.isSelected());
+            checkBoxcheckBoxWarFog.setSelected(!checkBoxMonsterIsAnAI.isSelected());
         });
 
         algoListView = initAlgorithmListView();
