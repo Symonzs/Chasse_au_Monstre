@@ -10,8 +10,6 @@ import ai.algorithm.BidirectionnalAlgorithm;
 import ai.algorithm.ThetaStarAlgorithm;
 import controller.HunterController;
 import controller.MonsterController;
-import fr.univlille.iutinfo.cam.player.hunter.IHunterStrategy;
-import fr.univlille.iutinfo.cam.player.monster.IMonsterStrategy;
 import fr.univlille.iutinfo.cam.player.perception.ICoordinate;
 import fr.univlille.iutinfo.cam.player.perception.ICellEvent.CellInfo;
 import javafx.application.Application;
@@ -125,14 +123,20 @@ public class MonsterHunter extends Application {
             ICoordinate hunterPosition = hunterStrategy.play();
             mainView.getMaze().cellUpdate(new CellEvent(hunterPosition, Maze.currentTurn,
                     CellInfo.HUNTER));
+
+            hunterStrategy.getHunterView().update(mainView.getMaze());
+            hunterStrategy.getHunterView().makeGameBoard(
+                    hunterStrategy.getHunterView().getHunter().getKnowWall(),
+                    hunterStrategy.getHunterView().getHunter().getKnowEmpty());
+
             System.out.println("time ai hunter");
-            // TODO mettre les vue pour le controller
+            // TODO mettre les vues pour le controler
             // /!\ huntercontroller est null !
-            gameView.setSceneInFullScreen(hunterStrategy.getHunterView().getPlayScene());
-            // GameTime.sleep(50);
-            gameView.show();
-            System.out.println("time ai monster");
             mainView.getMaze().setHunterHasPlayed(false);
+            gameView.setSceneInFullScreenAndShow(hunterStrategy.getHunterView().getPlayScene());
+            GameTime.sleep(50);
+            gameView.close();
+            System.out.println("time ai monster");
         }
     }
 
@@ -141,10 +145,12 @@ public class MonsterHunter extends Application {
             ICoordinate monsterPosition = monsterStrategy.play();
             mainView.getMaze().cellUpdate(new CellEvent(monsterPosition, Maze.currentTurn,
                     CellInfo.MONSTER));
-            // TODO mettre les vue pour le controller
+            monsterStrategy.getMonsterView().update(mainView.getMaze());
+            monsterStrategy.getMonsterView().makeGameBoard(monsterStrategy.getMonsterView().getMonster().getWall());
+            // TODO mettre les vues pour le controler
             // /!\ controller est null !
-            gameView.setSceneInFullScreen(monsterStrategy.getMonsterView().getPlayScene());
-            // GameTime.sleep(50);
+            gameView.setSceneInFullScreenAndShow(monsterStrategy.getMonsterView().getPlayScene());
+            GameTime.sleep(50);
             gameView.close();
             System.out.println("time ai monster");
             mainView.getMaze().setMonsterHasPlayed(false);

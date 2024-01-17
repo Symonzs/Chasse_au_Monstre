@@ -15,6 +15,8 @@ public class MonsterFinder implements IHunterStrategy {
     private int maxCol;
     private int maxRow;
 
+    private Maze maze;
+
     private HunterView hunterView;
 
     public MonsterFinder(Maze maze) {
@@ -34,7 +36,7 @@ public class MonsterFinder implements IHunterStrategy {
     }
 
     public static void main(String[] args) {
-        MonsterFinder mf = new MonsterFinder(null);
+        MonsterFinder mf = new MonsterFinder();
         mf.initialize(11, 11);
         for (int i = 0; i < 50; ++i) {
             mf.play();
@@ -45,7 +47,6 @@ public class MonsterFinder implements IHunterStrategy {
     public ICoordinate play() {
         int randomRow = rand.nextInt(maxRow + 1);
         int randomCol = rand.nextInt(maxCol + 1);
-
         return new Coordinate(randomRow, randomCol);
     }
 

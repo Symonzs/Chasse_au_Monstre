@@ -14,6 +14,13 @@ public class GameView extends Stage implements Observer {
         this.showAndWait();
     }
 
+    public void setSceneInFullScreenAndShow(Scene scene) {
+        this.setScene(scene);
+        this.setFullScreen(true);
+        this.setFullScreenExitHint("");
+        this.show();
+    }
+
     @Override
     public void update(Subject arg0) {
         // Ne fait rien
