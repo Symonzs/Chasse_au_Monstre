@@ -342,7 +342,7 @@ public class Maze extends Subject {
     public ICoordinate getLastMonsterCoordinate() {
         ICoordinate coord = null;
         if (!this.monster.isEmpty()) {
-            coord = this.monster.lastEntry().getValue();
+            coord = this.monster.get(this.monster.lastKey());
         }
         return coord;
 
@@ -357,7 +357,7 @@ public class Maze extends Subject {
     public ICoordinate getLastHunterCoordinate() {
         ICoordinate coord = null;
         if (!this.hunter.isEmpty()) {
-            coord = this.hunter.lastEntry().getValue();
+            coord = this.hunter.get(this.hunter.lastKey());
         }
         return coord;
     }
